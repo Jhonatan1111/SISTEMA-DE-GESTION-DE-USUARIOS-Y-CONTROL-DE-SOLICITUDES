@@ -22,6 +22,9 @@ test('profile information can be updated', function () {
             'apellido' => 'User',
             'celular' => '70123456',
             'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'role' => 'admin',
         ]);
 
     $response
@@ -34,7 +37,9 @@ test('profile information can be updated', function () {
     $this->assertSame('User', $user->apellido);
     $this->assertSame('70123456', $user->celular);
     $this->assertSame('test@example.com', $user->email);
+    $this->assertSame('admin', $user->role);
     $this->assertNull($user->email_verified_at);
+    $this->assertSame('password', $user->password);
 });
 
 test('email verification status is unchanged when the email address is unchanged', function () {
@@ -47,6 +52,9 @@ test('email verification status is unchanged when the email address is unchanged
             'apellido' => 'User',
             'celular' => '70123456',
             'email' => $user->email,
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'role' => 'admin',
         ]);
 
     $response

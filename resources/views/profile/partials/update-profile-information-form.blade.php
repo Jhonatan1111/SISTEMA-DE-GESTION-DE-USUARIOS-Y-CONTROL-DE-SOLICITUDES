@@ -17,28 +17,43 @@
         @csrf
         @method('patch')
 
+        <!-- Nombre -->
         <div>
             <x-input-label for="nombre" :value="__('Nombre')" />
             <x-text-input id="nombre" name="nombre" type="text" class="mt-1 block w-full" :value="old('nombre', $user->nombre)" required autofocus autocomplete="nombre" />
             <x-input-error class="mt-2" :messages="$errors->get('nombre')" />
         </div>
 
+        <!-- Apellido -->
         <div>
             <x-input-label for="apellido" :value="__('Apellido')" />
             <x-text-input id="apellido" name="apellido" type="text" class="mt-1 block w-full" :value="old('apellido', $user->apellido)" required autocomplete="apellido" />
             <x-input-error class="mt-2" :messages="$errors->get('apellido')" />
         </div>
 
+        <!-- Celular -->
         <div>
             <x-input-label for="celular" :value="__('Celular')" />
             <x-text-input id="celular" name="celular" type="text" class="mt-1 block w-full" :value="old('celular', $user->celular)" required autocomplete="celular" />
             <x-input-error class="mt-2" :messages="$errors->get('celular')" />
         </div>
 
+        <!-- Role -->
+        <div>
+            <x-input-label for="role" :value="__('Role')" />
+            <select id="role" name="role" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full" required>
+                <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="empleado" {{ old('role', $user->role) === 'empleado' ? 'selected' : '' }}>Empleado</option>
+            </select>
+            <x-input-error class="mt-2" :messages="$errors->get('role')" />
+        </div>
+
+        <!-- Email -->
         <div>
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="email" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
+
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>

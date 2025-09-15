@@ -27,6 +27,9 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'email_verified_at' => ['nullable', 'datetime'],
+            'password' => ['nullable', 'string', 'min:4', 'confirmed'],
+            'role' => ['required', 'string', 'in:admin,empleado'],
         ];
     }
 }
