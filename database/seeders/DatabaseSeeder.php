@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Enums\UserRole;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,9 +16,32 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-    }
+        User::firstOrCreate(
+            ['email' => 'empleado@example.com'],
+            [
+                'nombre' => 'Empleado',
+                'apellido' => 'Empleado',
+                'password' => bcrypt('123456'),
+                'role' => 'empleado',
+                'celular' => '70126656',
+                'email_verified_at' => now(),
+            ]
+        );
+        // Crear un usuario administrador
+          User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'nombre' => 'Admin',
+                'apellido' => 'Admin',
+                'password' => bcrypt('123456'),
+                'role' => 'admin',
+                'celular' => '73664989',
+                'email_verified_at' => now(),
+            ]
+        );
+    } 
+
+    
+      
+    
 }
