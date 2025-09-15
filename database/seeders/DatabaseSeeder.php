@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
             'celular' => '73664989',
             'email_verified_at' => now(),
         ]);
-    }
+    } 
 
     
       
