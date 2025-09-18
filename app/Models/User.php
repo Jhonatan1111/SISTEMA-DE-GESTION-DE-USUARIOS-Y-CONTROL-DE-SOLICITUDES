@@ -12,6 +12,7 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    protected $table = 'usuarios';  
 
     protected $fillable = [
         'nombre',
@@ -44,19 +45,18 @@ class User extends Authenticatable
             'password' => 'hashed',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
-            'deleted_at' => 'datetime',
         ];
     }
 
     // Verificar si el usuario es administrador
     public function isAdmin()
     {
-        return  $this->rol === 'admin';
+        return  $this->role === 'admin';
     }
 
     // Verificar si el usuario es empleado
     public function isEmpleado(){
-        return $this->rol === 'empleado';
+        return $this->role === 'empleado';
     }
 
 }
