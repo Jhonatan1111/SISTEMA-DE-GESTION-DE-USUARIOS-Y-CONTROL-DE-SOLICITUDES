@@ -10,7 +10,7 @@ return new class extends Migration
 
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('usuarios', function (Blueprint $table) {
             $table->id();
             $table->string('nombre')->comment('Nombre del usuario');
             $table->string('apellido')->comment('Apellido del usuario');
