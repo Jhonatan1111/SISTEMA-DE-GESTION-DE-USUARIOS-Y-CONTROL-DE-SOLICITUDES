@@ -571,7 +571,7 @@
     "Retry Payment": "Reintentar el pago",
     "Return to :appName": "Regresar a :appName",
     "Reunion": "Reunión",
-    "Role": "Rol",
+    "Role": "Acceso",
     "Romania": "Rumania",
     "Run Action": "Ejecutar Acción",
     "Russian Federation": "Federación Rusa",
@@ -865,5 +865,12 @@
     "Cellphone": "Celular",
     "Cell Phone": "Celular",
     "cellphone": "celular",
-    "cell phone": "celular"
+    "cell phone": "celular",
+    "You do not have permission to access this area.":"No tienes permisos para acceder a esta sección.",
+    "Please log in to access this area.": "Por favor, inicie sesión para acceder a esta área.",
+    "Admin Dashboard": "Panel de Administración",
+    "Create User": "Crear Usuario",
+    "Users": "Usuarios",
+    "Last Name": "Apellido",
+    "Created At": "Creado"
 }
