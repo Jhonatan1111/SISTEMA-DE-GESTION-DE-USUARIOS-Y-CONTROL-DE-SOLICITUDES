@@ -43,6 +43,17 @@ DESCRIPCIÓN: Formulario para editar usuarios existentes (Tailwind CSS)
                                 <x-input-error :messages="$errors->get('apellido')" class="mt-2" />
                             </div>
                         </div>
+                        <!-- Celular -->
+                        <div>
+                            <x-input-label for="celular" :value="__('Celular')" />
+                            <x-text-input id="celular" 
+                                        class="block mt-1 w-full" 
+                                        type="text" 
+                                        name="celular" 
+                                        :value="old('celular', $usuario->celular)" 
+                                        required />
+                            <x-input-error :messages="$errors->get('celular')" class="mt-2" />
+                        </div>
 
                         <!-- Email -->
                         <div>
@@ -84,7 +95,7 @@ DESCRIPCIÓN: Formulario para editar usuarios existentes (Tailwind CSS)
                                             type="password"
                                             name="password" />
                                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Mínimo 6 caracteres (opcional)</p>
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Mínimo 4 caracteres (opcional)</p>
                             </div>
 
                             <!-- Confirmar Nueva Contraseña -->
@@ -99,20 +110,20 @@ DESCRIPCIÓN: Formulario para editar usuarios existentes (Tailwind CSS)
 
                         <!-- Rol -->
                         <div>
-                            <x-input-label for="rol" :value="__('Rol')" />
-                            <select id="rol" 
-                                    name="rol" 
+                            <x-input-label for="role" :value="__('Role')" />
+                            <select id="role" 
+                                    name="role" 
                                     class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" 
                                     required>
-                                <option value="">Seleccionar rol...</option>
-                                <option value="admin" {{ old('rol', $usuario->rol) === 'admin' ? 'selected' : '' }}>
+                                <option value="">Seleccionar role...</option>
+                                <option value="admin" {{ old('role', $usuario->role) === 'admin' ? 'selected' : '' }}>
                                     Administrador
                                 </option>
-                                <option value="empleado" {{ old('rol', $usuario->rol) === 'empleado' ? 'selected' : '' }}>
+                                <option value="empleado" {{ old('role', $usuario->role) === 'empleado' ? 'selected' : '' }}>
                                     Empleado
                                 </option>
                             </select>
-                            <x-input-error :messages="$errors->get('rol')" class="mt-2" />
+                            <x-input-error :messages="$errors->get('role')" class="mt-2" />
                         </div>
 
                         <!-- Información del Usuario -->

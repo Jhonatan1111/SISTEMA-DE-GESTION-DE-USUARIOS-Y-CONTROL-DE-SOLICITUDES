@@ -85,10 +85,11 @@
             </x-responsive-nav-link>
 
             @auth
-                @if (auth()->user()->rol === 'admin')
+                @if (auth()->user()->isAdmin())
                     <x-responsive-nav-link :href="route('admin.usuarios.index')" :active="request()->routeIs('admin.usuarios.*')">
-                        Administración
+                        {{ __('Administration') }}
                     </x-responsive-nav-link>
+                    
                 @endif
             @endauth
         </div>

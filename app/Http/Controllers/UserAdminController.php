@@ -28,9 +28,10 @@ class UserAdminController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
+            'celular' => 'required|string|max:20',
             'email' => 'required|email|unique:usuarios,email',
-            'password' => 'required|min:6|confirmed',
-            'rol' => 'required|in:admin,empleado'
+            'password' => 'required|min:4|confirmed',
+            'role' => 'required|in:admin,empleado'
         ]);
 
         User::create([
@@ -38,7 +39,8 @@ class UserAdminController extends Controller
             'apellido' => $request->apellido,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'rol' => $request->rol,
+            'role' => $request->role,
+            'celular' => $request->celular,
         ]);
 
         return redirect()->route('admin.usuarios.index')
@@ -57,16 +59,18 @@ class UserAdminController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
+            'celular' => 'required|string|max:20' ,
             'email' => ['required', 'email', Rule::unique('usuarios')->ignore($usuario->id)],
-            'password' => 'nullable|min:6|confirmed',
-            'rol' => 'required|in:admin,empleado'
+            'password' => 'nullable|min:4|confirmed',
+            'role' => 'required|in:admin,empleado'
         ]);
 
         $data = [
             'nombre' => $request->nombre,
             'apellido' => $request->apellido,
             'email' => $request->email,
-            'rol' => $request->rol,
+            'role' => $request->role,
+            'celular' => $request->celular,
         ];
 
         // Solo actualizar password si se proporcionó uno nuevo
