@@ -859,5 +859,16 @@
     "Zambia": "Zambia",
     "Zimbabwe": "Zimbabwe",
     "Zip / Postal Code": "Zip / Código postal",
+<<<<<<< Updated upstream
     "Åland Islands": "Islas Åland"
+=======
+    "Åland Islands": "Islas Åland",
+    "Cellphone": "Celular",
+    "Cell Phone": "Celular",
+    "cellphone": "celular",
+    "cell phone": "celular",
+    "You do not have permission to access this area.":"No tienes permisos para acceder a esta sección.",
+    "Please log in to access this area.": "Por favor, inicie sesión para acceder a esta área.",
+    "Admin Dashboard": "Panel de Administración"
+>>>>>>> Stashed changes
 }

@@ -23,11 +23,7 @@ class User extends Authenticatable
         'celular',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
+ 
     protected $hidden = [
         'password',
         'remember_token',
@@ -47,16 +43,49 @@ class User extends Authenticatable
             'updated_at' => 'datetime',
         ];
     }
+// Accessor para obtener el nombre completo
+    public function getNombreCompletoAttribute()
+    {
+        return $this->nombre . ' ' . $this->apellido;
+    }
 
-    // Verificar si el usuario es administrador
+    // Verificar si es administrador
     public function isAdmin()
     {
-        return  $this->role === 'admin';
+        return $this->rol === 'admin';
     }
 
-    // Verificar si el usuario es empleado
-    public function isEmpleado(){
-        return $this->role === 'empleado';
+    // Verificar si es empleado
+    public function isEmpleado()
+    {
+        return $this->rol === 'empleado';
     }
 
+    // Métodos en español (aliases)
+    public function esAdmin()
+    {
+        return $this->isAdmin();
+    }
+
+    public function esEmpleado()
+    {
+        return $this->isEmpleado();
+    }
+
+    // Scope para filtrar por rol
+    public function scopeAdmins($query)
+    {
+        return $query->where('rol', 'admin');
+    }
+
+    public function scopeEmpleados($query)
+    {
+        return $query->where('rol', 'empleado');
+    }
+
+    // Scope para usuarios activos
+    public function scopeActivos($query)
+    {
+        return $query->where('activo', true);
+    }
 }
