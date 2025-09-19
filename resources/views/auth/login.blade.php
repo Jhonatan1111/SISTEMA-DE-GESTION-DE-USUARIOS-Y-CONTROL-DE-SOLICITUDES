@@ -84,10 +84,7 @@
 
         <button type="submit">Iniciar</button>
     </form>
-    <p style="margin-top:10px;">
-        <a href="{{ route('password.request') }}">Si olvidaste tu contraseña presiona aquí</a>
-    </p>
-
+</x-guest-layout>
 
     @if($errors->any())
         <div class="error">La contraseña no es valida</div>
