@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique()->comment('Correo electrónico del usuario');
             $table->timestamp('email_verified_at')->nullable()->comment('Fecha de verificación del correo electrónico');
             $table->string('password')->comment('Contraseña del usuario');
-            $table->string('celular', 11)->comment('Número de celular del usuario');
+            $table->string('celular', 11)->unique()->comment('Número de celular del usuario');
             $table->enum('role', ['admin','empleado'])->default('empleado')->comment('Rol del usuario');
             $table->rememberToken()->comment('Token de recordatorio de sesión');
             $table->timestamps();
