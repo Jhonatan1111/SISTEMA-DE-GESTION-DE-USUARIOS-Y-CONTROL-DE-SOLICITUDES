@@ -1,78 +1,131 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #e0f2ff;
+            font-family: Arial, sans-serif;
+        }
 
-        <!-- NOMBRE -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
+        .register-box {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            width: 400px;
+            max-width: 90%;
+        }
 
-        <!-- APELLIDO -->
-        <div>
-            <x-input-label for="last_name" :value="__('Last Name')" />
-            <x-text-input id="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')" required autofocus autocomplete="last_name" />
-            <x-input-error :messages="$errors->get('last_name')" class="mt-2" />
-        </div>
-        <!-- CELULAR -->
-        <div>
-            <x-input-label for="celular" :value="__('Cellphone')" />
-            <x-text-input id="celular" class="block mt-1 w-full" type="text" name="celular" :value="old('celular')" required autofocus autocomplete="celular" />
-            <x-input-error :messages="$errors->get('celular')" class="mt-2" />
-        </div>
+        .register-box h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            color: #333;
+        }
 
-        <!-- CORREO -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+        .form-group {
+            margin-bottom: 1rem;
+        }
 
-        <!-- CONTRASEÑA -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        .form-group label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: .4rem;
+            color: #444;
+        }
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: .6rem .8rem;
+            border: 1px solid #ccc;
+            border-radius: .5rem;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+        }
 
+        button {
+            width: 100%;
+            padding: .8rem;
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            border-radius: .5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background .3s ease;
+        }
 
+        button:hover {
+            background: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-box">
+        <h2>Registrarse</h2>
 
-        <!-- CONFIRMAR CONTRASEÑA -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+        <form method="POST" action="{{ route('register') }}">
+            @csrf
 
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
+            <div class="form-group">
+                <label for="name">Nombre</label>
+                <input id="name" name="name" type="text" required autofocus>
+            </div>
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
+            <div class="form-group">
+                <label for="last_name">Apellido</label>
+                <input id="last_name" name="last_name" type="text" required>
+            </div>
 
-        <!-- Role -->
-        <div>
-            <x-input-label for="role" :value="__('Role')" />
-            <select id="role" name="role" class="border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm mt-1 block w-full" required>
-                <option value="admin" {{ old('role', 'admin') === 'admin' ? 'selected' : '' }}>Admin</option>
-                <option value="empleado" {{ old('role', 'empleado') === 'empleado' ? 'selected' : '' }}>Empleado</option>
-            </select>
-            <x-input-error class="mt-2" :messages="$errors->get('role')" />
-        </div>
+            <div class="form-group">
+                <label for="celular">Celular</label>
+                <input id="celular" name="celular" type="text" required>
+            </div>
 
+            <div class="form-group">
+                <label for="email">Correo</label>
+                <input id="email" name="email" type="email" required>
+            </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
+            <div class="form-group">
+                <label for="role">Rol</label>
+                <select id="role" name="role" required>
+                    <option value="">Seleccione un rol</option>
+                    <option value="admin">Administrador</option>
+                    <option value="empleado">Empleado</option>
+                </select>
+            </div>
 
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input id="password" name="password" type="password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password_confirmation">Confirmar Contraseña</label>
+                <input id="password_confirmation" name="password_confirmation" type="password" required>
+            </div>
+
+            <button type="submit">Registrarse</button>
+        </form>
+    </div>
+</body>
+</html>
