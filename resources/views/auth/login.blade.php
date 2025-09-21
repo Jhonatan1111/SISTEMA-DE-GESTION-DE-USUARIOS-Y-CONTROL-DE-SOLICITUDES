@@ -54,7 +54,7 @@
             <div class="mb-3">
                 <label for="password" class="form-label">Contraseña</label>
                 <input type="password" name="password" id="password" class="form-control" required>
-            </div>
+            </div> 
             
             <div class="mb-3 form-check">
                 <input type="checkbox" name="remember" id="remember" class="form-check-input">
