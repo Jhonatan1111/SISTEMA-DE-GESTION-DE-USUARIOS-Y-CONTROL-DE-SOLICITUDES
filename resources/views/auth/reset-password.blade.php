@@ -76,7 +76,7 @@
 
             <div class="flex items-center justify-center mt-4">
                 <button type="submit" class="btn-primary-custom">
-                    {{ __('Restablecer contraseña') }}
+                    {{ __('Restablecer contraseña.') }}
                 </button>
             </div>
         </form>
