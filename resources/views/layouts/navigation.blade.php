@@ -19,6 +19,9 @@
                     <x-nav-link :href="route('admin.usuarios.index')" :active="request()->routeIs('admin.usuarios.*')">
                         Administración
                     </x-nav-link>
+                    <x-nav-link :href="route('doctores.index')" :active="request()->routeIs('doctores.*')">
+                        Doctores
+                    </x-nav-link>
 
                 </div>
             </div>
