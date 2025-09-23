@@ -18,10 +18,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('doctores', [DoctorController::class, 'index'])->name('doctores.index');
-
-    // Rutas de administración de usuarios - solo para administradores
-    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
-        Route::resource('usuarios', UserAdminController::class);
+    
+    // Rutas de doctores que requieren permisos de admin
+    Route::middleware(['role:admin'])->group(function () {
         Route::get('doctores/create', [DoctorController::class, 'create'])->name('doctores.create');
         Route::post('doctores', [DoctorController::class, 'store'])->name('doctores.store');
         Route::get('doctores/{doctor}/edit', [DoctorController::class, 'edit'])->name('doctores.edit');
@@ -29,7 +28,11 @@ Route::middleware('auth')->group(function () {
         Route::delete('doctores/{doctor}', [DoctorController::class, 'destroy'])->name('doctores.destroy');
         Route::patch('doctores/{doctor}/toggle-estado', [DoctorController::class, 'toggleEstado'])->name('doctores.toggle-estado');
     });
-    // Ruta adicional para cambiar estado del doctor
+
+    // Rutas de administración de usuarios - solo para administradores
+    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+        Route::resource('usuarios', UserAdminController::class);
+    });
 });
 
 require __DIR__ . '/auth.php';
