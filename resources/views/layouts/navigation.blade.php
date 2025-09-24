@@ -21,11 +21,15 @@
                     </x-nav-link>
                     @endif
 
+                    <!-- Rutas de doctores -->
                     <x-nav-link :href="route('doctores.index')" :active="request()->routeIs('doctores.*')">
                         Doctores
                     </x-nav-link>
                     <x-nav-link :href="route('pacientes.index')" :active="request()->routeIs('pacientes.*')">
                         Pacientes
+                    </x-nav-link>
+                    <x-nav-link :href="route('mascotas.index')" :active="request()->routeIs('mascotas.*')">
+                        Mascotas
                     </x-nav-link>
                 </div>
             </div>
