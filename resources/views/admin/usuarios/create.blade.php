@@ -27,21 +27,22 @@
         <div class="max-w-4xl mx-auto">
             <div class="bg-white dark:bg-gray-800 shadow-md sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    
+
                     <form action="{{ route('admin.usuarios.store') }}" method="POST" class="space-y-6">
                         @csrf
-
                         <!-- Nombre y Apellido -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <x-input-label for="nombre" :value="__('Nombre')" />
-                                <x-text-input id="nombre" class="block mt-1 w-full" type="text" name="nombre" :value="old('nombre')" required autofocus />
+                                <x-text-input id="nombre" class="block mt-1 w-full" type="text" name="nombre"
+                                    :value="old('nombre')" required autofocus />
                                 <x-input-error :messages="$errors->get('nombre')" class="mt-2" />
                             </div>
 
                             <div>
                                 <x-input-label for="apellido" :value="__('Apellido')" />
-                                <x-text-input id="apellido" class="block mt-1 w-full" type="text" name="apellido" :value="old('apellido')" required />
+                                <x-text-input id="apellido" class="block mt-1 w-full" type="text" name="apellido"
+                                    :value="old('apellido')" required />
                                 <x-input-error :messages="$errors->get('apellido')" class="mt-2" />
                             </div>
                         </div>
@@ -49,14 +50,16 @@
                         <!-- Celular -->
                         <div>
                             <x-input-label for="celular" :value="__('Celular')" />
-                            <x-text-input id="celular" class="block mt-1 w-full" type="text" name="celular" :value="old('celular')" required />
+                            <x-text-input id="celular" class="block mt-1 w-full" type="text" name="celular"
+                                :value="old('celular')" required maxlength="8" />
                             <x-input-error :messages="$errors->get('celular')" class="mt-2" />
                         </div>
 
                         <!-- Email -->
                         <div>
                             <x-input-label for="email" :value="__('Correo Electrónico')" />
-                            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required />
+                            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email"
+                                :value="old('email')" required />
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
                         </div>
 
@@ -71,7 +74,8 @@
 
                             <div>
                                 <x-input-label for="password_confirmation" :value="__('Confirmar Contraseña')" />
-                                <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required />
+                                <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password"
+                                    name="password_confirmation" required />
                             </div>
                         </div>
 
