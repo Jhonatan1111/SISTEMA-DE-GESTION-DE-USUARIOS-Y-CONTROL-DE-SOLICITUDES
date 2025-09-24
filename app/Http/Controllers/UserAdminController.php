@@ -28,7 +28,7 @@ class UserAdminController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
-            'celular' => 'required|string|max:20',
+            'celular' => 'nullable|digits:8|unique:usuarios,celular',
             'email' => 'required|email|unique:usuarios,email',
             'password' => 'required|min:4|confirmed',
             'role' => 'required|in:admin,empleado'
@@ -59,7 +59,7 @@ class UserAdminController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
-            'celular' => 'required|string|max:20' ,
+            'celular' => 'nullable|digits:8',
             'email' => ['required', 'email', Rule::unique('usuarios')->ignore($usuario->id)],
             'password' => 'nullable|min:4|confirmed',
             'role' => 'required|in:admin,empleado'
