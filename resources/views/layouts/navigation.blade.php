@@ -15,14 +15,17 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-               @if(auth()->user()->role === 'admin')
+                    @if(auth()->user()->role === 'admin')
                     <x-nav-link :href="route('admin.usuarios.index')" :active="request()->routeIs('admin.usuarios.*')">
                         Administración
                     </x-nav-link>
-                @endif
+                    @endif
 
                     <x-nav-link :href="route('doctores.index')" :active="request()->routeIs('doctores.*')">
                         Doctores
+                    </x-nav-link>
+                    <x-nav-link :href="route('pacientes.index')" :active="request()->routeIs('pacientes.*')">
+                        Pacientes
                     </x-nav-link>
                 </div>
             </div>
@@ -89,12 +92,12 @@
             </x-responsive-nav-link>
 
             @auth
-                @if (auth()->user()->isAdmin())
-                    <x-responsive-nav-link :href="route('admin.usuarios.index')" :active="request()->routeIs('admin.usuarios.*')">
-                        {{ __('Administration') }}
-                    </x-responsive-nav-link>
-                    
-                @endif
+            @if (auth()->user()->isAdmin())
+            <x-responsive-nav-link :href="route('admin.usuarios.index')" :active="request()->routeIs('admin.usuarios.*')">
+                {{ __('Administration') }}
+            </x-responsive-nav-link>
+
+            @endif
             @endauth
         </div>
 
