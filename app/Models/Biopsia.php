@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+<<<<<<< HEAD
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,10 +13,19 @@ class Biopsia extends Model
     protected $table = 'biopsias';
 
 
+=======
+use Illuminate\Database\Eloquent\Model;
+
+class Biopsia extends Model
+{
+    //
+    protected $table = 'biopsias';
+>>>>>>> de1c (se creo migracion de biopsia, controlador y vistas, siendo asi funciona la logica de crear y vista de login pero se seguira trabajando mas en la logica)
     protected $fillable = [
         'nbiopsia',
         'diagnostico_clinico',
         'fecha_recibida',
+<<<<<<< HEAD
         'estado',
         'paciente_id',
         'mascota_id',
@@ -39,10 +49,26 @@ class Biopsia extends Model
     }
 
     public function doctor(): BelongsTo
+=======
+        'doctor_id',
+        'paciente_id',
+        'mascota_id',
+    ];
+
+    protected $casts = [
+        'fecha_recibida' => 'date',
+        'doctor_id' => 'integer',
+        'paciente_id' => 'integer',
+        'mascota_id' => 'integer',
+    ];
+
+    public function doctor()
+>>>>>>> de1c (se creo migracion de biopsia, controlador y vistas, siendo asi funciona la logica de crear y vista de login pero se seguira trabajando mas en la logica)
     {
         return $this->belongsTo(Doctor::class, 'doctor_id');
     }
 
+<<<<<<< HEAD
     // Métodos estáticos
 
     public static function generarNumeroBiopsia()
@@ -107,5 +133,25 @@ class Biopsia extends Model
     public function estaActiva()
     {
         return $this->estado;
+=======
+    public function paciente()
+    {
+        return $this->belongsTo(Paciente::class, 'paciente_id');
+    }
+
+    public function mascota()
+    {
+        return $this->belongsTo(Mascota::class, 'mascota_id');
+    }
+    public function obtenerTipoPacienteAttribute()
+    {
+        if ($this->paciente_id) {
+            return 'Humano';
+        }
+        if ($this->mascota_id) {
+            return 'Mascota';
+        }
+        return 'Indefinido';
+>>>>>>> de1c (se creo migracion de biopsia, controlador y vistas, siendo asi funciona la logica de crear y vista de login pero se seguira trabajando mas en la logica)
     }
 }

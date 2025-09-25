@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\BiopsiaController;
+<<<<<<< HEAD
 use App\Http\Controllers\BiopsiaPacienteController;
 use App\Http\Controllers\BiopsiaArchivarController;
 use App\Http\Controllers\BiopsiaMascotaController;
+=======
+>>>>>>> de1c (se creo migracion de biopsia, controlador y vistas, siendo asi funciona la logica de crear y vista de login pero se seguira trabajando mas en la logica)
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ListaBiopsiaController;
 use App\Http\Controllers\MascotaController;
@@ -77,6 +80,16 @@ Route::middleware('auth')->group(function () {
     Route::post('listas/biopsias', [ListaBiopsiaController::class, 'store'])->name('listas.biopsias.store');
 
     // PERMISOS DE ADMINISTRADOR
+
+    // Rutas de biopsias
+    Route::get('biopsias', [BiopsiaController::class, 'index'])->name('biopsias.index');
+    Route::get('biopsias/create', [BiopsiaController::class, 'create'])->name('biopsias.create');
+    Route::post('biopsias', [BiopsiaController::class, 'store'])->name('biopsias.store');
+    Route::get('biopsias/{nbiopsia}', [BiopsiaController::class, 'show'])->name('biopsias.show');
+    Route::get('biopsias/{nbiopsia}/edit', [BiopsiaController::class, 'edit'])->name('biopsias.edit');
+    Route::put('biopsias/{nbiopsia}', [BiopsiaController::class, 'update'])->name('biopsias.update');
+    Route::delete('biopsias/{nbiopsia}', [BiopsiaController::class, 'destroy'])->name('biopsias.destroy');
+    // Rutas de doctores que requieren permisos de admin
     Route::middleware(['role:admin'])->group(function () {
 
 
