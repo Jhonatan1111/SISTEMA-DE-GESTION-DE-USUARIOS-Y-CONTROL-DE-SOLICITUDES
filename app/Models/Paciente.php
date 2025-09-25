@@ -27,4 +27,10 @@ class Paciente extends Model
         "fecha_nacimiento" => "date",
         "celular" => "integer",
     ];
+
+    // Relacion uno a muchos con biopsias en donde 1 paciente puede tener muchas biopsias
+    public function biopsias()
+    {
+        return $this->hasMany(Biopsia::class, 'paciente_id');
+    }
 }

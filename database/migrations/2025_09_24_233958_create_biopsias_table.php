@@ -1,0 +1,39 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('biopsias', function (Blueprint $table) {
+            $table->string('nbiopsia', 15)->primary()->comment('Número de biopsia siendo llave primaria');
+            $table->string('diagnostico_clinico')->comment('Diagnóstico clínico');
+            $table->date('fecha_recibida')->comment('Fecha de recepción de la biopsia');
+
+            //RELACIONES 
+            $table->unsignedBigInteger('doctor_id')->nullable()->comment('ID del doctor');
+            $table->unsignedBigInteger('paciente_id')->nullable()->comment('ID del paciente');
+            $table->unsignedBigInteger('mascota_id')->nullable()->comment('ID de la mascota');
+            $table->timestamps();
+
+            //LLAVES FORANEAS
+            $table->foreign('doctor_id')->references('id')->on('doctores')->onUpdate('cascade')->onDelete('restrict');
+            $table->foreign('paciente_id')->references('id')->on('pacientes')->onUpdate('cascade')->onDelete('restrict');
+            $table->foreign('mascota_id')->references('id')->on('mascotas')->onUpdate('cascade')->onDelete('cascade');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('biopsias');
+    }
+};

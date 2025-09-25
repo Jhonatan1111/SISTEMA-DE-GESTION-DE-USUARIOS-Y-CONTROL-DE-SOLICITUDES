@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BiopsiaController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\MascotaController;
 use App\Http\Controllers\PacienteController;
@@ -33,6 +34,15 @@ Route::middleware('auth')->group(function () {
     Route::get('mascotas/{mascota}/edit', [MascotaController::class, 'edit'])->name('mascotas.edit');
     Route::put('mascotas/{mascota}', [MascotaController::class, 'update'])->name('mascotas.update');
     Route::delete('mascotas/{mascota}', [MascotaController::class, 'destroy'])->name('mascotas.destroy');
+
+    // Rutas de biopsias
+    Route::get('biopsias', [BiopsiaController::class, 'index'])->name('biopsias.index');
+    Route::get('biopsias/create', [BiopsiaController::class, 'create'])->name('biopsias.create');
+    Route::post('biopsias', [BiopsiaController::class, 'store'])->name('biopsias.store');
+    Route::get('biopsias/{nbiopsia}', [BiopsiaController::class, 'show'])->name('biopsias.show');
+    Route::get('biopsias/{nbiopsia}/edit', [BiopsiaController::class, 'edit'])->name('biopsias.edit');
+    Route::put('biopsias/{nbiopsia}', [BiopsiaController::class, 'update'])->name('biopsias.update');
+    Route::delete('biopsias/{nbiopsia}', [BiopsiaController::class, 'destroy'])->name('biopsias.destroy');
     // Rutas de doctores que requieren permisos de admin
     Route::middleware(['role:admin'])->group(function () {
         // DOCTORES
