@@ -1,0 +1,30 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Paciente extends Model
+{
+    protected $table = "pacientes";
+    protected $fillable = [
+        "nombre",
+        "apellido",
+        "dui",
+        "edad",
+        "sexo",
+        "fecha_nacimiento",
+        "estado_civil",
+        "ocupacion",
+        "correo",
+        "direccion",
+        "celular"
+    ];
+
+    protected $casts = [
+        "edad" => "integer",
+        "sexo" => "string",
+        "fecha_nacimiento" => "date",
+        "celular" => "integer",
+    ];
+}
