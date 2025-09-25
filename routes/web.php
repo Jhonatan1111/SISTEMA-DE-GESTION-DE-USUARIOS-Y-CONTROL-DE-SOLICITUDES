@@ -26,7 +26,6 @@ Route::middleware('auth')->group(function () {
     Route::post('pacientes', [PacienteController::class, 'store'])->name('pacientes.store');
     Route::get('pacientes/{paciente}/edit', [PacienteController::class, 'edit'])->name('pacientes.edit');
     Route::put('pacientes/{paciente}', [PacienteController::class, 'update'])->name('pacientes.update');
-
     // Rutas de mascotas
     Route::get('mascotas', [MascotaController::class, 'index'])->name('mascotas.index');
     Route::get('mascotas/create', [MascotaController::class, 'create'])->name('mascotas.create');
@@ -34,7 +33,6 @@ Route::middleware('auth')->group(function () {
     Route::get('mascotas/{mascota}/edit', [MascotaController::class, 'edit'])->name('mascotas.edit');
     Route::put('mascotas/{mascota}', [MascotaController::class, 'update'])->name('mascotas.update');
     Route::delete('mascotas/{mascota}', [MascotaController::class, 'destroy'])->name('mascotas.destroy');
-
     // Rutas de doctores que requieren permisos de admin
     Route::middleware(['role:admin'])->group(function () {
         // DOCTORES
@@ -47,7 +45,6 @@ Route::middleware('auth')->group(function () {
 
         //PACIENTES
         Route::delete('pacientes/{paciente}', [PacienteController::class, 'destroy'])->name('pacientes.destroy');
-
         //MASCOTAS
         Route::delete('mascotas/{mascota}', [MascotaController::class, 'destroy'])->name('mascotas.destroy');
     });
