@@ -3,154 +3,70 @@
 namespace App\Http\Controllers;
 
 use App\Models\Biopsia;
-use App\Models\Doctor;
-use App\Models\Paciente;
-use App\Models\Mascota;
 use Illuminate\Http\Request;
 
 class BiopsiaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // VISTA GENERAL DE TODAS LAS BIOPSIAS (PERSONAS Y MASCOTAS)
+    public function index(Request $request)
     {
-        // Obtener todas las biopsias
-        $biopsias = Biopsia::with(['doctor', 'paciente', 'mascota'])
-            ->orderBy('fecha_recibida', 'desc')
-            ->paginate(10);
+        $query = Biopsia::with(['paciente', 'mascota', 'doctor'])
+            ->activas()
+            ->orderBy('fecha_recibida', 'desc');
 
-        return view('biopsias.index', compact('biopsias'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $doctores = Doctor::where('estado_servicio', true)
-            ->orderBy('nombre')
-            ->get();
-
-        $pacientes = Paciente::orderBy('nombre')->get();
-        $mascotas = Mascota::orderBy('nombre')->get();
-
-        return view('biopsias.create', compact('doctores', 'pacientes', 'mascotas'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        // Validación de datos
-        $request->validate([
-            'nbiopsia' => 'required|string|max:15|unique:biopsias,nbiopsia',
-            'diagnostico_clinico' => 'required|string|max:500',
-            'fecha_recibida' => 'required|date',
-            'doctor_id' => 'nullable|exists:doctores,id',
-            'paciente_id' => 'nullable|exists:pacientes,id',
-            'mascota_id' => 'nullable|exists:mascotas,id',
-        ]);
-
-        // Validar que al menos uno de los tres (doctor, paciente, mascota) esté seleccionado
-        if (!$request->doctor_id && !$request->paciente_id && !$request->mascota_id) {
-            return back()->withErrors(['general' => 'Debe seleccionar al menos un doctor, paciente o mascota.'])
-                ->withInput();
+        // Filtro por tipo si se especifica
+        if ($request->has('tipo') && $request->tipo !== '') {
+            if ($request->tipo === 'personas') {
+                $query->personas();
+            } elseif ($request->tipo === 'mascotas') {
+                $query->mascotas();
+            }
         }
 
-        Biopsia::create([
-            'nbiopsia' => $request->nbiopsia,
-            'diagnostico_clinico' => $request->diagnostico_clinico,
-            'fecha_recibida' => $request->fecha_recibida,
-            'doctor_id' => $request->doctor_id,
-            'paciente_id' => $request->paciente_id,
-            'mascota_id' => $request->mascota_id,
-        ]);
+        // Filtro por búsqueda
+        if ($request->has('buscar') && $request->buscar !== '') {
+            $buscar = $request->buscar;
+            $query->where(function ($q) use ($buscar) {
+                $q->where('nbiopsia', 'like', "%{$buscar}%")
+                    ->orWhere('diagnostico_clinico', 'like', "%{$buscar}%")
+                    ->orWhereHas('paciente', function ($subq) use ($buscar) {
+                        $subq->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('apellido', 'like', "%{$buscar}%");
+                    })
+                    ->orWhereHas('mascota', function ($subq) use ($buscar) {
+                        $subq->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('propietario', 'like', "%{$buscar}%");
+                    })
+                    ->orWhereHas('doctor', function ($subq) use ($buscar) {
+                        $subq->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('apellido', 'like', "%{$buscar}%");
+                    });
+            });
+        }
 
-        return redirect()->route('biopsias.index')
-            ->with('success', 'Biopsia creada exitosamente.');
+        $biopsias = $query->paginate(15);
+
+        // Estadísticas simples
+        $totalBiopsias = Biopsia::activas()->count();
+        $biopsiaPersonas = Biopsia::activas()->personas()->count();
+        $biopsiaMascotas = Biopsia::activas()->mascotas()->count();
+
+        $estadisticas = [
+            'total' => $totalBiopsias,
+            'personas' => $biopsiaPersonas,
+            'mascotas' => $biopsiaMascotas
+        ];
+
+        return view('biopsias.index', compact('biopsias', 'estadisticas'));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $nbiopsia)
+    // VER DETALLES DE UNA BIOPSIA
+    public function show($nbiopsia)
     {
-        $biopsia = Biopsia::with(['doctor', 'paciente', 'mascota'])
+        $biopsia = Biopsia::with(['paciente', 'mascota', 'doctor', 'listaBiopsia'])
             ->where('nbiopsia', $nbiopsia)
             ->firstOrFail();
 
         return view('biopsias.show', compact('biopsia'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $nbiopsia)
-    {
-        $biopsia = Biopsia::where('nbiopsia', $nbiopsia)->firstOrFail();
-
-        $doctores = Doctor::where('estado_servicio', true)
-            ->orderBy('nombre')
-            ->get();
-
-        $pacientes = Paciente::orderBy('nombre')->get();
-        $mascotas = Mascota::orderBy('nombre')->get();
-
-        return view('biopsias.edit', compact('biopsia', 'doctores', 'pacientes', 'mascotas'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $nbiopsia)
-    {
-        $biopsia = Biopsia::where('nbiopsia', $nbiopsia)->firstOrFail();
-
-        // Validación de datos
-        $request->validate([
-            'nbiopsia' => 'required|string|max:15|unique:biopsias,nbiopsia,' . $biopsia->nbiopsia . ',nbiopsia',
-            'diagnostico_clinico' => 'required|string|max:500',
-            'fecha_recibida' => 'required|date',
-            'doctor_id' => 'nullable|exists:doctores,id',
-            'paciente_id' => 'nullable|exists:pacientes,id',
-            'mascota_id' => 'nullable|exists:mascotas,id',
-        ]);
-
-        // Validar que al menos uno de los tres (doctor, paciente, mascota) esté seleccionado
-        if (!$request->doctor_id && !$request->paciente_id && !$request->mascota_id) {
-            return back()->withErrors(['general' => 'Debe seleccionar al menos un doctor, paciente o mascota.'])
-                ->withInput();
-        }
-
-        $biopsia->update([
-            'nbiopsia' => $request->nbiopsia,
-            'diagnostico_clinico' => $request->diagnostico_clinico,
-            'fecha_recibida' => $request->fecha_recibida,
-            'doctor_id' => $request->doctor_id,
-            'paciente_id' => $request->paciente_id,
-            'mascota_id' => $request->mascota_id,
-        ]);
-
-        return redirect()->route('biopsias.index')
-            ->with('success', 'Biopsia actualizada exitosamente.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $nbiopsia)
-    {
-        $biopsia = Biopsia::where('nbiopsia', $nbiopsia)->firstOrFail();
-
-        try {
-            $biopsia->delete();
-            return redirect()->route('biopsias.index')
-                ->with('success', 'Biopsia eliminada exitosamente.');
-        } catch (\Exception $e) {
-            return redirect()->route('biopsias.index')
-                ->with('error', 'No se puede eliminar la biopsia porque tiene registros asociados.');
-        }
     }
 }

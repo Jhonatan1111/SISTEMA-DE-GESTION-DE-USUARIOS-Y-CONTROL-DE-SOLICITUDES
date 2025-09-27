@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Biopsia extends Model
 {
+    use HasFactory;
     protected $table = 'biopsias';
+    
+    // Configurar nbiopsia como clave primaria
     protected $primaryKey = 'nbiopsia';
     public $incrementing = false;
     protected $keyType = 'string';
@@ -16,13 +20,14 @@ class Biopsia extends Model
         'nbiopsia',
         'diagnostico_clinico',
         'fecha_recibida',
+        'estado',
         'paciente_id',
         'mascota_id',
-        'doctor_id',
-        'list_result_biopsia_id'
+        'doctor_id'
     ];
 
     protected $casts = [
+        'estado' => 'boolean',
         'fecha_recibida' => 'date'
     ];
 
@@ -42,52 +47,8 @@ class Biopsia extends Model
         return $this->belongsTo(Doctor::class, 'doctor_id');
     }
 
-    // Nota: list_result_biopsia_id se manejará después cuando se cree esa funcionalidad
-
-    // Atributos calculados
-    public function getNombrePacienteAttribute()
-    {
-        // Determinar automáticamente si es humano o mascota
-        if ($this->paciente_id && $this->paciente) {
-            return $this->paciente->nombre . ' ' . $this->paciente->apellido;
-        } elseif ($this->mascota_id && $this->mascota) {
-            return $this->mascota->nombre . ' (Mascota - ' . $this->mascota->especie . ')';
-        }
-        return 'Sin asignar';
-    }
-
-    public function getTipoPacienteAttribute()
-    {
-        if ($this->paciente_id) {
-            return 'humano';
-        } elseif ($this->mascota_id) {
-            return 'mascota';
-        }
-        return null;
-    }
-
-    public function getEsHumanoAttribute()
-    {
-        return !is_null($this->paciente_id);
-    }
-
-    public function getEsMascotaAttribute()
-    {
-        return !is_null($this->mascota_id);
-    }
-
-    public function getNombreDoctorAttribute()
-    {
-        return $this->doctor ? $this->doctor->nombre . ' ' . $this->doctor->apellido : 'Sin asignar';
-    }
-
-    public function getEstadoAttribute()
-    {
-        // Por ahora solo indicar si está completa o pendiente
-        return $this->list_result_biopsia_id ? 'Completada' : 'Pendiente';
-    }
-
     // Métodos estáticos
+
     public static function generarNumeroBiopsia()
     {
         $año = date('Y');
@@ -100,46 +61,55 @@ class Biopsia extends Model
 
         if ($ultimo) {
             $ultimoNumero = (int)substr($ultimo->nbiopsia, -4);
-            $nuevoNumero = $ultimoNumero++;
+            $nuevoNumero = $ultimoNumero + 1;
         } else {
             $nuevoNumero = 1;
         }
 
         return sprintf("B%s%s%04d", $año, $mes, $nuevoNumero);
     }
+    public function scopeActivas($query)
+    {
+        return $query->where('estado', true);
+    }
 
-    // Scopes
-    public function scopeHumanos($query)
+    public function scopeArchivadas($query)
+    {
+        return $query->where('estado', false);
+    }
+
+    public function scopePersonas($query)
     {
         return $query->whereNotNull('paciente_id');
     }
 
+    // Scope para biopsias de mascotas
     public function scopeMascotas($query)
     {
         return $query->whereNotNull('mascota_id');
     }
 
-    public function scopePendientes($query)
+    // Método para archivar biopsia
+    public function archivar()
     {
-        return $query->whereNull('list_result_biopsia_id');
+        return $this->update(['estado' => false]);
     }
 
-    public function scopeCompletadas($query)
+    // Método para restaurar biopsia
+    public function restaurar()
     {
-        return $query->whereNotNull('list_result_biopsia_id');
+        return $this->update(['estado' => true]);
     }
 
-    public function scopeDelMes($query, $mes = null, $año = null)
+    // Verificar si está archivada
+    public function estaArchivada()
     {
-        $mes = $mes ?? now()->month;
-        $año = $año ?? now()->year;
-
-        return $query->whereMonth('fecha_recibida', $mes)
-            ->whereYear('fecha_recibida', $año);
+        return !$this->estado;
     }
 
-    public function scopeDelDoctor($query, $doctorId)
+    // Verificar si está activa
+    public function estaActiva()
     {
-        return $query->where('doctor_id', $doctorId);
+        return $this->estado;
     }
 }

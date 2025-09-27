@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\BiopsiaController;
+use App\Http\Controllers\BiopsiaPacienteController;
+use App\Http\Controllers\BiopsiaArchivarController;
+use App\Http\Controllers\BiopsiaMascotaController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\MascotaController;
 use App\Http\Controllers\PacienteController;
@@ -43,6 +46,26 @@ Route::middleware('auth')->group(function () {
     Route::get('biopsias/{nbiopsia}/edit', [BiopsiaController::class, 'edit'])->name('biopsias.edit');
     Route::put('biopsias/{nbiopsia}', [BiopsiaController::class, 'update'])->name('biopsias.update');
     Route::delete('biopsias/{nbiopsia}', [BiopsiaController::class, 'destroy'])->name('biopsias.destroy');
+
+    // Rutas para biopsias de personas
+    Route::get('biopsias/personas', [BiopsiaPacienteController::class, 'index'])->name('biopsias.personas.index');
+    Route::get('biopsias/personas/create', [BiopsiaPacienteController::class, 'create'])->name('biopsias.personas.create');
+    Route::post('biopsias/personas', [BiopsiaPacienteController::class, 'store'])->name('biopsias.personas.store');
+    Route::get('biopsias/personas/{nbiopsia}/edit', [BiopsiaPacienteController::class, 'edit'])->name('biopsias.personas.edit');
+    Route::put('biopsias/personas/{nbiopsia}', [BiopsiaPacienteController::class, 'update'])->name('biopsias.personas.update');
+
+    // Rutas para biopsias de mascotas
+    Route::get('biopsias/mascotas', [BiopsiaMascotaController::class, 'index'])->name('biopsias.mascotas.index');
+    Route::get('biopsias/mascotas/create', [BiopsiaMascotaController::class, 'create'])->name('biopsias.mascotas.create');
+    Route::post('biopsias/mascotas', [BiopsiaMascotaController::class, 'store'])->name('biopsias.mascotas.store');
+    Route::get('biopsias/mascotas/{nbiopsia}/edit', [BiopsiaMascotaController::class, 'edit'])->name('biopsias.mascotas.edit');
+    Route::put('biopsias/mascotas/{nbiopsia}', [BiopsiaMascotaController::class, 'update'])->name('biopsias.mascotas.update');
+
+    // Rutas para biopsias archivadas
+    Route::get('biopsias/archivadas', [BiopsiaArchivarController::class, 'index'])->name('biopsias.archivadas.index');
+    Route::post('biopsias/{nbiopsia}/archivar', [BiopsiaArchivarController::class, 'archivar'])->name('biopsias.archivar');
+    Route::post('biopsias/{nbiopsia}/restaurar', [BiopsiaArchivarController::class, 'restaurar'])->name('biopsias.restaurar');
+    Route::post('biopsias/archivar-antiguas', [BiopsiaArchivarController::class, 'archivarAntiguas'])->name('biopsias.archivar-antiguas');
     // Rutas de doctores que requieren permisos de admin
     Route::middleware(['role:admin'])->group(function () {
         // DOCTORES
