@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -13,11 +14,12 @@ return new class extends Migration
     {
         Schema::create('biopsias', function (Blueprint $table) {
             $table->string('nbiopsia', 15)->primary()->comment('Número de biopsia siendo llave primaria');
-            $table->string('diagnostico_clinico')->comment('Diagnóstico clínico');
+            $table->text('diagnostico_clinico')->comment('Diagnóstico clínico');
             $table->date('fecha_recibida')->comment('Fecha de recepción de la biopsia');
+            $table->boolean('estado')->default(true)->comment(' Estado de la biopsia');
 
             //RELACIONES 
-            $table->unsignedBigInteger('doctor_id')->nullable()->comment('ID del doctor');
+            $table->unsignedBigInteger('doctor_id')->comment('ID del doctor');
             $table->unsignedBigInteger('paciente_id')->nullable()->comment('ID del paciente');
             $table->unsignedBigInteger('mascota_id')->nullable()->comment('ID de la mascota');
             $table->timestamps();
@@ -25,8 +27,9 @@ return new class extends Migration
             //LLAVES FORANEAS
             $table->foreign('doctor_id')->references('id')->on('doctores')->onUpdate('cascade')->onDelete('restrict');
             $table->foreign('paciente_id')->references('id')->on('pacientes')->onUpdate('cascade')->onDelete('restrict');
-            $table->foreign('mascota_id')->references('id')->on('mascotas')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('mascota_id')->references('id')->on('mascotas')->onUpdate('cascade')->onDelete('restrict');
         });
+
     }
 
     /**
