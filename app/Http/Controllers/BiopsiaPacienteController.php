@@ -29,16 +29,15 @@ class BiopsiaPacienteController extends Controller
             ->get();
         $doctores = Doctor::where('estado_servicio', true)
             ->get();
-        $numeroGenerado = Biopsia::generarNumeroBiopsia();
-        return view('biopsias.personas.create', compact('doctores', 'pacientes', 'numeroGenerado'));
+
+        return view('biopsias.personas.create', compact('doctores', 'pacientes'));
     }
 
     // Guardar nueva biopsia de paciente humano
     public function store(Request $request)
     {
         $request->validate([
-
-            // 'nbiopsia' => 'required|string|max:15|unique:biopsias,nbiopsia',
+            'nbiopsia' => 'required|string|max:15|unique:biopsias,nbiopsia',
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'doctor_id' => 'required|exists:doctores,id',
@@ -49,12 +48,9 @@ class BiopsiaPacienteController extends Controller
             'doctor_id.required' => 'Debe seleccionar un doctor',
             'paciente_id.required' => 'Debe seleccionar un paciente'
         ]);
-        $numeroGenerado = Biopsia::generarNumeroBiopsia();
-
 
         Biopsia::create([
-            'nbiopsia' => $numeroGenerado,
-            // 'nbiopsia' => $request->nbiopsia,
+            'nbiopsia' => $request->nbiopsia,
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
             'doctor_id' => $request->doctor_id,
@@ -62,7 +58,7 @@ class BiopsiaPacienteController extends Controller
             'estado' => true,
             'mascota_id' => null, // Siempre null para humanos
         ]);
-        return redirect()->route('biopsias.index')->with('success', 'Biopsia creada exitosamente');
+        return redirect()->route('biopsias.personas.index')->with('success', 'Biopsia creada exitosamente');
     }
 
     // Ver detalles de biopsia de paciente
@@ -70,8 +66,7 @@ class BiopsiaPacienteController extends Controller
     {
         $biopsia = Biopsia::with(['paciente', 'doctor'])
             ->personas()
-            ->where('nbiopsia', $nbiopsia)
-            ->firstOrFail();
+            ->findOrFail($nbiopsia);
 
         return view('biopsias.personas.show', compact('biopsia'));
     }
@@ -79,14 +74,14 @@ class BiopsiaPacienteController extends Controller
     // Mostrar formulario para editar biopsia de paciente
     public function edit($nbiopsia)
     {
-        // CORREGIR: Buscar por nbiopsia correctamente
         $biopsia = Biopsia::with(['paciente', 'doctor'])
-            ->where('nbiopsia', $nbiopsia)  // Buscar por el campo nbiopsia
-            ->firstOrFail();
+            ->findOrFail($nbiopsia)
+            ->get();
 
-        $pacientes = Paciente::orderBy('nombre')->get();
+        $pacientes = Paciente::orderBy('nombre')
+            ->get();
         $doctores = Doctor::where('estado_servicio', true)
-            ->orderBy('nombre')
+            ->ordenBy('nombre')
             ->get();
 
         return view('biopsias.personas.edit', compact('biopsia', 'doctores', 'pacientes'));
@@ -95,10 +90,10 @@ class BiopsiaPacienteController extends Controller
     public function update(Request $request, $nbiopsia)
     {
 
-        $biopsia = Biopsia::where('nbiopsia', $nbiopsia)->firstOrFail();
+        $biopsia = Biopsia::findOrFail($nbiopsia);
 
         $request->validate([
-            // 'nbiopsia' => 'required|string|max:15|unique:biopsias,nbiopsia,' . $biopsia->nbiopsia . ',nbiopsia',
+            'nbiopsia' => 'required|string|max:15|unique:biopsias,nbiopsia,' . $biopsia->nbiopsia . ',nbiopsia',
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'paciente_id' => 'required|exists:pacientes,id',
@@ -124,7 +119,20 @@ class BiopsiaPacienteController extends Controller
     }
 
     // Eliminar biopsia
+    public function destroy($nbiopsia)
+    {
+        $biopsia = Biopsia::findOrFail($nbiopsia);
 
+        try {
+            $numeroBiopsia = $biopsia->nbiopsia;
+            $biopsia->delete();
+
+            return redirect()->route('biopsias.personas.index')
+                ->with('success', 'Biopsia eliminada exitosamente: ' . $numeroBiopsia);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al eliminar: ' . $e->getMessage());
+        }
+    }
 
     // Ver historial de biopsias de un paciente específico
     public function historialPaciente($pacienteId)

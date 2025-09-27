@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-<<<<<<< HEAD
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,45 +10,14 @@ class Biopsia extends Model
 {
     use HasFactory;
     protected $table = 'biopsias';
+    protected $primaryKey = 'nbiopsia';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
-
-=======
-use Illuminate\Database\Eloquent\Model;
-
-class Biopsia extends Model
-{
-    //
-    protected $table = 'biopsias';
->>>>>>> de1c (se creo migracion de biopsia, controlador y vistas, siendo asi funciona la logica de crear y vista de login pero se seguira trabajando mas en la logica)
     protected $fillable = [
         'nbiopsia',
         'diagnostico_clinico',
         'fecha_recibida',
-<<<<<<< HEAD
-        'estado',
-        'paciente_id',
-        'mascota_id',
-        'doctor_id'
-    ];
-
-    protected $casts = [
-        'estado' => 'boolean',
-        'fecha_recibida' => 'date'
-    ];
-
-    // Relaciones
-    public function paciente(): BelongsTo
-    {
-        return $this->belongsTo(Paciente::class, 'paciente_id');
-    }
-
-    public function mascota(): BelongsTo
-    {
-        return $this->belongsTo(Mascota::class, 'mascota_id');
-    }
-
-    public function doctor(): BelongsTo
-=======
         'doctor_id',
         'paciente_id',
         'mascota_id',
@@ -63,12 +31,10 @@ class Biopsia extends Model
     ];
 
     public function doctor()
->>>>>>> de1c (se creo migracion de biopsia, controlador y vistas, siendo asi funciona la logica de crear y vista de login pero se seguira trabajando mas en la logica)
     {
         return $this->belongsTo(Doctor::class, 'doctor_id');
     }
 
-<<<<<<< HEAD
     // Métodos estáticos
 
     public static function generarNumeroBiopsia()
@@ -123,35 +89,17 @@ class Biopsia extends Model
         return $this->update(['estado' => true]);
     }
 
-    // Verificar si está archivada
-    public function estaArchivada()
+    public function scopeDelMes($query, $mes = null, $año = null)
     {
-        return !$this->estado;
+        $mes = $mes ?? now()->month;
+        $año = $año ?? now()->year;
+
+        return $query->whereMonth('fecha_recibida', $mes)
+            ->whereYear('fecha_recibida', $año);
     }
 
-    // Verificar si está activa
-    public function estaActiva()
+    public function scopeDelDoctor($query, $doctorId)
     {
-        return $this->estado;
-=======
-    public function paciente()
-    {
-        return $this->belongsTo(Paciente::class, 'paciente_id');
-    }
-
-    public function mascota()
-    {
-        return $this->belongsTo(Mascota::class, 'mascota_id');
-    }
-    public function obtenerTipoPacienteAttribute()
-    {
-        if ($this->paciente_id) {
-            return 'Humano';
-        }
-        if ($this->mascota_id) {
-            return 'Mascota';
-        }
-        return 'Indefinido';
->>>>>>> de1c (se creo migracion de biopsia, controlador y vistas, siendo asi funciona la logica de crear y vista de login pero se seguira trabajando mas en la logica)
+        return $query->where('doctor_id', $doctorId);
     }
 }
