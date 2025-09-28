@@ -58,7 +58,7 @@ class BiopsiaPacienteController extends Controller
             'estado' => true,
             'mascota_id' => null, // Siempre null para humanos
         ]);
-        return redirect()->route('biopsias.personas.index')->with('success', 'Biopsia creada exitosamente');
+        return redirect()->route('biopsias.index')->with('success', 'Biopsia creada exitosamente');
     }
 
     // Ver detalles de biopsia de paciente
