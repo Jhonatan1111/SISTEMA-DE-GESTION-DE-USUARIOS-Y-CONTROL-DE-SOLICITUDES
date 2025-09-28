@@ -52,24 +52,28 @@
                                             </h6>
                                         </div>
                                         <div class="card-body">
+                                            <!-- NÚMERO AUTOMÁTICO - SOLO LECTURA -->
                                             <div class="mb-3">
-                                                <label for="nbiopsia" class="form-label">
-                                                    <i class="fas fa-hashtag text-primary me-1"></i>
-                                                    Número de Biopsia <span class="text-danger">*</span>
+                                                <label for="numero_generado" class="form-label">
+                                                    <i class="fas fa-hashtag text-success me-1"></i>
+                                                    Número de Biopsia (Auto-generado)
                                                 </label>
-                                                <input type="text"
-                                                    class="form-control @error('nbiopsia') is-invalid @enderror"
-                                                    id="nbiopsia"
-                                                    name="nbiopsia"
-                                                    value="{{ old('nbiopsia') }}"
-                                                    placeholder="Ej: BIO-2024-001"
-                                                    required>
-                                                @error('nbiopsia')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-success text-white">
+                                                        <i class="fas fa-robot"></i>
+                                                    </span>
+                                                    <input type="text"
+                                                        class="form-control bg-light"
+                                                        id="numero_generado"
+                                                        value="{{ $numeroGenerado }}"
+                                                        readonly>
+                                                    <span class="input-group-text">
+                                                        <i class="fas fa-lock text-muted"></i>
+                                                    </span>
+                                                </div>
                                                 <div class="form-text">
                                                     <i class="fas fa-info-circle me-1"></i>
-                                                    Formato sugerido: BIO-YYYY-XXX
+                                                    Este número se genera automáticamente y no se puede modificar
                                                 </div>
                                             </div>
 
@@ -141,9 +145,7 @@
                                                     <option value="{{ $doctor->id }}"
                                                         {{ old('doctor_id') == $doctor->id ? 'selected' : '' }}>
                                                         Dr. {{ $doctor->nombre }} {{ $doctor->apellido }}
-                                                        @if($doctor->especialidad)
-                                                        - {{ $doctor->especialidad }}
-                                                        @endif
+                                                        - JVPM: {{ $doctor->jvpm }}
                                                     </option>
                                                     @endforeach
                                                 </select>
@@ -192,10 +194,10 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="text-muted">
                                             <i class="fas fa-info-circle me-1"></i>
-                                            Los campos marcados con <span class="text-danger">*</span> son obligatorios
+                                            El número de biopsia <strong>{{ $numeroGenerado }}</strong> se asignará automáticamente
                                         </div>
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('biopsias.personas.index') }}"
+                                            <a href="{{ route('biopsias.index') }}"
                                                 class="btn btn-outline-secondary">
                                                 <i class="fas fa-times me-1"></i> Cancelar
                                             </a>
@@ -239,12 +241,12 @@
             box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
         }
 
-        .btn-group .btn {
-            margin-left: 0.25rem;
-        }
-
-        .btn-group .btn:first-child {
-            margin-left: 0;
+        /* Estilo especial para campo readonly */
+        .form-control[readonly] {
+            background-color: #f8f9fc !important;
+            border: 2px solid #1cc88a;
+            font-weight: bold;
+            color: #1cc88a;
         }
     </style>
 

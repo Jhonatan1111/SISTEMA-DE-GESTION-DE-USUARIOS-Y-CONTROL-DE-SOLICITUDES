@@ -63,9 +63,11 @@ class BiopsiaController extends Controller
     // VER DETALLES DE UNA BIOPSIA
     public function show($nbiopsia)
     {
-        $biopsia = Biopsia::with(['paciente', 'mascota', 'doctor', 'listaBiopsia'])
+        $biopsia = Biopsia::with(['paciente', 'mascota', 'doctor'])
             ->where('nbiopsia', $nbiopsia)
-            ->firstOrFail();
+            ->firstOrFail('nbiopsia');
+
+
 
         return view('biopsias.show', compact('biopsia'));
     }

@@ -1,5 +1,4 @@
 <x-app-layout>
-
     <div class="container mx-auto px-4 py-6">
         <!-- Navegación separada -->
         <div class="mb-6">
@@ -153,6 +152,7 @@
                             </th>
                         </tr>
                     </thead>
+                    <!-- Fragmento corregido para biopsias.index -->
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($biopsias as $biopsia)
                         <tr class="hover:bg-gray-50">
@@ -168,17 +168,18 @@
                                     Persona
                                 </span>
                                 @else
-                                <!-- <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                                Mascota
-                            </span> -->
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                    Mascota
+                                </span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 @if($biopsia->paciente_id)
                                 {{ $biopsia->paciente->nombre }} {{ $biopsia->paciente->apellido }}
+                                <div class="text-gray-500 text-xs">DUI: {{ $biopsia->paciente->dui ?? 'N/A' }}</div>
                                 @else
-                                <!-- {{ $biopsia->mascota->nombre }}
-                            <div class="text-gray-500 text-xs">{{ $biopsia->mascota->propietario }}</div> -->
+                                {{ $biopsia->mascota->nombre }}
+                                <div class="text-gray-500 text-xs">{{ $biopsia->mascota->propietario ?? 'N/A' }}</div>
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -202,20 +203,28 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
+                                    <!-- ENLACES CORREGIDOS - Usar nbiopsia en lugar del objeto completo -->
                                     @if($biopsia->paciente_id)
-                                    <a href="{{ route('biopsias.personas.edit', $biopsia) }}"
+                                    <a href="{{ route('biopsias.personas.edit', $biopsia->nbiopsia) }}"
                                         class="text-indigo-600 hover:text-indigo-900">
                                         Editar
                                     </a>
                                     @else
-                                    <a href="{{ route('biopsias.mascotas.edit', $biopsia) }}"
+                                    <a href="{{ route('biopsias.mascotas.edit', $biopsia->nbiopsia) }}"
                                         class="text-indigo-600 hover:text-indigo-900">
                                         Editar
                                     </a>
                                     @endif
 
-                                    @if($biopsia->estado)
-                                    <form action="{{ route('biopsias.archivar', $biopsia) }}" method="POST" class="inline">
+                                    <!-- Ver detalles -->
+                                    <a href="{{ route('biopsias.show', $biopsia->nbiopsia) }}"
+                                        class="text-blue-600 hover:text-blue-900">
+                                        Ver
+                                    </a>
+
+                                    <!-- Archivar/Restaurar -->
+                                    <!-- @if($biopsia->estado)
+                                    <form action="{{ route('biopsias.archivar', $biopsia->nbiopsia) }}" method="POST" class="inline">
                                         @csrf
                                         <button type="submit" class="text-yellow-600 hover:text-yellow-900"
                                             onclick="return confirm('¿Está seguro de archivar esta biopsia?')">
@@ -223,13 +232,15 @@
                                         </button>
                                     </form>
                                     @else
-                                    <form action="{{ route('biopsias.restaurar', $biopsia) }}" method="POST" class="inline">
+                                    <form action="{{ route('biopsias.restaurar', $biopsia->nbiopsia) }}" method="POST" class="inline">
                                         @csrf
                                         <button type="submit" class="text-green-600 hover:text-green-900">
                                             Restaurar
                                         </button>
                                     </form>
-                                    @endif
+                                    @endif -->
+
+
                                 </div>
                             </td>
                         </tr>

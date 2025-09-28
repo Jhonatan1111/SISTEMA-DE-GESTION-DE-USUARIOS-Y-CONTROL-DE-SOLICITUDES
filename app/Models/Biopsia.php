@@ -10,11 +10,7 @@ class Biopsia extends Model
 {
     use HasFactory;
     protected $table = 'biopsias';
-    
-    // Configurar nbiopsia como clave primaria
-    protected $primaryKey = 'nbiopsia';
-    public $incrementing = false;
-    protected $keyType = 'string';
+
 
     protected $fillable = [
         'nbiopsia',

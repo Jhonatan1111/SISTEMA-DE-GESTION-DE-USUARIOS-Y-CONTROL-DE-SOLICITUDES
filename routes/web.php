@@ -53,9 +53,9 @@ Route::middleware('auth')->group(function () {
     Route::post('biopsias/personas', [BiopsiaPacienteController::class, 'store'])->name('biopsias.personas.store');
 
     // BIOPSIAS MASCOTAS
-    Route::get('biopsias/mascotas', [BiopsiaMascotaController::class, 'index'])->name('biopsias.mascotas.index');
-    Route::get('biopsias/mascotas/create', [BiopsiaMascotaController::class, 'create'])->name('biopsias.mascotas.create');
-    Route::post('biopsias/mascotas', [BiopsiaMascotaController::class, 'store'])->name('biopsias.mascotas.store');
+    Route::get('biopsias/personas', [BiopsiaPacienteController::class, 'index'])->name('biopsias.personas.index');
+    Route::get('biopsias/personas/create', [BiopsiaPacienteController::class, 'create'])->name('biopsias.personas.create');
+    Route::post('biopsias/personas', [BiopsiaPacienteController::class, 'store'])->name('biopsias.personas.store');
 
     // Rutas para biopsias archivadas
     Route::get('biopsias/archivadas', [BiopsiaArchivarController::class, 'index'])->name('biopsias.archivadas.index');
@@ -82,7 +82,6 @@ Route::middleware('auth')->group(function () {
         Route::get('biopsias/{nbiopsia}/edit', [BiopsiaController::class, 'edit'])->name('biopsias.edit');
         Route::put('biopsias/{nbiopsia}', [BiopsiaController::class, 'update'])->name('biopsias.update');
         Route::delete('biopsias/{nbiopsia}', [BiopsiaController::class, 'destroy'])->name('biopsias.destroy');
-
         // BIOPSIAS PERSONAS 
         Route::get('biopsias/personas/{nbiopsia}/edit', [BiopsiaPacienteController::class, 'edit'])->name('biopsias.personas.edit');
         Route::put('biopsias/personas/{nbiopsia}', [BiopsiaPacienteController::class, 'update'])->name('biopsias.personas.update');
