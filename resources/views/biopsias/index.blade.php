@@ -15,7 +15,6 @@
                     class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
                     Personas
                 </a>
-
             </nav>
         </div>
 
@@ -180,6 +179,7 @@
                                 @else
                                 {{ $biopsia->mascota->nombre }}
                                 <div class="text-gray-500 text-xs">{{ $biopsia->mascota->propietario ?? 'N/A' }}</div>
+                                
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -225,6 +225,7 @@
                                     <!-- Archivar/Restaurar -->
                                     <!-- @if($biopsia->estado)
                                     <form action="{{ route('biopsias.archivar', $biopsia->nbiopsia) }}" method="POST" class="inline">
+                                    
                                         @csrf
                                         <button type="submit" class="text-yellow-600 hover:text-yellow-900"
                                             onclick="return confirm('¿Está seguro de archivar esta biopsia?')">
@@ -239,8 +240,6 @@
                                         </button>
                                     </form>
                                     @endif -->
-
-
                                 </div>
                             </td>
                         </tr>

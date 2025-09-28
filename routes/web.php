@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
     // RUTA PARA ACCESO DE ADMINISTRADORES
     Route::middleware(['role:admin'])->group(function () {
 
+
         // DOCTORES
         Route::get('doctores/create', [DoctorController::class, 'create'])->name('doctores.create');
         Route::post('doctores', [DoctorController::class, 'store'])->name('doctores.store');
@@ -88,7 +89,6 @@ Route::middleware('auth')->group(function () {
         // BIOPSIAS PERSONAS 
         Route::get('biopsias/personas/{nbiopsia}/edit', [BiopsiaPacienteController::class, 'edit'])->name('biopsias.personas.edit');
         Route::put('biopsias/personas/{nbiopsia}', [BiopsiaPacienteController::class, 'update'])->name('biopsias.personas.update');
-
         // LISTAS DE BIOPSIAS
         Route::get('listas/biopsias/{listaBiopsia}/edit', [ListaBiopsiaController::class, 'edit'])->name('listas.biopsias.edit');
         Route::put('listas/biopsias/{listaBiopsia}', [ListaBiopsiaController::class, 'update'])->name('listas.biopsias.update');
