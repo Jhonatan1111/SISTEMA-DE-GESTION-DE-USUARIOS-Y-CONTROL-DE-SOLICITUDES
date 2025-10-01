@@ -11,7 +11,8 @@ class BiopsiaController extends Controller
     public function index(Request $request)
     {
         $query = Biopsia::with(['paciente', 'mascota', 'doctor'])
-            ->activas()
+            // ->activas()
+            // ->archivadas()
             ->orderBy('fecha_recibida', 'desc');
 
         // Filtro por tipo si se especifica
@@ -38,23 +39,26 @@ class BiopsiaController extends Controller
                             ->orWhere('propietario', 'like', "%{$buscar}%");
                     })
                     ->orWhereHas('doctor', function ($subq) use ($buscar) {
-                        $subq->where('nombre', 'like', "%{$buscar}%")
-                            ->orWhere('apellido', 'like', "%{$buscar}%");
+                        $subq->where('nombre, apellido', 'like', "%{$buscar}%")
+                            ->orWhere('jvpm', 'like', "%{$buscar}%");
                     });
             });
         }
 
-        $biopsias = $query->paginate(15);
+        $biopsias = $query->paginate(10);
 
         // Estadísticas simples
         $totalBiopsias = Biopsia::activas()->count();
         $biopsiaPersonas = Biopsia::activas()->personas()->count();
         $biopsiaMascotas = Biopsia::activas()->mascotas()->count();
+        $archivadasPersonas = Biopsia::archivadas()->personas()->count();
+        $archivadasMascotas = Biopsia::archivadas()->mascotas()->count();
 
         $estadisticas = [
             'total' => $totalBiopsias,
             'personas' => $biopsiaPersonas,
-            'mascotas' => $biopsiaMascotas
+            'mascotas' => $biopsiaMascotas,
+            'archivadas' => $archivadasPersonas + $archivadasMascotas
         ];
 
         return view('biopsias.index', compact('biopsias', 'estadisticas'));

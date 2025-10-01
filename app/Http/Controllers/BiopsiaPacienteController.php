@@ -13,8 +13,8 @@ class BiopsiaPacienteController extends Controller
     public function index()
     {
         $biopsias = Biopsia::with(['paciente', 'doctor'])
-            ->personas()
             ->activas()
+            ->personas()
             ->orderBy('fecha_recibida',  'desc')
             ->paginate(10);
 
@@ -353,7 +353,7 @@ class BiopsiaPacienteController extends Controller
         $biopsia->update(['estado' => !$biopsia->estado]);
 
         $estado = $biopsia->estado ? 'activada' : 'desactivada';
-        return redirect()->route('biopsia.personas.index')
+        return redirect()->route('biopsias.personas.index')
             ->with('success', "Biopsia {$estado} exitosamente.");
     }
 }

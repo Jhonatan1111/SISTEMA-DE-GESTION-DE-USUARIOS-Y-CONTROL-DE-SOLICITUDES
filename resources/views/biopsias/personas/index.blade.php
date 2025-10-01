@@ -3,654 +3,340 @@
         <!-- Navegación separada -->
         <div class="mb-6">
             <nav class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
-                <a href="{{ route('mascotas.index') }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
-                    Mascotas
-                </a>
                 <a href="{{ route('biopsias.index') }}"
                     class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
                     Biopsias
                 </a>
                 <a href="{{ route('biopsias.personas.index') }}"
                     class="px-4 py-2 text-sm font-medium bg-white text-gray-900 rounded-md shadow-sm">
-                    Biopsias Personas
+                    Personas
                 </a>
+                <a href="{{ route('mascotas.index') }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
+                    Mascotas
+                </a>
+
             </nav>
         </div>
 
-        <!-- Header Section -->
+        <!-- Header -->
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">
-                    Biopsias - Personas
-                </h1>
-                <p class="text-gray-600 mt-1">Gestión de biopsias para pacientes humanos</p>
+                <h1 class="text-3xl font-bold text-gray-900">Biopsias - Personas</h1>
+                <p class="text-gray-600 mt-1">Gestión completa de biopsias para pacientes humanos</p>
             </div>
             <div class="flex space-x-3">
-                <a href="{{ route('biopsias.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                    Ver Todas
-                </a>
-                <a href="{{ route('biopsias.personas.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                <a href="{{ route('biopsias.personas.create') }}"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
                     Nueva Biopsia
                 </a>
+                <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Exportar Datos
+                </button>
             </div>
         </div>
 
-        <!-- Statistics Cards -->
-        <div class="row mb-4">
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                    Total Biopsias Personas
-                                </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $biopsias->total() }}</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-users fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
+        <!-- Estadísticas -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+                <div class="flex items-center">
+                    <div class="flex-1">
+                        <h3 class="text-sm font-medium text-gray-500 uppercase">Total Biopsias Personas</h3>
+                        <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Biopsia::personas()->count() }}</p>
+                    </div>
+                    <div class="text-blue-500">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                        </svg>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                    Biopsias Activas
-                                </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    {{ $biopsias->where('estado', 1)->count() }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-check-circle fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
+            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
+                <div class="flex items-center">
+                    <div class="flex-1">
+                        <h3 class="text-sm font-medium text-gray-500 uppercase">Biopsias Activas</h3>
+                        <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Biopsia::personas()->activas()->count() }}</p>
+                    </div>
+                    <div class="text-green-500">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-warning shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                    Biopsias Inactivas
-                                </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    {{ $biopsias->where('estado', 0)->count() }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-pause-circle fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
+            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500">
+                <div class="flex items-center">
+                    <div class="flex-1">
+                        <h3 class="text-sm font-medium text-gray-500 uppercase">Biopsias Inactivas</h3>
+                        <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Biopsia::personas()->where('estado', 0)->count() }}</p>
+                    </div>
+                    <div class="text-yellow-500">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-info shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                    Este Mes
-                                </div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                    {{ $biopsias->where('fecha_recibida', '>=', now()->startOfMonth())->count() }}
-                                </div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
+            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500">
+                <div class="flex items-center">
+                    <div class="flex-1">
+                        <h3 class="text-sm font-medium text-gray-500 uppercase">Este Mes</h3>
+                        <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Biopsia::personas()->whereMonth('fecha_recibida', now()->month)->count() }}</p>
+                    </div>
+                    <div class="text-purple-500">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                        </svg>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Content Card -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">
-                    <i class="fas fa-table me-2"></i>Lista de Biopsias de Personas
-                </h6>
-                <div class="dropdown no-arrow">
-                    <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                        aria-labelledby="dropdownMenuLink">
-                        <div class="dropdown-header">Opciones:</div>
-                        <a class="dropdown-item" href="{{ route('biopsias.personas.create') }}">
-                            <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
-                            Nueva Biopsia
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">
-                            <i class="fas fa-download fa-sm fa-fw mr-2 text-gray-400"></i>
-                            Exportar
-                        </a>
+        <!-- Filtros y búsqueda -->
+        <div class="bg-white p-4 rounded-lg shadow-md mb-6">
+            <div class="flex flex-wrap gap-4 items-center">
+                <div class="flex-1 min-w-64">
+                    <div class="relative">
+                        <input type="text" placeholder="Buscar por paciente, doctor o diagnóstico..."
+                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
+                <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="">Todos los estados</option>
+                    <option value="1">Activas</option>
+                    <option value="0">Inactivas</option>
+                </select>
+                <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="">Todos los doctores</option>
+                    @foreach(\App\Models\Doctor::all() as $doctor)
+                    <option value="{{ $doctor->id }}">Dr. {{ $doctor->nombre }} {{ $doctor->apellido }}</option>
+                    @endforeach
+                </select>
             </div>
+        </div>
 
-            <div class="card-body">
-                @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle me-2"></i>
-                    <strong>¡Éxito!</strong> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                @endif
+        <!-- Mensajes de éxito/error -->
+        @if(session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                {{ session('success') }}
+            </div>
+        </div>
+        @endif
 
-                @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    <strong>¡Error!</strong> {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                @endif
+        @if(session('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                </svg>
+                {{ session('error') }}
+            </div>
+        </div>
+        @endif
 
-                <div class="table-responsive">
-                    <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
-                        <thead class="table-dark">
-                            <tr>
-                                <th><i class="fas fa-hashtag me-1"></i>N° Biopsia</th>
-                                <th><i class="fas fa-calendar me-1"></i>Fecha Recibida</th>
-                                <th><i class="fas fa-user me-1"></i>Paciente</th>
-                                <th><i class="fas fa-user-md me-1"></i>Doctor</th>
-                                <th><i class="fas fa-notes-medical me-1"></i>Diagnóstico</th>
-                                <th><i class="fas fa-toggle-on me-1"></i>Estado</th>
-                                <th><i class="fas fa-cogs me-1"></i>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($biopsias as $biopsia)
-                            <tr class="table-row-hover">
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-sm me-2">
-                                            <div class="avatar-title bg-primary rounded-circle">
-                                                <i class="fas fa-microscope text-white"></i>
-                                            </div>
+        <!-- Tabla de biopsias -->
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                N° Biopsia
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Fecha Recibida
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Paciente
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Doctor
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Diagnóstico
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Estado
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Acciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($biopsias as $biopsia)
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">{{ $biopsia->nbiopsia }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ $biopsia->fecha_recibida->format('d/m/Y') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                            <span class="text-sm font-medium text-blue-800">
+                                                @if($biopsia->paciente_id && $biopsia->paciente)
+                                                {{ substr($biopsia->paciente->nombre, 0, 1) }}{{ substr($biopsia->paciente->apellido, 0, 1) }}
+                                                @elseif($biopsia->mascota_id && $biopsia->mascota)
+                                                {{ substr($biopsia->mascota->nombre, 0, 1) }}{{ substr($biopsia->mascota->propietario ?? 'M', 0, 1) }}
+                                                @else
+                                                N/A
+                                                @endif
+                                            </span>
                                         </div>
-                                        <strong class="text-primary">{{ $biopsia->nbiopsia }}</strong>
                                     </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex flex-column">
-                                        <span class="fw-bold">{{ $biopsia->fecha_recibida->format('d/m/Y') }}</span>
-                                        <small class="text-muted">{{ $biopsia->fecha_recibida->diffForHumans() }}</small>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-sm me-2">
-                                            <div class="avatar-title bg-success rounded-circle">
-                                                <i class="fas fa-user text-white"></i>
-                                            </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">
+                                            @if($biopsia->paciente_id && $biopsia->paciente)
+                                            {{ $biopsia->paciente->nombre }} {{ $biopsia->paciente->apellido }}
+                                            @elseif($biopsia->mascota_id && $biopsia->mascota)
+                                            {{ $biopsia->mascota->nombre }}
+                                            @else
+                                            Información no disponible
+                                            @endif
                                         </div>
-                                        <div>
-                                            <div class="fw-bold">{{ $biopsia->paciente->nombre }} {{ $biopsia->paciente->apellido }}</div>
-                                            <small class="text-muted">
-                                                <i class="fas fa-id-card me-1"></i>DUI: {{ $biopsia->paciente->DUI ?? 'N/A' }}
-                                            </small>
-                                            <br>
-                                            <small class="text-muted">
-                                                <i class="fas fa-birthday-cake me-1"></i>{{ $biopsia->paciente->edad }} años
-                                            </small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-sm me-2">
-                                            <div class="avatar-title bg-info rounded-circle">
-                                                <i class="fas fa-user-md text-white"></i>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold">Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}</div>
-                                            @if(isset($biopsia->doctor->especialidad))
-                                            <small class="text-muted">{{ $biopsia->doctor->especialidad }}</small>
+                                        <div class="text-sm text-gray-500">
+                                            @if($biopsia->paciente_id && $biopsia->paciente)
+                                            DUI: {{ $biopsia->paciente->dui ?? 'N/A' }}
+                                            @elseif($biopsia->mascota_id && $biopsia->mascota)
+                                            Propietario: {{ $biopsia->mascota->propietario ?? 'N/A' }}
+                                            @else
+                                            Tipo: N/A
                                             @endif
                                         </div>
                                     </div>
-                                </td>
-                                <td>
-                                    <div class="diagnosis-preview" data-bs-toggle="tooltip"
-                                        title="{{ $biopsia->diagnostico_clinico }}">
-                                        {{ Str::limit($biopsia->diagnostico_clinico, 50) }}
-                                    </div>
-                                </td>
-                                <td>
-                                    @if($biopsia->estado)
-                                    <span class="badge bg-success">
-                                        <i class="fas fa-check-circle me-1"></i>Activa
-                                    </span>
-                                    @else
-                                    <span class="badge bg-danger">
-                                        <i class="fas fa-times-circle me-1"></i>Inactiva
-                                    </span>
-                                    @endif
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a href="{{ route('biopsias.show', $biopsia->nbiopsia) }}"
-                                            class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Ver detalles">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ route('biopsias.personas.edit', $biopsia->nbiopsia) }}"
-                                            class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form method="POST" action="{{ route('biopsias.personas.toggle-estado', $biopsia->nbiopsia) }}"
-                                            style="display: inline-block;">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit"
-                                                class="btn btn-sm {{ $biopsia->estado ? 'btn-outline-danger' : 'btn-outline-success' }}"
-                                                data-bs-toggle="tooltip"
-                                                title="{{ $biopsia->estado ? 'Desactivar' : 'Activar' }}">
-                                                <i class="fas {{ $biopsia->estado ? 'fa-toggle-off' : 'fa-toggle-on' }}"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="7" class="text-center py-4">
-                                    <div class="empty-state">
-                                        <i class="fas fa-inbox fa-3x text-gray-300 mb-3"></i>
-                                        <h5 class="text-gray-500">No hay biopsias de personas registradas</h5>
-                                        <p class="text-muted">Comienza creando tu primera biopsia de persona</p>
-                                        <a href="{{ route('biopsias.personas.create') }}" class="btn btn-primary">
-                                            <i class="fas fa-plus me-1"></i> Crear Primera Biopsia
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                @if($biopsias->hasPages())
-                <div class="d-flex justify-content-center mt-4">
-                    {{ $biopsias->links() }}
-                </div>
-                @endif
-            </div>
-        </div>
-    </div>
-
-    <style>
-        .border-left-primary {
-            border-left: 0.25rem solid #4e73df !important;
-        }
-
-        .border-left-success {
-            border-left: 0.25rem solid #1cc88a !important;
-        }
-
-        .border-left-warning {
-            border-left: 0.25rem solid #f6c23e !important;
-        }
-
-        .border-left-info {
-            border-left: 0.25rem solid #36b9cc !important;
-        }
-
-        .avatar-sm {
-            width: 2rem;
-            height: 2rem;
-        }
-
-        .avatar-title {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            font-size: 0.875rem;
-        }
-
-        .table-row-hover:hover {
-            background-color: rgba(0, 123, 255, 0.05);
-            transform: translateY(-1px);
-            transition: all 0.2s ease;
-        }
-
-        .diagnosis-preview {
-            cursor: help;
-            max-width: 200px;
-        }
-
-        .empty-state {
-            padding: 2rem;
-        }
-
-        .btn-group .btn {
-            margin-right: 0.25rem;
-        }
-
-        .btn-group .btn:last-child {
-            margin-right: 0;
-        }
-    </style>
-
-    <script>
-        // Initialize tooltips
-        document.addEventListener('DOMContentLoaded', function() {
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-        });
-
-        // Auto-dismiss alerts after 5 seconds
-        setTimeout(function() {
-            var alerts = document.querySelectorAll('.alert-dismissible');
-            alerts.forEach(function(alert) {
-                var bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            });
-        }, 5000);
-    </script>
-</x-app-layout>@extends('layouts.app')
-
-@section('content')
-<div class="container mx-auto px-4 py-6">
-    <!-- Navegación separada -->
-    <div class="mb-6">
-        <nav class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
-            <a href="{{ route('mascotas.index') }}"
-                class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
-                Mascotas
-            </a>
-            <a href="{{ route('biopsias.index') }}"
-                class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
-                Biopsias
-            </a>
-            <a href="{{ route('biopsias.personas.index') }}"
-                class="px-4 py-2 text-sm font-medium bg-white text-gray-900 rounded-md shadow-sm">
-                Biopsias Personas
-            </a>
-        </nav>
-    </div>
-
-    <!-- Header Section -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-3xl font-bold text-gray-900">
-                Biopsias - Personas
-            </h1>
-            <p class="text-gray-600 mt-1">Gestión de biopsias para pacientes humanos</p>
-        </div>
-        <div class="flex space-x-3">
-            <a href="{{ route('biopsias.index') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                Ver Todas
-            </a>
-            <a href="{{ route('biopsias.personas.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                Nueva Biopsia
-            </a>
-        </div>
-    </div>
-
-    <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Biopsias Personas
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $biopsias->total() }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-users fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Biopsias Activas
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $biopsias->where('estado', 1)->count() }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Biopsias Inactivas
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $biopsias->where('estado', 0)->count() }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-pause-circle fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Este Mes
-                            </div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $biopsias->where('fecha_recibida', '>=', now()->startOfMonth())->count() }}
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content Card -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">
-                <i class="fas fa-table me-2"></i>Lista de Biopsias de Personas
-            </h6>
-            <div class="dropdown no-arrow">
-                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                    aria-labelledby="dropdownMenuLink">
-                    <div class="dropdown-header">Opciones:</div>
-                    <a class="dropdown-item" href="{{ route('biopsias.personas.create') }}">
-                        <i class="fas fa-plus fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Nueva Biopsia
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">
-                        <i class="fas fa-download fa-sm fa-fw mr-2 text-gray-400"></i>
-                        Exportar
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-body">
-            @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i>
-                <strong>¡Éxito!</strong> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
-
-            @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-triangle me-2"></i>
-                <strong>¡Error!</strong> {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-            @endif
-
-            <div class="table-responsive">
-                <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
-                    <thead class="table-dark">
-                        <tr>
-                            <th><i class="fas fa-hashtag me-1"></i>N° Biopsia</th>
-                            <th><i class="fas fa-calendar me-1"></i>Fecha Recibida</th>
-                            <th><i class="fas fa-user me-1"></i>Paciente</th>
-                            <th><i class="fas fa-user-md me-1"></i>Doctor</th>
-                            <th><i class="fas fa-notes-medical me-1"></i>Diagnóstico</th>
-                            <th><i class="fas fa-toggle-on me-1"></i>Estado</th>
-                            <th><i class="fas fa-cogs me-1"></i>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($biopsias as $biopsia)
-                        <tr class="table-row-hover">
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-sm me-2">
-                                        <div class="avatar-title bg-primary rounded-circle">
-                                            <i class="fas fa-microscope text-white"></i>
-                                        </div>
-                                    </div>
-                                    <strong class="text-primary">{{ $biopsia->nbiopsia }}</strong>
                                 </div>
                             </td>
-                            <td>
-                                <div class="d-flex flex-column">
-                                    <span class="fw-bold">{{ $biopsia->fecha_recibida->format('d/m/Y') }}</span>
-                                    <small class="text-muted">{{ $biopsia->fecha_recibida->diffForHumans() }}</small>
-                                </div>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <div class="font-medium">Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}</div>
+                                <div class="text-gray-500">{{ $biopsia->doctor->especialidad ?? 'Especialidad N/A' }}</div>
                             </td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-sm me-2">
-                                        <div class="avatar-title bg-success rounded-circle">
-                                            <i class="fas fa-user text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="fw-bold">{{ $biopsia->paciente->nombre }} {{ $biopsia->paciente->apellido }}</div>
-                                        <small class="text-muted">
-                                            <i class="fas fa-id-card me-1"></i>DUI: {{ $biopsia->paciente->DUI ?? 'N/A' }}
-                                        </small>
-                                        <br>
-                                        <small class="text-muted">
-                                            <i class="fas fa-birthday-cake me-1"></i>{{ $biopsia->paciente->edad }} años
-                                        </small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="avatar-sm me-2">
-                                        <div class="avatar-title bg-info rounded-circle">
-                                            <i class="fas fa-user-md text-white"></i>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="fw-bold">Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}</div>
-                                        @if(isset($biopsia->doctor->especialidad))
-                                        <small class="text-muted">{{ $biopsia->doctor->especialidad }}</small>
-                                        @endif
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="diagnosis-preview" data-bs-toggle="tooltip"
-                                    title="{{ $biopsia->diagnostico_clinico }}">
+                            <td class="px-6 py-4 text-sm text-gray-900">
+                                <div class="max-w-xs truncate" title="{{ $biopsia->diagnostico_clinico }}">
                                     {{ Str::limit($biopsia->diagnostico_clinico, 50) }}
                                 </div>
                             </td>
-                            <td>
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 @if($biopsia->estado)
-                                <span class="badge bg-success">
-                                    <i class="fas fa-check-circle me-1"></i>Activa
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Activa
                                 </span>
                                 @else
-                                <span class="badge bg-danger">
-                                    <i class="fas fa-times-circle me-1"></i>Inactiva
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Inactiva
                                 </span>
                                 @endif
                             </td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <a href="{{ route('biopsias.show', $biopsia->nbiopsia) }}"
-                                        class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Ver detalles">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{{ route('biopsias.personas.edit', $biopsia->nbiopsia) }}"
-                                        class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form method="POST" action="{{ route('biopsias.personas.toggle-estado', $biopsia->nbiopsia) }}"
-                                        style="display: inline-block;">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit"
-                                            class="btn btn-sm {{ $biopsia->estado ? 'btn-outline-danger' : 'btn-outline-success' }}"
-                                            data-bs-toggle="tooltip"
-                                            title="{{ $biopsia->estado ? 'Desactivar' : 'Activar' }}">
-                                            <i class="fas {{ $biopsia->estado ? 'fa-toggle-off' : 'fa-toggle-on' }}"></i>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex items-center space-x-2">
+                                    <div class="relative inline-block text-left">
+                                        <button type="button" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" onclick="toggleDropdown('{{ $biopsia->nbiopsia }}')">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                            </svg>
+                                            Acciones
+                                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                            </svg>
                                         </button>
-                                    </form>
+
+                                        <div id="dropdown-{{ $biopsia->nbiopsia }}" class="hidden origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                                            <div class="py-1">
+                                                <a href="{{ route('biopsias.personas.show', $biopsia->nbiopsia) }}"
+                                                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                    </svg>
+                                                    Ver detalles
+                                                </a>
+                                                <a href="{{ route('biopsias.personas.edit', $biopsia->nbiopsia) }}"
+                                                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                                    </svg>
+                                                    Editar
+                                                </a>
+                                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                                                    </svg>
+                                                    Imprimir
+                                                </a>
+                                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                    </svg>
+                                                    Descargar PDF
+                                                </a>
+                                                <div class="border-t border-gray-100"></div>
+                                                <form action="{{ route('biopsias.personas.toggle-estado', $biopsia->nbiopsia) }}" method="POST" style="display: inline;">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <button type="submit" class="flex items-center w-full px-4 py-2 text-sm text-yellow-700 hover:bg-yellow-50">
+                                                        @if($biopsia->estado)
+                                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        Desactivar
+                                                        @else
+                                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                        </svg>
+                                                        Activar
+                                                        @endif
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7" class="text-center py-4">
-                                <div class="empty-state">
-                                    <i class="fas fa-inbox fa-3x text-gray-300 mb-3"></i>
-                                    <h5 class="text-gray-500">No hay biopsias de personas registradas</h5>
-                                    <p class="text-muted">Comienza creando tu primera biopsia de persona</p>
-                                    <a href="{{ route('biopsias.personas.create') }}" class="btn btn-primary">
-                                        <i class="fas fa-plus me-1"></i> Crear Primera Biopsia
-                                    </a>
+                            <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                <div class="py-8">
+                                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+                                    </svg>
+                                    <h3 class="mt-2 text-sm font-medium text-gray-900">No hay biopsias de personas registradas</h3>
+                                    <p class="mt-1 text-sm text-gray-500">Comienza creando tu primera biopsia para personas.</p>
+                                    <div class="mt-6">
+                                        <a href="{{ route('biopsias.personas.create') }}"
+                                            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                            </svg>
+                                            Nueva Biopsia
+                                        </a>
+                                    </div>
                                 </div>
                             </td>
                         </tr>
@@ -659,87 +345,115 @@
                 </table>
             </div>
 
-            <!-- Pagination -->
-            @if($biopsias->hasPages())
-            <div class="d-flex justify-content-center mt-4">
-                {{ $biopsias->links() }}
-            </div>
-            @endif
+
         </div>
     </div>
-</div>
 
-<style>
-    .border-left-primary {
-        border-left: 0.25rem solid #4e73df !important;
-    }
+    @push('scripts')
+    <script>
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById('dropdown-' + id);
+            const allDropdowns = document.querySelectorAll('[id^="dropdown-"]');
 
-    .border-left-success {
-        border-left: 0.25rem solid #1cc88a !important;
-    }
+            // Cerrar todos los otros dropdowns
+            allDropdowns.forEach(d => {
+                if (d.id !== 'dropdown-' + id) {
+                    d.classList.add('hidden');
+                }
+            });
 
-    .border-left-warning {
-        border-left: 0.25rem solid #f6c23e !important;
-    }
+            // Toggle el dropdown actual
+            dropdown.classList.toggle('hidden');
+        }
 
-    .border-left-info {
-        border-left: 0.25rem solid #36b9cc !important;
-    }
+        // Cerrar dropdowns al hacer click fuera
+        document.addEventListener('click', function(event) {
+            const isDropdownButton = event.target.closest('button[onclick^="toggleDropdown"]');
+            const isDropdownContent = event.target.closest('[id^="dropdown-"]');
 
-    .avatar-sm {
-        width: 2rem;
-        height: 2rem;
-    }
-
-    .avatar-title {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-        font-size: 0.875rem;
-    }
-
-    .table-row-hover:hover {
-        background-color: rgba(0, 123, 255, 0.05);
-        transform: translateY(-1px);
-        transition: all 0.2s ease;
-    }
-
-    .diagnosis-preview {
-        cursor: help;
-        max-width: 200px;
-    }
-
-    .empty-state {
-        padding: 2rem;
-    }
-
-    .btn-group .btn {
-        margin-right: 0.25rem;
-    }
-
-    .btn-group .btn:last-child {
-        margin-right: 0;
-    }
-</style>
-
-<script>
-    // Initialize tooltips
-    document.addEventListener('DOMContentLoaded', function() {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl);
+            if (!isDropdownButton && !isDropdownContent) {
+                const allDropdowns = document.querySelectorAll('[id^="dropdown-"]');
+                allDropdowns.forEach(d => d.classList.add('hidden'));
+            }
         });
-    });
 
-    // Auto-dismiss alerts after 5 seconds
-    setTimeout(function() {
-        var alerts = document.querySelectorAll('.alert-dismissible');
-        alerts.forEach(function(alert) {
-            var bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
+        // Funcionalidad de búsqueda en tiempo real
+        document.querySelector('input[placeholder*="Buscar"]').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm) || searchTerm === '') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         });
-    }, 5000);
-</script>
-@endsection
+    </script>
+    @endpush
+
+    @push('styles')
+    <style>
+        .hover\:bg-gray-50:hover {
+            background-color: #f9fafb;
+        }
+
+        .transition-colors {
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+
+        .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .border-l-4 {
+            border-left-width: 4px;
+        }
+
+        .truncate {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .z-10 {
+            z-index: 10;
+        }
+
+        .ring-1 {
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
+        }
+
+        .ring-black {
+            --tw-ring-color: rgba(0, 0, 0, 1);
+        }
+
+        .ring-opacity-5 {
+            --tw-ring-opacity: 0.05;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .grid-cols-1 {
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+
+            .flex-wrap {
+                flex-wrap: wrap;
+            }
+
+            .min-w-64 {
+                min-width: 100%;
+            }
+        }
+    </style>
+    @endpush
+</x-app-layout>
