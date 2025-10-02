@@ -30,6 +30,7 @@ class BiopsiaPacienteController extends Controller
         $doctores = Doctor::where('estado_servicio', true)
             ->get();
 
+
         return view('biopsias.personas.create', compact('doctores', 'pacientes'));
     }
 

@@ -15,8 +15,6 @@
                     class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
                     Mascotas
                 </a>
-
-
             </nav>
         </div>
 
@@ -31,10 +29,7 @@
                     class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
                     Nueva Biopsia Persona
                 </a>
-                <a href="{{ route('biopsias.mascotas.create') }}"
-                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                    Nueva Biopsia Mascota
-                </a>
+                
             </div> -->
         </div>
 

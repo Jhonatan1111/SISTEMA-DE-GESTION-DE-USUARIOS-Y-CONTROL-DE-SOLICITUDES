@@ -46,7 +46,6 @@ Route::middleware('auth')->group(function () {
     Route::get('biopsias', [BiopsiaController::class, 'index'])->name('biopsias.index');
     Route::get('biopsias/create', [BiopsiaController::class, 'create'])->name('biopsias.create');
     Route::post('biopsias', [BiopsiaController::class, 'store'])->name('biopsias.store');
-    // Route::get('biopsias/{nbiopsia}', [BiopsiaController::class, 'show'])->name('biopsias.show');
 
     // BIOPSIAS PERSONAS
     Route::get('biopsias/personas', [BiopsiaPacienteController::class, 'index'])->name('biopsias.personas.index');

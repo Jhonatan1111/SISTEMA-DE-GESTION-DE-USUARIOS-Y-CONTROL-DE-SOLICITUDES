@@ -19,5 +19,10 @@ class ListaBiopsia extends Model
         // 'diagnostico' => 'string',
     ];
 
+    // RELACIONES
+    public function biopsias()
+    {
+        return $this->hasMany(Biopsia::class, 'lista_id');
+    }
     //
 }

@@ -35,6 +35,20 @@ class Biopsia extends Model
         return $this->belongsTo(Doctor::class, 'doctor_id');
     }
 
+    public function paciente()
+    {
+        return $this->belongsTo(Paciente::class, 'paciente_id');
+    }
+
+    public function mascota()
+    {
+        return $this->belongsTo(Mascota::class, 'mascota_id');
+    }
+
+    public function lista_biopsia()
+    {
+        return $this->belongsTo(ListaBiopsia::class, 'lista_id');
+    }
     // Métodos estáticos
 
     public static function generarNumeroBiopsia()

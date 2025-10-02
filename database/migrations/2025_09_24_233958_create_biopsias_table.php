@@ -22,14 +22,15 @@ return new class extends Migration
             $table->unsignedBigInteger('doctor_id')->comment('ID del doctor');
             $table->unsignedBigInteger('paciente_id')->nullable()->comment('ID del paciente');
             $table->unsignedBigInteger('mascota_id')->nullable()->comment('ID de la mascota');
+            $table->unsignedBigInteger('lista_id')->nullable()->comment('ID de la lista de biopsias');
             $table->timestamps();
 
             //LLAVES FORANEAS
             $table->foreign('doctor_id')->references('id')->on('doctores')->onUpdate('cascade')->onDelete('restrict');
             $table->foreign('paciente_id')->references('id')->on('pacientes')->onUpdate('cascade')->onDelete('restrict');
             $table->foreign('mascota_id')->references('id')->on('mascotas')->onUpdate('cascade')->onDelete('restrict');
+            $table->foreign('lista_id')->references('id')->on('lista_biopsias')->onUpdate('cascade')->onDelete('set null');
         });
-
     }
 
     /**
