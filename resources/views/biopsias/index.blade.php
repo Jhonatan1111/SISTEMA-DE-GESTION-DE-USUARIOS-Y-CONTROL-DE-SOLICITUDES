@@ -11,10 +11,6 @@
                     class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
                     Personas
                 </a>
-                <a href="{{ route('mascotas.index') }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
-                    Mascotas
-                </a>
             </nav>
         </div>
 
@@ -24,13 +20,7 @@
                 <h1 class="text-3xl font-bold text-gray-900">Biopsias Generales</h1>
                 <p class="text-gray-600 mt-1">Gestión completa de todas las biopsias del sistema</p>
             </div>
-            <!-- <div class="flex space-x-3">
-                <a href="{{ route('biopsias.personas.create') }}"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                    Nueva Biopsia Persona
-                </a>
-                
-            </div> -->
+
         </div>
 
         <!-- Estadísticas -->
@@ -176,6 +166,7 @@
                                 @else
                                 {{ $biopsia->mascota->nombre }}
                                 <div class="text-gray-500 text-xs">{{ $biopsia->mascota->propietario ?? 'N/A' }}</div>
+
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -213,14 +204,12 @@
                                     @endif
 
                                     <!-- Ver detalles -->
-                                    <a href="{{ route('biopsias.show', $biopsia->nbiopsia) }}"
-                                        class="text-blue-600 hover:text-blue-900">
-                                        Ver
-                                    </a>
+
 
                                     <!-- Archivar/Restaurar -->
-                                    <!-- @if($biopsia->estado)
+                                    @if($biopsia->estado)
                                     <form action="{{ route('biopsias.archivar', $biopsia->nbiopsia) }}" method="POST" class="inline">
+
                                         @csrf
                                         <button type="submit" class="text-yellow-600 hover:text-yellow-900"
                                             onclick="return confirm('¿Está seguro de archivar esta biopsia?')">
@@ -234,9 +223,7 @@
                                             Restaurar
                                         </button>
                                     </form>
-                                    @endif -->
-
-
+                                    @endif
                                 </div>
                             </td>
                         </tr>
