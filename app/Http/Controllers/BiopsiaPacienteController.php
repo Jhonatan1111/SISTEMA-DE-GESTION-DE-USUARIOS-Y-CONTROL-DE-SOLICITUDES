@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Biopsia;
 use App\Models\Paciente;
 use App\Models\Doctor;
+use App\Models\ListaBiopsia;
+
 use Illuminate\Http\Request;
 
 class BiopsiaPacienteController extends Controller
@@ -14,7 +16,7 @@ class BiopsiaPacienteController extends Controller
     {
         $biopsias = Biopsia::with(['paciente', 'doctor', 'lista_biopsia'])
             ->personas()
-            ->listaBiopsias()
+            ->ListaBiopsias()
             ->activas()
             ->orderBy('fecha_recibida',  'desc')
             ->paginate(10);
@@ -30,8 +32,10 @@ class BiopsiaPacienteController extends Controller
             ->get();
         $doctores = Doctor::where('estado_servicio', true)
             ->get();
+        $listas = ListaBiopsia::orderBy('codigo')
+            ->get();
         $numeroGenerado = Biopsia::generarNumeroBiopsia();
-        return view('biopsias.personas.create', compact('doctores', 'pacientes', 'numeroGenerado'));
+        return view('biopsias.personas.create', compact('doctores', 'pacientes', 'listas', 'numeroGenerado'));
     }
 
     // Guardar nueva biopsia de paciente humano
@@ -50,18 +54,32 @@ class BiopsiaPacienteController extends Controller
             'paciente_id.required' => 'Debe seleccionar un paciente'
         ]);
         $numeroGenerado = Biopsia::generarNumeroBiopsia();
-
-
-        Biopsia::create([
+        $datos = [
             'nbiopsia' => $numeroGenerado,
-            // 'nbiopsia' => $request->nbiopsia,
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
             'doctor_id' => $request->doctor_id,
             'paciente_id' => $request->paciente_id,
             'estado' => true,
-            'mascota_id' => null, // Siempre null para humanos
-        ]);
+            'mascota_id' => null,
+            'lista_id' => $request->lista_id ?? null,
+        ];
+        if ($request->lista_id) {
+            $lista = ListaBiopsia::find($request->lista_id);
+            if ($lista) {
+                $datos['diagnostico'] = $lista->diagnostico;
+                $datos['descripcion'] = $lista->descripcion;
+                $datos['microscopico'] = $lista->microscopico;
+                $datos['macroscopico'] = $lista->macroscopico;
+            }
+        } else {
+            // Sin lista, usar campos manuales (si vienen)
+            $datos['diagnostico'] = $request->diagnostico;
+            $datos['descripcion'] = $request->descripcion;
+            $datos['microscopico'] = $request->microscopico;
+            $datos['macroscopico'] = $request->macroscopico;
+        }
+        Biopsia::create($datos);
         return redirect()->route('biopsias.personas.index')->with('success', 'Biopsia creada exitosamente');
     }
 
@@ -364,5 +382,10 @@ class BiopsiaPacienteController extends Controller
     {
         // Redirigir a imprimir y el usuario usa Ctrl+P para PDF
         return redirect()->route('biopsias.personas.imprimir', $nbiopsia);
+    }
+    public function buscarLista($id)
+    {
+        $lista = ListaBiopsia::find($id);
+        return response()->json($lista);
     }
 }

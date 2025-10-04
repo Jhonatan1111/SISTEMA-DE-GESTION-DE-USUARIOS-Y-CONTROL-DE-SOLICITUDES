@@ -10,7 +10,7 @@ class BiopsiaController extends Controller
     // VISTA GENERAL DE TODAS LAS BIOPSIAS (PERSONAS Y MASCOTAS)
     public function index(Request $request)
     {
-        $query = Biopsia::with(['paciente', 'mascota', 'doctor'])
+        $query = Biopsia::with(['paciente', 'mascota', 'doctor', 'lista_biopsia'])
             // ->activas()
             // ->archivadas()
             ->orderBy('fecha_recibida', 'desc');
@@ -30,6 +30,10 @@ class BiopsiaController extends Controller
             $query->where(function ($q) use ($buscar) {
                 $q->where('nbiopsia', 'like', "%{$buscar}%")
                     ->orWhere('diagnostico_clinico', 'like', "%{$buscar}%")
+                    ->orWhereHas('doctor', function ($subq) use ($buscar) {
+                        $subq->where('nombre, apellido', 'like', "%{$buscar}%")
+                            ->orWhere('jvpm', 'like', "%{$buscar}%");
+                    })
                     ->orWhereHas('paciente', function ($subq) use ($buscar) {
                         $subq->where('nombre', 'like', "%{$buscar}%")
                             ->orWhere('apellido', 'like', "%{$buscar}%");
@@ -38,9 +42,9 @@ class BiopsiaController extends Controller
                         $subq->where('nombre', 'like', "%{$buscar}%")
                             ->orWhere('propietario', 'like', "%{$buscar}%");
                     })
-                    ->orWhereHas('doctor', function ($subq) use ($buscar) {
-                        $subq->where('nombre, apellido', 'like', "%{$buscar}%")
-                            ->orWhere('jvpm', 'like', "%{$buscar}%");
+                    ->orWhereHas('lista_biopsia', function ($subq) use ($buscar) {
+                        $subq->where('codigo', 'like', "%{$buscar}%")
+                            ->orWhere('diagnostico', 'like', "%{$buscar}%");
                     });
             });
         }
@@ -67,7 +71,7 @@ class BiopsiaController extends Controller
     // VER DETALLES DE UNA BIOPSIA
     public function show($nbiopsia)
     {
-        $biopsia = Biopsia::with(['paciente', 'mascota', 'doctor', 'listaBiopsia'])
+        $biopsia = Biopsia::with(['paciente', 'mascota', 'doctor', 'lista_biopsia'])
             ->where('nbiopsia', $nbiopsia)
             ->firstOrFail();
 

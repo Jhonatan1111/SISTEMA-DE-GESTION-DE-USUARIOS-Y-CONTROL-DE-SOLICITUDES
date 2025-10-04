@@ -187,6 +187,87 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Plantilla de Lista (OPCIONAL) -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card border-left-warning mb-4">
+                                        <div class="card-header bg-light">
+                                            <h6 class="m-0 text-warning">
+                                                <i class="fas fa-clipboard-list me-2"></i>Plantilla de Lista (Opcional)
+                                            </h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="alert alert-info">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                Selecciona una plantilla para auto-llenar los campos de análisis. Podrás editarlos antes de guardar.
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label for="lista_id" class="form-label">
+                                                    <i class="fas fa-list-alt text-warning me-1"></i>
+                                                    Usar plantilla existente
+                                                </label>
+                                                <select class="form-select" id="lista_id" name="lista_id">
+                                                    <option value="">-- Sin plantilla (llenar manualmente) --</option>
+                                                    @foreach($listas as $lista)
+                                                    <option value="{{ $lista->id }}">
+                                                        {{ $lista->codigo }} - {{ $lista->diagnostico }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Campos de Análisis Detallado -->
+                            <div class="card border-left-info mb-4">
+                                <div class="card-header bg-light">
+                                    <h6 class="m-0 text-info">
+                                        <i class="fas fa-microscope me-2"></i>Análisis Detallado (Opcional)
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="diagnostico" class="form-label">
+                                                <i class="fas fa-notes-medical text-info me-1"></i>
+                                                Diagnóstico Final
+                                            </label>
+                                            <textarea class="form-control" id="diagnostico" name="diagnostico" rows="4"
+                                                placeholder="Diagnóstico detallado...">{{ old('diagnostico') }}</textarea>
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <label for="descripcion" class="form-label">
+                                                <i class="fas fa-align-left text-info me-1"></i>
+                                                Descripción General
+                                            </label>
+                                            <textarea class="form-control" id="descripcion" name="descripcion" rows="4"
+                                                placeholder="Descripción de la muestra...">{{ old('descripcion') }}</textarea>
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <label for="macroscopico" class="form-label">
+                                                <i class="fas fa-eye text-info me-1"></i>
+                                                Análisis Macroscópico
+                                            </label>
+                                            <textarea class="form-control" id="macroscopico" name="macroscopico" rows="4"
+                                                placeholder="Observación macroscópica...">{{ old('macroscopico') }}</textarea>
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <label for="microscopico" class="form-label">
+                                                <i class="fas fa-microscope text-info me-1"></i>
+                                                Análisis Microscópico
+                                            </label>
+                                            <textarea class="form-control" id="microscopico" name="microscopico" rows="4"
+                                                placeholder="Observación microscópica...">{{ old('microscopico') }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- Botones de Acción -->
                             <div class="card">
