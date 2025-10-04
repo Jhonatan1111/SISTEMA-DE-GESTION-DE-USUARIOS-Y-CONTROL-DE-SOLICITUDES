@@ -101,7 +101,7 @@
                     </div>
                 </div>
 
-                <!-- Diagnóstico -->
+                <!-- Diagnóstico Clínico -->
                 <div class="mt-6">
                     <label for="diagnostico_clinico" class="block text-sm font-medium text-gray-700 mb-2">
                         Diagnóstico Clínico <span class="text-red-500">*</span>
@@ -109,6 +109,102 @@
                     <textarea id="diagnostico_clinico" name="diagnostico_clinico" rows="5"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                         required>{{ old('diagnostico_clinico', $biopsia->diagnostico_clinico) }}</textarea>
+                </div>
+
+                <!-- Plantilla de Lista -->
+                <div class="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-yellow-800 mb-3">
+                        <i class="fas fa-clipboard-list mr-2"></i>Plantilla de Lista (Opcional)
+                    </h3>
+                    <p class="text-sm text-yellow-700 mb-4">
+                        Busca por código o selecciona una plantilla para actualizar los campos de análisis.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Búsqueda por código -->
+                        <div>
+                            <label for="buscar_codigo" class="block text-sm font-medium text-gray-700 mb-2">
+                                Buscar por Código
+                            </label>
+                            <div class="flex gap-2">
+                                <input type="text"
+                                    id="buscar_codigo"
+                                    placeholder="Ej: BIO-001..."
+                                    class="flex-1 px-4 py-2 border border-gray-300 rounded-lg uppercase"
+                                    style="text-transform: uppercase;">
+                                <button type="button" id="btn_buscar_codigo"
+                                    class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Selector dropdown -->
+                        <div>
+                            <label for="lista_id" class="block text-sm font-medium text-gray-700 mb-2">
+                                O selecciona de la lista
+                            </label>
+                            <select id="lista_id" name="lista_id"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                                <option value="">-- Sin plantilla --</option>
+                                @foreach($listas as $lista)
+                                <option value="{{ $lista->id }}"
+                                    {{ old('lista_id', $biopsia->lista_id) == $lista->id ? 'selected' : '' }}>
+                                    {{ $lista->codigo }} - {{ $lista->diagnostico }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campos de Análisis Detallado -->
+                <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-3">
+                        <i class="fas fa-microscope mr-2"></i>Análisis Detallado
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Diagnóstico Final -->
+                        <div>
+                            <label for="diagnostico" class="block text-sm font-medium text-gray-700 mb-2">
+                                Diagnóstico Final
+                            </label>
+                            <textarea id="diagnostico" name="diagnostico" rows="4"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                placeholder="Diagnóstico detallado...">{{ old('diagnostico', $biopsia->diagnostico) }}</textarea>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div>
+                            <label for="descripcion" class="block text-sm font-medium text-gray-700 mb-2">
+                                Descripción General
+                            </label>
+                            <textarea id="descripcion" name="descripcion" rows="4"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                placeholder="Descripción de la muestra...">{{ old('descripcion', $biopsia->descripcion) }}</textarea>
+                        </div>
+
+                        <!-- Macroscópico -->
+                        <div>
+                            <label for="macroscopico" class="block text-sm font-medium text-gray-700 mb-2">
+                                Análisis Macroscópico
+                            </label>
+                            <textarea id="macroscopico" name="macroscopico" rows="4"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                placeholder="Observación macroscópica...">{{ old('macroscopico', $biopsia->macroscopico) }}</textarea>
+                        </div>
+
+                        <!-- Microscópico -->
+                        <div>
+                            <label for="microscopico" class="block text-sm font-medium text-gray-700 mb-2">
+                                Análisis Microscópico
+                            </label>
+                            <textarea id="microscopico" name="microscopico" rows="4"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                                placeholder="Observación microscópica...">{{ old('microscopico', $biopsia->microscopico) }}</textarea>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Botones -->
@@ -125,4 +221,85 @@
             </form>
         </div>
     </div>
+
+    <script>
+        // Buscar lista por dropdown
+        document.getElementById('lista_id').addEventListener('change', function() {
+            const listaId = this.value;
+            if (listaId) {
+                cargarLista(`/biopsias-personas/buscar-lista/${listaId}`);
+                document.getElementById('buscar_codigo').value = '';
+            }
+        });
+
+        // Buscar por código
+        document.getElementById('btn_buscar_codigo').addEventListener('click', function() {
+            const codigo = document.getElementById('buscar_codigo').value.trim().toUpperCase();
+            if (codigo) {
+                cargarListaPorCodigo(codigo);
+            } else {
+                alert('Por favor ingresa un código');
+            }
+        });
+
+        // Enter en campo de búsqueda
+        document.getElementById('buscar_codigo').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('btn_buscar_codigo').click();
+            }
+        });
+
+        function cargarListaPorCodigo(codigo) {
+            const btn = document.getElementById('btn_buscar_codigo');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            fetch(`/biopsias-personas/buscar-lista-codigo/${codigo}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        const data = result.data;
+                        document.getElementById('diagnostico').value = data.diagnostico || '';
+                        document.getElementById('descripcion').value = data.descripcion || '';
+                        document.getElementById('microscopico').value = data.microscopico || '';
+                        document.getElementById('macroscopico').value = data.macroscopico || '';
+                        document.getElementById('lista_id').value = data.id;
+                        mostrarNotificacion(`Plantilla "${data.codigo}" cargada`, 'success');
+                    } else {
+                        mostrarNotificacion(`Código "${codigo}" no encontrado`, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    mostrarNotificacion('Error al buscar', 'error');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-search"></i> Buscar';
+                });
+        }
+
+        function cargarLista(url) {
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('diagnostico').value = data.diagnostico || '';
+                    document.getElementById('descripcion').value = data.descripcion || '';
+                    document.getElementById('microscopico').value = data.microscopico || '';
+                    document.getElementById('macroscopico').value = data.macroscopico || '';
+                    mostrarNotificacion(`Plantilla "${data.codigo}" cargada`, 'success');
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function mostrarNotificacion(mensaje, tipo) {
+            const color = tipo === 'success' ? 'green' : 'red';
+            const alert = document.createElement('div');
+            alert.className = `bg-${color}-100 border border-${color}-400 text-${color}-700 px-4 py-3 rounded mb-4`;
+            alert.textContent = mensaje;
+            document.querySelector('form').insertAdjacentElement('beforebegin', alert);
+            setTimeout(() => alert.remove(), 3000);
+        }
+    </script>
 </x-app-layout>

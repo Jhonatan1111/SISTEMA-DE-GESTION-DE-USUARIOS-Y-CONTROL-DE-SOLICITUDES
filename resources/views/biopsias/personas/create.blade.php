@@ -188,6 +188,7 @@
                                 </div>
                             </div>
                             <!-- Plantilla de Lista (OPCIONAL) -->
+                            <!-- Plantilla de Lista (OPCIONAL) -->
                             <div class="row">
                                 <div class="col-12">
                                     <div class="card border-left-warning mb-4">
@@ -199,22 +200,44 @@
                                         <div class="card-body">
                                             <div class="alert alert-info">
                                                 <i class="fas fa-info-circle me-2"></i>
-                                                Selecciona una plantilla para auto-llenar los campos de análisis. Podrás editarlos antes de guardar.
+                                                Selecciona una plantilla o busca por código para auto-llenar los campos de análisis.
                                             </div>
 
-                                            <div class="mb-3">
-                                                <label for="lista_id" class="form-label">
-                                                    <i class="fas fa-list-alt text-warning me-1"></i>
-                                                    Usar plantilla existente
-                                                </label>
-                                                <select class="form-select" id="lista_id" name="lista_id">
-                                                    <option value="">-- Sin plantilla (llenar manualmente) --</option>
-                                                    @foreach($listas as $lista)
-                                                    <option value="{{ $lista->id }}">
-                                                        {{ $lista->codigo }} - {{ $lista->diagnostico }}
-                                                    </option>
-                                                    @endforeach
-                                                </select>
+                                            <div class="row">
+                                                <!-- Búsqueda por código -->
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="buscar_codigo" class="form-label">
+                                                        <i class="fas fa-search text-warning me-1"></i>
+                                                        Buscar por Código
+                                                    </label>
+                                                    <div class="input-group">
+                                                        <input type="text"
+                                                            class="form-control"
+                                                            id="buscar_codigo"
+                                                            placeholder="Ej: BIO-001, PIEL-01..."
+                                                            style="text-transform: uppercase;">
+                                                        <button class="btn btn-warning" type="button" id="btn_buscar_codigo">
+                                                            <i class="fas fa-search"></i> Buscar
+                                                        </button>
+                                                    </div>
+                                                    <small class="text-muted">Escribe el código y presiona Buscar</small>
+                                                </div>
+
+                                                <!-- Selector dropdown -->
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="lista_id" class="form-label">
+                                                        <i class="fas fa-list-alt text-warning me-1"></i>
+                                                        O selecciona de la lista
+                                                    </label>
+                                                    <select class="form-select" id="lista_id" name="lista_id">
+                                                        <option value="">-- Sin plantilla --</option>
+                                                        @foreach($listas as $lista)
+                                                        <option value="{{ $lista->id }}">
+                                                            {{ $lista->codigo }} - {{ $lista->diagnostico }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -298,7 +321,122 @@
             </div>
         </div>
     </div>
+    <script>
+        // Auto-llenar campos cuando se selecciona una lista del dropdown
+        document.getElementById('lista_id').addEventListener('change', function() {
+            const listaId = this.value;
 
+            if (listaId) {
+                cargarLista(`/biopsias-personas/buscar-lista/${listaId}`);
+                // Limpiar el campo de búsqueda por código
+                document.getElementById('buscar_codigo').value = '';
+            } else {
+                limpiarCampos();
+            }
+        });
+
+        // Buscar por código al presionar el botón
+        document.getElementById('btn_buscar_codigo').addEventListener('click', function() {
+            const codigo = document.getElementById('buscar_codigo').value.trim().toUpperCase();
+
+            if (codigo) {
+                cargarListaPorCodigo(codigo);
+            } else {
+                alert('Por favor ingresa un código');
+            }
+        });
+
+        // Buscar también al presionar Enter en el campo
+        document.getElementById('buscar_codigo').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('btn_buscar_codigo').click();
+            }
+        });
+
+        // Función para cargar lista por código
+        function cargarListaPorCodigo(codigo) {
+            const btn = document.getElementById('btn_buscar_codigo');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Buscando...';
+
+            fetch(`/biopsias-personas/buscar-lista-codigo/${codigo}`)
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        const data = result.data;
+
+                        // Llenar campos
+                        document.getElementById('diagnostico').value = data.diagnostico || '';
+                        document.getElementById('descripcion').value = data.descripcion || '';
+                        document.getElementById('microscopico').value = data.microscopico || '';
+                        document.getElementById('macroscopico').value = data.macroscopico || '';
+
+                        // Seleccionar en el dropdown
+                        document.getElementById('lista_id').value = data.id;
+
+                        mostrarNotificacion(`Plantilla "${data.codigo}" cargada exitosamente`, 'success');
+                    } else {
+                        mostrarNotificacion(`Código "${codigo}" no encontrado`, 'danger');
+                        limpiarCampos();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    mostrarNotificacion('Error al buscar el código', 'danger');
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                });
+        }
+
+        // Función genérica para cargar lista
+        function cargarLista(url) {
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Error al cargar');
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('diagnostico').value = data.diagnostico || '';
+                    document.getElementById('descripcion').value = data.descripcion || '';
+                    document.getElementById('microscopico').value = data.microscopico || '';
+                    document.getElementById('macroscopico').value = data.macroscopico || '';
+
+                    mostrarNotificacion(`Campos llenados desde la plantilla "${data.codigo}"`, 'success');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    mostrarNotificacion('Error al cargar la plantilla', 'danger');
+                });
+        }
+
+        // Función para limpiar campos
+        function limpiarCampos() {
+            document.getElementById('diagnostico').value = '';
+            document.getElementById('descripcion').value = '';
+            document.getElementById('microscopico').value = '';
+            document.getElementById('macroscopico').value = '';
+        }
+
+        // Función para mostrar notificaciones
+        function mostrarNotificacion(mensaje, tipo) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${tipo} alert-dismissible fade show`;
+            alert.innerHTML = `
+        <i class="fas fa-${tipo === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+        ${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+            const firstCard = document.querySelector('.card');
+            firstCard.parentNode.insertBefore(alert, firstCard);
+
+            setTimeout(() => alert.remove(), 5000);
+        }
+    </script>
     <style>
         .border-left-primary {
             border-left: 0.25rem solid #4e73df !important;
@@ -329,33 +467,9 @@
             font-weight: bold;
             color: #1cc88a;
         }
+
+        .border-left-warning {
+            border-left: 0.25rem solid #f6c23e !important;
+        }
     </style>
-
-    <script>
-        // Bootstrap form validation
-        (function() {
-            'use strict';
-            window.addEventListener('load', function() {
-                var forms = document.getElementsByClassName('needs-validation');
-                var validation = Array.prototype.filter.call(forms, function(form) {
-                    form.addEventListener('submit', function(event) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-            }, false);
-        })();
-
-        // Auto-dismiss alerts after 5 seconds
-        setTimeout(function() {
-            var alerts = document.querySelectorAll('.alert-dismissible');
-            alerts.forEach(function(alert) {
-                var bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            });
-        }, 5000);
-    </script>
 </x-app-layout>

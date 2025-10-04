@@ -106,8 +106,9 @@ class BiopsiaPacienteController extends Controller
         $doctores = Doctor::where('estado_servicio', true)
             ->orderBy('nombre')
             ->get();
+        $listas = ListaBiopsia::orderBy('codigo')->get();
 
-        return view('biopsias.personas.edit', compact('biopsia', 'doctores', 'pacientes'));
+        return view('biopsias.personas.edit', compact('biopsia', 'doctores', 'pacientes', 'listas'));
     }
     // Actualizar biopsia de paciente
     public function update(Request $request, $nbiopsia)
@@ -387,5 +388,22 @@ class BiopsiaPacienteController extends Controller
     {
         $lista = ListaBiopsia::find($id);
         return response()->json($lista);
+    }
+    // Método AJAX para buscar por código
+    public function buscarListaPorCodigo($codigo)
+    {
+        $lista = ListaBiopsia::where('codigo', $codigo)->first();
+
+        if ($lista) {
+            return response()->json([
+                'success' => true,
+                'data' => $lista
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Código no encontrado'
+        ], 404);
     }
 }
