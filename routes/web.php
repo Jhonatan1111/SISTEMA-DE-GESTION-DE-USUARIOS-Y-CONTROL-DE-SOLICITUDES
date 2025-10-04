@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::get('biopsias/personas', [BiopsiaPacienteController::class, 'index'])->name('biopsias.personas.index');
     Route::get('biopsias/personas/create', [BiopsiaPacienteController::class, 'create'])->name('biopsias.personas.create');
     Route::post('biopsias/personas', [BiopsiaPacienteController::class, 'store'])->name('biopsias.personas.store');
+    Route::get('biopsias/personas/{nbiopsia}/imprimir', [BiopsiaPacienteController::class, 'imprimir'])->name('biopsias.personas.imprimir'); // ← MOVER AQUÍ (fuera de admin)
 
     // Rutas para biopsias archivadas
     Route::get('biopsias/archivadas', [BiopsiaArchivarController::class, 'index'])->name('biopsias.archivadas.index');
@@ -90,7 +91,7 @@ Route::middleware('auth')->group(function () {
         // BIOPSIAS PERSONAS 
         Route::get('biopsias/personas/{nbiopsia}/edit', [BiopsiaPacienteController::class, 'edit'])->name('biopsias.personas.edit');
         Route::put('biopsias/personas/{nbiopsia}', [BiopsiaPacienteController::class, 'update'])->name('biopsias.personas.update');
-        Route::patch('biopsias/{nbiopsia}/toggle-estado', [BiopsiaController::class, 'toggleEstado'])->name('biopsias.toggle-estado');
+        Route::patch('biopsias/personas/{nbiopsia}/toggle-estado', [BiopsiaPacienteController::class, 'toggleEstado'])->name('biopsias.personas.toggle-estado');
 
         // LISTAS DE BIOPSIAS
         Route::get('listas/biopsias/{listaBiopsia}/edit', [ListaBiopsiaController::class, 'edit'])->name('listas.biopsias.edit');

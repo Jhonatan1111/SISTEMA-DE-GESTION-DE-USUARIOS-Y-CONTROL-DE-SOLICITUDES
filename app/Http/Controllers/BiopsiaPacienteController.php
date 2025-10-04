@@ -12,8 +12,9 @@ class BiopsiaPacienteController extends Controller
     // MOSTRAR BIOPSIAS DE PERSONAS
     public function index()
     {
-        $biopsias = Biopsia::with(['paciente', 'doctor'])
+        $biopsias = Biopsia::with(['paciente', 'doctor', 'lista_biopsia'])
             ->personas()
+            ->listaBiopsias()
             ->activas()
             ->orderBy('fecha_recibida',  'desc')
             ->paginate(10);
@@ -38,7 +39,6 @@ class BiopsiaPacienteController extends Controller
     {
         $request->validate([
 
-            // 'nbiopsia' => 'required|string|max:15|unique:biopsias,nbiopsia',
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'doctor_id' => 'required|exists:doctores,id',
@@ -62,7 +62,7 @@ class BiopsiaPacienteController extends Controller
             'estado' => true,
             'mascota_id' => null, // Siempre null para humanos
         ]);
-        return redirect()->route('biopsias.index')->with('success', 'Biopsia creada exitosamente');
+        return redirect()->route('biopsias.personas.index')->with('success', 'Biopsia creada exitosamente');
     }
 
     // Ver detalles de biopsia de paciente
@@ -347,5 +347,22 @@ class BiopsiaPacienteController extends Controller
         $estado = $biopsia->estado ? 'activada' : 'desactivada';
         return redirect()->route('biopsias.personas.index')
             ->with('success', "Biopsia {$estado} exitosamente.");
+    }
+    // Vista para imprimir biopsia
+    // Vista para imprimir biopsia
+    public function imprimir($nbiopsia)
+    {
+        $biopsia = Biopsia::with(['paciente', 'doctor'])
+            ->where('nbiopsia', $nbiopsia)
+            ->firstOrFail();
+
+        return view('biopsias.personas.imprimir', compact('biopsia'));
+    }
+
+    // Descargar PDF (versión simple sin librería)
+    public function descargarPdf($nbiopsia)
+    {
+        // Redirigir a imprimir y el usuario usa Ctrl+P para PDF
+        return redirect()->route('biopsias.personas.imprimir', $nbiopsia);
     }
 }

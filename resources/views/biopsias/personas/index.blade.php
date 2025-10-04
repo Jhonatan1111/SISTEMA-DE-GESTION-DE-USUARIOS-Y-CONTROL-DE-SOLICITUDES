@@ -229,7 +229,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 <div class="font-medium">Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}</div>
-                                <div class="text-gray-500">{{ $biopsia->doctor->especialidad ?? 'Especialidad N/A' }}</div>
+                                <div class="text-gray-500">{{ $biopsia->doctor->jvpm ?? 'J.V.P.M N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-900">
                                 <div class="max-w-xs truncate" title="{{ $biopsia->diagnostico_clinico }}">
@@ -255,60 +255,43 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex items-center space-x-2">
-                                    <div class="relative inline-block text-left">
-                                        <button type="button" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" onclick="toggleDropdown('{{ $biopsia->nbiopsia }}')">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                                    <!-- Editar -->
+                                    <a href="{{ route('biopsias.personas.edit', $biopsia->nbiopsia) }}"
+                                        class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
+                                        title="Editar">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </a>
+
+                                    <!-- Imprimir -->
+                                    <a href="{{ route('biopsias.personas.imprimir', $biopsia->nbiopsia) }}"
+                                        target="_blank"
+                                        class="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
+                                        title="Imprimir">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                                        </svg>
+                                    </a>
+
+                                    <!-- Toggle Estado -->
+                                    <form action="{{ route('biopsias.personas.toggle-estado', $biopsia->nbiopsia) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                            class="inline-flex items-center px-3 py-1.5 {{ $biopsia->estado ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200' : 'bg-green-100 text-green-700 hover:bg-green-200' }} rounded-md transition-colors"
+                                            title="{{ $biopsia->estado ? 'Desactivar' : 'Activar' }}">
+                                            @if($biopsia->estado)
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                             </svg>
-                                            Acciones
-                                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                            @else
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                             </svg>
+                                            @endif
                                         </button>
-
-                                        <div id="dropdown-{{ $biopsia->nbiopsia }}" class="hidden origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                                            <div class="py-1">
-
-                                                <a href="{{ route('biopsias.personas.edit', $biopsia->nbiopsia) }}"
-                                                    class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                                    </svg>
-                                                    Editar
-                                                </a>
-                                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                                                    </svg>
-                                                    Imprimir
-                                                </a>
-                                                <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                                    </svg>
-                                                    Descargar PDF
-                                                </a>
-                                                <div class="border-t border-gray-100"></div>
-                                                <form action="{{ route('biopsias.personas.toggle-estado', $biopsia->nbiopsia) }}" method="POST" style="display: inline;">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <button type="submit" class="flex items-center w-full px-4 py-2 text-sm text-yellow-700 hover:bg-yellow-50">
-                                                        @if($biopsia->estado)
-                                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                        </svg>
-                                                        Desactivar
-                                                        @else
-                                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                                        </svg>
-                                                        Activar
-                                                        @endif
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -341,39 +324,11 @@
 
         </div>
     </div>
-
-    @push('scripts')
     <script>
-        function toggleDropdown(id) {
-            const dropdown = document.getElementById('dropdown-' + id);
-            const allDropdowns = document.querySelectorAll('[id^="dropdown-"]');
-
-            // Cerrar todos los otros dropdowns
-            allDropdowns.forEach(d => {
-                if (d.id !== 'dropdown-' + id) {
-                    d.classList.add('hidden');
-                }
-            });
-
-            // Toggle el dropdown actual
-            dropdown.classList.toggle('hidden');
-        }
-
-        // Cerrar dropdowns al hacer click fuera
-        document.addEventListener('click', function(event) {
-            const isDropdownButton = event.target.closest('button[onclick^="toggleDropdown"]');
-            const isDropdownContent = event.target.closest('[id^="dropdown-"]');
-
-            if (!isDropdownButton && !isDropdownContent) {
-                const allDropdowns = document.querySelectorAll('[id^="dropdown-"]');
-                allDropdowns.forEach(d => d.classList.add('hidden'));
-            }
-        });
-
-        // Funcionalidad de búsqueda en tiempo real
+        // Búsqueda en tiempo real
         document.querySelector('input[placeholder*="Buscar"]').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('tbody tr');
+            const rows = document.querySelectorAll('tbody tr:not(:last-child)');
 
             rows.forEach(row => {
                 const text = row.textContent.toLowerCase();
@@ -385,68 +340,4 @@
             });
         });
     </script>
-    @endpush
-
-    @push('styles')
-    <style>
-        .hover\:bg-gray-50:hover {
-            background-color: #f9fafb;
-        }
-
-        .transition-colors {
-            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-duration: 150ms;
-        }
-
-        .shadow-md {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        .border-l-4 {
-            border-left-width: 4px;
-        }
-
-        .truncate {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .z-10 {
-            z-index: 10;
-        }
-
-        .ring-1 {
-            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
-        }
-
-        .ring-black {
-            --tw-ring-color: rgba(0, 0, 0, 1);
-        }
-
-        .ring-opacity-5 {
-            --tw-ring-opacity: 0.05;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-
-            .grid-cols-1 {
-                grid-template-columns: repeat(1, minmax(0, 1fr));
-            }
-
-            .flex-wrap {
-                flex-wrap: wrap;
-            }
-
-            .min-w-64 {
-                min-width: 100%;
-            }
-        }
-    </style>
-    @endpush
 </x-app-layout>

@@ -84,8 +84,12 @@ class Biopsia extends Model
     {
         return $query->whereNotNull('paciente_id');
     }
+    public function scopelistaBiopsias($query)
+    {
+        return $query->whereNotNull('lista_id');
+    }
 
-    // Scope para biopsias de mascotas
+    // Scope para biopsias de mascotaså
     public function scopeMascotas($query)
     {
         return $query->whereNotNull('mascota_id');
