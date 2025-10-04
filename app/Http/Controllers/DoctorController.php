@@ -15,6 +15,7 @@ class DoctorController extends Controller
         $doctores = Doctor::orderBy('nombre')->paginate(10);
         return view('doctores.index', compact('doctores'));
     }
+    
 
     // crear doctor - Solo admin
     public function create()
