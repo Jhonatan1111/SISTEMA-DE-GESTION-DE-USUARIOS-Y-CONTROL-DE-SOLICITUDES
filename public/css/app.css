@@ -1,0 +1,652 @@
+/* =========================
+   VARIABLES GLOBALES
+========================= */
+:root {
+    --color-bg: #f9fafb;
+    --color-text: #1f2937;
+    --color-card: #ffffff;
+    --color-primary: #3b82f6;
+    --color-secondary: #06b6d4;
+    --color-accent: #10b981;
+    --color-danger: #ef4444;
+    --radius: 12px;
+    --transition: all 0.3s ease-in-out;
+}
+
+/* 🌙 MODO OSCURO */
+.dark-mode {
+    --color-bg: #111827;
+    --color-text: #f3f4f6;
+    --color-card: #1f2937;
+    --color-primary: #3b82f6;
+    --color-secondary: #34d399;
+    --color-accent: #fbbf24;
+    --color-danger: #f87171;
+}
+
+/* =========================
+   RESET & BODY
+========================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+}
+
+/* =========================
+   CONTAINERS & GRID
+========================= */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    flex: 1;
+}
+
+.grid {
+    display: grid;
+    gap: 1.5rem;
+}
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 992px) {
+    .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+
+/* =========================
+   NAVBAR
+========================= */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: var(--color-card);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    flex-wrap: wrap;
+}
+.navbar a {
+    margin-left: 1rem;
+    font-weight: 500;
+}
+
+/* Botón Dark Mode */
+.toggle-dark {
+    cursor: pointer;
+    background: var(--color-primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    border: none;
+    transition: var(--transition);
+}
+.toggle-dark:hover {
+    background: var(--color-secondary);
+}
+
+/* =========================
+   BOTONES
+========================= */
+.btn {
+    vertical-align: auto; 
+    display: inline-block;
+    padding: 0.7rem 1.5rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    text-align: center;
+    transition: var(--transition);
+}
+.btn-primary { background: var(--color-primary); color: white; }
+.btn-secondary { background: var(--color-secondary); color: white; }
+.btn-danger { background: var(--color-danger); color: white; }
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+}
+
+.btn-primary:hover { background: var(); }
+.btn-outline:hover {
+    background: var(--color-primary);
+    color: white;
+}
+.w-100 { width: 100%; }
+
+/* =========================
+   TARJETAS
+========================= */
+.card {
+    background: var(--color-card);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    transition: var(--transition);
+    flex: 1 1 280px;
+    max-width: 100%;
+}
+.card:hover { transform: translateY(-5px); }
+
+/* =========================
+   FORMULARIOS
+========================= */
+input, select, textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: var(--radius);
+    border: 1px solid #d1d5db;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+}
+input:focus, select:focus, textarea:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: 0 0 6px rgba(37, 99, 235, 0.3);
+}
+
+/* =========================
+   AUTENTICACIÓN
+========================= */
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    margin: 60px auto;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    text-align: center;
+    animation: fadeIn 1s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+
+.auth-info {
+    font-size: 0.95rem;
+    color: var(--color-text);
+    margin-bottom: 1.5rem;
+}
+
+/* =========================
+   ANIMACIONES
+========================= */
+.fade-in { animation: fadeIn 0.8s ease-in-out; }
+.scale-hover:hover { transform: scale(1.05); }
+
+/* =========================
+   BOTÓN GRADIENTE
+========================= */
+.btn-gradient {
+    background: linear-gradient(90deg, #3b82f6, #06b6d4, #10b981);
+    background-size: 200% 200%;
+    color: #fff;
+    font-weight: bold;
+    padding: 0.8rem;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    animation: gradientMove 4s linear infinite;
+}
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5);
+}
+
+/* =====
+ Dashboard 
+ ===== */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+.dashboard-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: #004d80;
+}
+
+/* Contenedor de tarjetas */
+.card-container {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    color: #0677d4;
+}
+
+/* Tarjeta */
+.card-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+.card-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+.card-text {
+    font-size: 0.95rem;
+    color: #033b5c;
+}
+.card {
+    background: #c0f6ff;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    width: 220px;
+    transition: transform 0.3s ease;
+}   
+
+/* ========================= 
+ADMINISTRACIÓN 
+========================= */
+
+/* Contenedor principal */
+.admin-container {
+    max-width: 1900px; /* ✅ Aumentado para que todo quepa bien */
+    margin: 0 auto;
+    padding: 2rem;
+    flex: 1;
+}
+
+/* Encabezado */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0.3rem;
+}
+
+.admin-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #004d80;
+}
+
+/* Botón crear paciente */
+.admin-header .btn {
+    padding: 0.6rem 1.5rem;
+    font-weight: bold;
+    border-radius: var(--radius);
+    background: var(--color-primary);
+    color: white;
+    transition: var(--transition);
+}
+.admin-header .btn:hover {
+    background: var(--color-secondary);
+}
+
+/* Mensajes */
+.alert-success,
+.alert-error {
+    padding: 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.alert-success {
+    background: #d1fae5;
+    color: #065f46;
+}
+.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* ========================= 
+ADMINISTRACIÓN DE USUARIOS 
+========================= */
+
+/* Contenedor principal */
+.admin-container {
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 2rem;
+}
+
+/* Encabezado */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0.3rem;
+}
+
+.admin-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #004d80;
+}
+
+/* Botón crear usuario */
+.admin-header .btn {
+    padding: 0.6rem 1.5rem;
+    font-weight: bold;
+    border-radius: var(--radius);
+    background: var(--color-primary);
+    color: white;
+    transition: var(--transition);
+}
+.admin-header .btn:hover {
+    background: var(--color-secondary);
+}
+
+/* Mensajes de éxito/error */
+.alert-success,
+.alert-error {
+    padding: 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.alert-success {
+    background: #d1fae5;
+    color: #065f46;
+}
+.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Tabla de usuarios */
+.table-container {
+    background: var(--color-card);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    table-layout: auto; /* que las columnas se adapten al contenido */
+    word-wrap: break-word; /* que se parta el texto si es largo */
+}
+
+.table thead {
+    background: #bfdef8;
+    color: #004466;
+    font-weight: bold;
+}
+
+.table th,
+.table td {
+    padding: 0.9rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 0.95rem;
+    vertical-align: auto; /* alinea todo  */
+}
+
+.table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table tbody tr:hover {
+    background: #f1defc;
+    transition: var(--transition);
+}
+
+/* Ajustes por columna para no desordenar */
+.table td:nth-child(1) { /* DUI */
+    min-width: 115px;
+    max-width: 120px;
+    white-space: normal;
+}
+.table td:nth-child(2) { /* Nombre completo */
+    min-width: 150px;
+    max-width: 200px;
+    white-space: normal;
+}
+.table td:nth-child(3) { /* Fecha de nacimiento */
+    min-width: 130px;
+    max-width: 150px;
+    white-space: normal;
+}
+.table td:nth-child(4) { /* Teléfono */
+    min-width: 130px;
+    max-width: 150px;
+    white-space: normal;
+}
+.table td:nth-child(5) { /* Género */
+    min-width: 90px;
+    max-width: 100px;
+    white-space: normal;
+}
+.table td:nth-child(6) { /* Estado */
+    min-width: 90px;
+    max-width: 100px;
+    white-space: normal;
+}
+
+.table td:nth-child(7) { /* Correo */
+    min-width: 180px;
+    max-width: 250px;
+    white-space: normal;
+    word-break: break-word;
+}
+.table td:nth-child(8) { /* Dirección */
+    min-width: 220px;
+    max-width: 350px;
+    white-space: normal;
+    word-break: break-word;
+}
+
+
+
+/* Acciones dentro de la tabla */
+.table-actions {
+    display: flex;
+    gap: 0.5rem;
+    white-space: nowrap; /* evita que "Editar/Eliminar" se rompan */
+}
+.table-actions .btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .table th,
+    .table td {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+    }
+    .table-actions {
+        flex-direction: column;
+    }
+}
+
+
+/* =========================
+   FORMULARIOS
+========================= */
+.form-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--color-card);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: var(--transition);
+}
+
+/* Título */
+.create-title{
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #004d80;
+    margin-bottom: 0.3rem;
+}
+
+/* Inputs con iconos */
+.input-group {
+    position: relative;
+    margin-bottom: 1.2rem;
+}
+
+.input-group input,
+.input-group select,
+.input-group textarea {
+    width: 100%;
+    padding: 0.8rem 0.8rem 0.8rem 2.8rem;
+    border-radius: var(--radius);
+    border: 1px solid #01235a;
+    background-color: #e7e7e7; /* gris por defecto */
+    transition: all 0.3s ease-in-out;
+    outline: none;
+}
+
+/* Cuando está escribiendo */
+.input-group input:focus,
+.input-group select:focus,
+.input-group textarea:focus {
+    background-color: #d7f3ff; /* celeste claro */
+    border-color: #00aaff;
+    box-shadow: 0 0 6px rgba(0, 170, 255, 0.5);
+}
+
+/* Cuando el input ya tiene texto y pierde el foco */
+.input-group input:not(:placeholder-shown),
+.input-group textarea:not(:placeholder-shown) {
+    background-color: #d7f3ff; /* se mantiene celeste */
+    border-color: #00aaff;
+}
+
+/* Para selects (cuando ya eligieron una opción) */
+.input-group select:valid {
+    background-color: #d7f3ff;
+    border-color: #00aaff;
+}
+
+
+
+.input-group input:focus,
+.input-group select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 6px rgba(59, 130, 246, 0.3);
+    outline: none;
+}
+.input-group i {
+    position: absolute;
+    top: 50%;
+    left: 0.8rem;
+    transform: translateY(-50%);
+    color: var(--color-primary);
+    font-size: 1.2rem;
+}
+
+/* Botones */
+.btn-submit {
+    width: 30%;
+    padding: 0.8rem;
+    font-weight: 700;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(90deg, #3b82f6, #06b6d4, #10b981);
+    background-size: 200% 200%;
+    transition: all 0.3s ease;
+    animation: gradientMove 4s linear infinite;
+}
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59,130,246,0.5);
+}
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.btn-cancel {
+    width: 20%;
+    background: #6b7280; 
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    display: flex;         
+    align-items: center;    
+    justify-content: center;
+    text-align: center;     
+    transition: var(--transition);
+}
+
+.btn-cancel:hover {
+    background: #4b5563; 
+}
+
+
+/* Grid responsive para campos dobles */
+.grid-2 {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+}
+@media (max-width: 768px) {
+    .grid-2 { grid-template-columns: 1fr; }
+}
+
+/* Mensajes de error */
+.input-error {
+    font-size: 0.85rem;
+    color: var(--color-danger);
+    margin-top: 0.25rem;
+}
+
+/* Texto de ayuda */
+.form-container p {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+

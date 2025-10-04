@@ -1,117 +1,35 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+        <div class="admin-header">
+            <h2 class="admin-title">
                 {{ __('Gestión de Mascotas') }}
             </h2>
             @if (auth()->user()->role === 'admin')
-                <a href="{{ route('mascotas.create') }}"
-                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow">
+                <a href="{{ route('mascotas.create') }}" class="btn">
                     {{ __('Nueva Mascota') }}
                 </a>
             @endif
         </div>
     </x-slot>
 
-    <style>
-        body {
-            background-color: #f0f9ff; 
-            font-family: 'Segoe UI', sans-serif;
-        }
+    <div class="admin-container">
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #fff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-
-        th {
-            background-color: #2563eb;
-            color: white;
-            text-align: left;
-            padding: 12px;
-            font-weight: 600;
-        }
-
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #e5e7eb;
-        }
-
-        tr:hover {
-            background-color: #f9fafb;
-        }
-
-        .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-            padding: 10px 15px;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-        }
-
-        .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            padding: 10px 15px;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-        }
-
-        .btn {
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-edit {
-            background: #3b82f6;
-            color: white;
-        }
-        .btn-edit:hover {
-            background: #3b82f6;
-        }
-
-        .btn-toggle {
-            background: #f59e0b;
-            color: white;
-        }
-        .btn-toggle:hover {
-            background: #d97706;
-        }
-
-        .btn-delete {
-            background: #ef4444;
-            color: white;
-        }
-        .btn-delete:hover {
-            background: #b91c1c;
-        }
-    </style>
-
-    <div class="py-8 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
-            <!-- Mensajes de exito -->
-            @if (session('success'))
+        <!-- Mensajes de éxito -->
+        @if (session('success'))
             <div class="alert-success">{{ session('success') }}</div>
-            @endif
-            {{-- mensaje de error --}}
-            @if (session('error'))
-            <div class="alert-error">{{ session('error') }}</div>
-            @endif
+        @endif
 
-            <!-- Tabla de pacientes -->
-             <div class="overflow-x-auto">
-            <table>
+        <!-- Mensajes de error -->
+        @if (session('error'))
+            <div class="alert-error">{{ session('error') }}</div>
+        @endif
+
+        <!-- Tabla de mascotas -->
+        <div class="table-container">
+            <table class="table">
                 <thead>
                     <tr>
-                        <th>Nombre Completo</th>
+                        <th>Nombre</th>
                         <th>Edad</th>
                         <th>Sexo</th>
                         <th>Especie</th>
@@ -124,47 +42,45 @@
                 </thead>
                 <tbody>
                     @forelse($mascotas as $mascota)
-                    <tr>
-                        <td>{{ $mascota->nombre }}</td>
-                        <td>{{ $mascota->edad }}</td>
-                        <td>{{ ucfirst($mascota->sexo) }}</td>
-                        <td>{{ $mascota->especie }}</td>
-                        <td>{{ $mascota->raza }}</td>
-                        <td>{{ $mascota->propietario }}</td>
-                        <td>{{ $mascota->correo ?? 'Sin correo' }}</td>
-                        <td>{{ $mascota->celular }}</td>
-                        
-                            @if (auth()->user()->role === 'admin')
-                                    <td class="space-x-2">
-                                        <a href="{{ route('mascotas.edit', $mascota) }}" class="btn btn-edit">Editar</a>
+                        <tr>
+                            <td>{{ $mascota->nombre }}</td>
+                            <td>{{ $mascota->edad }}</td>
+                            <td>{{ ucfirst($mascota->sexo) }}</td>
+                            <td>{{ $mascota->especie }}</td>
+                            <td>{{ $mascota->raza }}</td>
+                            <td>{{ $mascota->propietario }}</td>
+                            <td>{{ $mascota->correo ?? 'Sin correo' }}</td>
+                            <td>{{ $mascota->celular }}</td>
+                            <td class="table-actions">
+                                <a href="{{ route('mascotas.edit', $mascota) }}" class="btn">Editar</a>
 
-                                        <form action="{{ route('mascotas.destroy', $mascota) }}" method="POST" style="display: inline;"
-                                            onsubmit="return confirm('¿Está seguro de eliminar este mascota? Esta acción no se puede deshacer.')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-delete">Eliminar</button>
-                                        </form>
-                                    </td>
+                                @if (auth()->user()->role === 'admin')
+                                    <form action="{{ route('mascotas.destroy', $mascota) }}" method="POST" class="inline-form"
+                                          onsubmit="return confirm('¿Está seguro de eliminar esta mascota? Esta acción no se puede deshacer.')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn">Eliminar</button>
+                                    </form>
                                 @endif
+                            </td>
                         </tr>
                     @empty
-                    <tr>
-                        <td colspan="{{ auth()->user()->role === 'admin' ? '8' : '7' }}" style="text-align: center;">
-                            No hay mascotas registradas
-                        </td>
-                    </tr>
+                        <tr>
+                            <td colspan="9" style="text-align: center; font-style: italic; color: #7f8c8d;">
+                                No hay mascotas registradas
+                            </td>
+                        </tr>
                     @endforelse
                 </tbody>
             </table>
-            </div>
+        </div>
 
-            <!-- Paginación -->
-            @if ($mascotas->hasPages())
-            <div>
+        <!-- Paginación -->
+        @if ($mascotas->hasPages())
+            <div class="paginacion">
                 {{ $mascotas->links() }}
             </div>
-            @endif
+        @endif
 
-        </div>
     </div>
 </x-app-layout>

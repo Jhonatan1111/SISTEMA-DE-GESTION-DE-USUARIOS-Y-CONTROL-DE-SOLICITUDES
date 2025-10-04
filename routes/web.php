@@ -37,12 +37,13 @@ Route::middleware('auth')->group(function () {
     Route::get('mascotas/{mascota}/edit', [MascotaController::class, 'edit'])->name('mascotas.edit');
     Route::put('mascotas/{mascota}', [MascotaController::class, 'update'])->name('mascotas.update');
     Route::delete('mascotas/{mascota}', [MascotaController::class, 'destroy'])->name('mascotas.destroy');
-
+    // Ruta resultados
+    Route::get('resultados', [ResultadoController::class, 'index'])->name('resultados.index');
+    // Rutas de doctores que requieren permisos de admin
     // LISTAS DE BIOPSIAS
     Route::get('listas/biopsias', [ListaBiopsiaController::class, 'index'])->name('listas.biopsias.index');
     Route::get('listas/biopsias/create', [ListaBiopsiaController::class, 'create'])->name('listas.biopsias.create');
     Route::post('listas/biopsias', [ListaBiopsiaController::class, 'store'])->name('listas.biopsias.store');
-
     // PERMISOS DE ADMINISTRADOR
     Route::middleware(['role:admin'])->group(function () {
 
