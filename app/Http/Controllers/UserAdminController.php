@@ -25,13 +25,23 @@ class UserAdminController extends Controller
     // Guardar nuevo usuario
     public function store(Request $request)
     {
+        $request->merge([
+            'nombre' => trim($request->nombre),
+            'apellido' => trim($request->apellido),
+            'celular' => trim($request->celular),
+            'email' => trim($request->email),
+        ]);
         $request->validate([
-            'nombre' => 'required|string|max:255',
-            'apellido' => 'required|string|max:255',
+            'nombre' => 'required|string|max:255|regex:/^[a-záéíóúñA-ZÁÉÍÓÚÑ\s]+$/',
+            'apellido' => 'required|string|max:255|regex:/^[a-záéíóúñA-ZÁÉÍÓÚÑ\s]+$/',
             'celular' => 'nullable|digits:8|unique:usuarios,celular',
             'email' => 'required|email|unique:usuarios,email',
             'password' => 'required|min:4|confirmed',
             'role' => 'required|in:admin,empleado'
+        ], [
+            'nombre.regex' => 'El nombre solo puede contener letras y espacios',
+            'apellido.regex' => 'El apellido solo puede contener letras y espacios',
+            'celular.digits' => 'El celular debe tener exactamente 8 dígitos numéricos',
         ]);
 
         User::create([
@@ -98,6 +108,4 @@ class UserAdminController extends Controller
         return redirect()->route('admin.usuarios.index')
             ->with('success', 'Usuario eliminado exitosamente');
     }
-
-
 }

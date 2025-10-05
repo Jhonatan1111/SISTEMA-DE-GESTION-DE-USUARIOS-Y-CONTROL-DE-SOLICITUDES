@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +9,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-             <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
@@ -18,7 +19,7 @@
     <script>
         // Modo oscuro persistente
         document.addEventListener('DOMContentLoaded', () => {
-            if(localStorage.getItem('dark-mode') === 'true') {
+            if (localStorage.getItem('dark-mode') === 'true') {
                 document.body.classList.add('dark-mode');
             }
         });
@@ -29,6 +30,7 @@
         }
     </script>
 </head>
+
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
         <!-- Navbar -->
@@ -41,22 +43,22 @@
 
             <!-- Solo botón de cerrar sesión -->
             @auth
-                <div class="flex items-center gap-4">
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn-logout">Cerrar sesión</button>
-                    </form>
-                </div>
+            <div class="flex items-center gap-4">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn-logout">Cerrar sesión</button>
+                </form>
+            </div>
             @endauth
         </nav>
 
         <!-- Page Heading -->
         @isset($header)
-            <header class="bg-white dark:bg-gray-800 shadow">
-                <div class="max-w-[1900px] mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
+        <header class="bg-white dark:bg-gray-800 shadow">
+            <div class="max-w-[1900px] mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                {{ $header }}
+            </div>
+        </header>
         @endisset
 
         <!-- Page Content -->
@@ -69,5 +71,41 @@
             &copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }} - Todos los derechos reservados
         </footer>
     </div>
+
+    <!-- SEGURIDAD: Deshabilitar botones del navegador -->
+    @auth
+    <script>
+        (function() {
+            // Función para hacer logout usando el formulario
+            function hacerLogout() {
+                const form = document.getElementById('logout-form');
+                if (form) {
+                    form.submit();
+                }
+            }
+
+            // Reemplazar el historial constantemente
+            history.pushState(null, null, location.href);
+
+            window.addEventListener('popstate', function() {
+                history.pushState(null, null, location.href);
+
+                // Mostrar alerta y cerrar sesión
+                alert('Por seguridad, debes usar solo los botones del sistema. Tu sesión se cerrará.');
+                hacerLogout();
+            });
+
+            // Detectar si llegaron con el botón atrás (navegación desde caché)
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                    hacerLogout();
+                }
+            });
+        })();
+    </script>
+    @endauth
+
+    @stack('scripts')
 </body>
+
 </html>

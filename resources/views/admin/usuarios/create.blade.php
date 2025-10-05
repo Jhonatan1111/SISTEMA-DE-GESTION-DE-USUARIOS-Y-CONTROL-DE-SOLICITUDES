@@ -8,7 +8,7 @@
     <div class="py-8 px-4 sm:px-6 lg:px-8">
         <div class="max-w-4xl mx-auto">
             <div class="form-container">
-                <form action="{{ route('admin.usuarios.store') }}" method="POST">
+                <form action="{{ route('admin.usuarios.store') }}" method="POST" id="formUsuario">
                     @csrf
 
                     <!-- Nombre y Apellido -->
@@ -80,4 +80,108 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('formUsuario');
+            const nombre = document.getElementById('nombre');
+            const apellido = document.getElementById('apellido');
+            const celular = document.getElementById('celular');
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            const passwordConfirm = document.getElementById('password_confirmation');
+
+            // NOMBRE - Solo letras y espacios
+            if (nombre) {
+                nombre.addEventListener('input', function(e) {
+                    this.value = this.value.trimStart();
+                    this.value = this.value.replace(/[^a-záéíóúñA-ZÁÉÍÓÚÑ\s]/g, '');
+                });
+                nombre.addEventListener('paste', function(e) {
+                    setTimeout(() => {
+                        this.value = this.value.trimStart().replace(/[^a-záéíóúñA-ZÁÉÍÓÚÑ\s]/g, '');
+                    }, 10);
+                });
+            }
+
+            // APELLIDO - Solo letras y espacios
+            if (apellido) {
+                apellido.addEventListener('input', function(e) {
+                    this.value = this.value.trimStart();
+                    this.value = this.value.replace(/[^a-záéíóúñA-ZÁÉÍÓÚÑ\s]/g, '');
+                });
+                apellido.addEventListener('paste', function(e) {
+                    setTimeout(() => {
+                        this.value = this.value.trimStart().replace(/[^a-záéíóúñA-ZÁÉÍÓÚÑ\s]/g, '');
+                    }, 10);
+                });
+            }
+
+            // CELULAR - Solo números, máximo 8 dígitos
+            if (celular) {
+                celular.addEventListener('input', function(e) {
+                    this.value = this.value.trimStart();
+                    this.value = this.value.replace(/[^0-9]/g, '');
+                    if (this.value.length > 8) {
+                        this.value = this.value.slice(0, 8);
+                    }
+                });
+                celular.addEventListener('paste', function(e) {
+                    setTimeout(() => {
+                        this.value = this.value.trimStart().replace(/[^0-9]/g, '').slice(0, 8);
+                    }, 10);
+                });
+            }
+
+            // EMAIL - Sin espacios al inicio
+            if (email) {
+                email.addEventListener('input', function(e) {
+                    this.value = this.value.trimStart();
+                });
+                email.addEventListener('paste', function(e) {
+                    setTimeout(() => {
+                        this.value = this.value.trimStart();
+                    }, 10);
+                });
+            }
+
+            // PASSWORD - Sin espacios al inicio
+            if (password) {
+                password.addEventListener('input', function(e) {
+                    this.value = this.value.trimStart();
+                });
+                password.addEventListener('paste', function(e) {
+                    setTimeout(() => {
+                        this.value = this.value.trimStart();
+                    }, 10);
+                });
+            }
+
+            // PASSWORD CONFIRMATION - Sin espacios al inicio
+            if (passwordConfirm) {
+                passwordConfirm.addEventListener('input', function(e) {
+                    this.value = this.value.trimStart();
+                });
+                passwordConfirm.addEventListener('paste', function(e) {
+                    setTimeout(() => {
+                        this.value = this.value.trimStart();
+                    }, 10);
+                });
+            }
+
+            // LIMPIAR TODO ANTES DE ENVIAR
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    nombre.value = nombre.value.trim();
+                    apellido.value = apellido.value.trim();
+                    celular.value = celular.value.trim();
+                    email.value = email.value.trim();
+                    password.value = password.value.trim();
+                    passwordConfirm.value = passwordConfirm.value.trim();
+                });
+            }
+        });
+    </script>
+    @endpush
 </x-app-layout>
