@@ -17,7 +17,7 @@ class BiopsiaPacienteController extends Controller
         $biopsias = Biopsia::with(['paciente', 'doctor', 'lista_biopsia'])
             ->personas()
             ->ListaBiopsias()
-            ->activas()
+            // ->activas()
             ->orderBy('fecha_recibida',  'desc')
             ->paginate(10);
 
@@ -128,13 +128,16 @@ class BiopsiaPacienteController extends Controller
             'doctor_id.required' => 'Debe seleccionar un doctor',
             'paciente_id.required' => 'Debe seleccionar un paciente'
         ]);
-
         $biopsia->update([
-            'nbiopsia' => $request->nbiopsia,
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
             'paciente_id' => $request->paciente_id,
             'doctor_id' => $request->doctor_id,
+            'lista_id' => $request->lista_id ?? null,
+            'diagnostico' => $request->diagnostico,
+            'descripcion' => $request->descripcion,
+            'microscopico' => $request->microscopico,
+            'macroscopico' => $request->macroscopico,
             'mascota_id' => null,
         ]);
         $biopsia->save();
