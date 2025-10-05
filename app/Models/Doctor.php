@@ -45,8 +45,8 @@ class Doctor extends Model
     // }
 
     // Relacion uno a muchos con biopsias en donde 1 doctor puede tener muchas biopsias
-    // public function biopsias(){
-    //     return $this->hasMany(Biopsia::class, 'doctor_id');
-    // }
+    public function biopsias(){
+        return $this->hasMany(Biopsia::class, 'doctor_id');
+    }
 
 }

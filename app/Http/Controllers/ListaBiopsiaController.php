@@ -24,7 +24,8 @@ class ListaBiopsiaController extends Controller
     public function create()
     {
         //
-        return view('listas.biopsias.create');
+        $codigoGenerado = ListaBiopsia::generarCodigoLista();
+        return view('listas.biopsias.create', compact('codigoGenerado'));
     }
 
     /**
@@ -32,20 +33,29 @@ class ListaBiopsiaController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        $request->validate([
-            'codigo' => 'required|string|max:20|unique:lista_biopsias,codigo',
+        $codigoGenerado = ListaBiopsia::generarCodigoLista();
+
+        $validated = $request->validate([
             'diagnostico' => 'required|string',
-            'macroscopico' => 'required|string',
-            'microscopico' => 'required|string',
-            'descripcion' => 'required|string',
+            'macroscopico' => 'nullable|string',
+            'microscopico' => 'nullable|string',
+            'descripcion' => 'nullable|string',
         ]);
 
-        // $listaBiopsia = new ListaBiopsia();
-        // $listaBiopsia->fill($request->all());
-        // $listaBiopsia->save();
+        try {
+            ListaBiopsia::create([
+                'codigo' => $codigoGenerado,
+                'diagnostico' => $validated['diagnostico'],
+                'macroscopico' => $validated['macroscopico'] ?? null,
+                'microscopico' => $validated['microscopico'] ?? null,
+                'descripcion' => $validated['descripcion'] ?? null,
+            ]);
 
-        ListaBiopsia::create($request->all());
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Error al crear la lista: ' . $e->getMessage());
+        }
 
         return redirect()->route('listas.biopsias.index')->with('success', 'Biopsia creada exitosamente.');
     }

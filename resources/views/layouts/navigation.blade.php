@@ -31,6 +31,9 @@
                     <x-nav-link :href="route('mascotas.index')" :active="request()->routeIs('mascotas.*')">
                         Mascotas
                     </x-nav-link>
+                    <x-nav-link :href="route('biopsias.index')" :active="request()->routeIs('biopsias.*')">
+                        Biopsias
+                    </x-nav-link>
                     <x-nav-link :href="route('listas.biopsias.index')" :active="request()->routeIs('listas.biopsias.*')">
                         Listas de Biopsias
                     </x-nav-link>

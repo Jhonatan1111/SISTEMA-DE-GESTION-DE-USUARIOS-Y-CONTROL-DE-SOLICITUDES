@@ -11,22 +11,29 @@
                 <div class="p-6 text-gray-900">
 
                     <form action="{{ route('listas.biopsias.store') }}" method="POST">
-                        @csrf
+                        @csrf 
                         <div class="mb-4">
-                            <label for="codigo" class="block text-sm font-medium text-gray-700">
-                                Código * (Ej: BIO-001, PIEL-01, etc)
+                            <label for="codigo_generado" class="block text-sm font-medium text-gray-700">
+                                Código (Auto-generado)
                             </label>
-                            <input type="text"
-                                name="codigo"
-                                id="codigo"
-                                maxlength="20"
-                                value="{{ old('codigo') }}"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 uppercase"
-                                required
-                                style="text-transform: uppercase;">
-                            @error('codigo')
-                            <span class="text-red-600 text-sm">{{ $message }}</span>
-                            @enderror
+                            <div class="mt-1 relative">
+                                <input type="text"
+                                    id="codigo_generado"
+                                    value="{{ $codigoGenerado }}"
+                                    class="block w-full rounded-md border-2 border-green-400 bg-green-50 shadow-sm uppercase font-bold text-green-700 text-lg px-4 py-2"
+                                    readonly>
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="mt-2 text-sm text-gray-600">
+                                <svg class="inline w-4 h-4 mr-1 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                </svg>
+                                Este código <strong class="text-green-700">{{ $codigoGenerado }}</strong> se asignará automáticamente al guardar
+                            </p>
                         </div>
 
                         <div class="mb-4">
