@@ -51,13 +51,13 @@ class ListaBiopsiaController extends Controller
                 'descripcion' => $validated['descripcion'] ?? null,
             ]);
 
-            return redirect()->route('listas.biopsias.index')
-                ->with('success', "Lista {$codigoGenerado} creada exitosamente");
         } catch (\Exception $e) {
             return back()
                 ->withInput()
                 ->with('error', 'Error al crear la lista: ' . $e->getMessage());
         }
+
+        return redirect()->route('listas.biopsias.index')->with('success', 'Biopsia creada exitosamente.');
     }
 
     public function edit(ListaBiopsia $listaBiopsia)
@@ -81,7 +81,7 @@ class ListaBiopsiaController extends Controller
 
         $listaBiopsia->update($request->only([
             'descripcion',
-            'diagnostico',
+            'diagnostico', 
             'macroscopico',
             'microscopico'
         ]));

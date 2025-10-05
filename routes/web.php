@@ -20,7 +20,6 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-
     // PERFIL
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -58,7 +57,10 @@ Route::middleware('auth')->group(function () {
     Route::post('biopsias/{nbiopsia}/archivar', [BiopsiaArchivarController::class, 'archivar'])->name('biopsias.archivar');
     Route::post('biopsias/{nbiopsia}/restaurar', [BiopsiaArchivarController::class, 'restaurar'])->name('biopsias.restaurar');
     Route::post('biopsias/archivar-antiguas', [BiopsiaArchivarController::class, 'archivarAntiguas'])->name('biopsias.archivar-antiguas');
-
+    Route::delete('mascotas/{mascota}', [MascotaController::class, 'destroy'])->name('mascotas.destroy');
+    // Ruta resultados
+    Route::get('resultados', [ResultadoController::class, 'index'])->name('resultados.index');
+    // Rutas de doctores que requieren permisos de admin
     // LISTAS DE BIOPSIAS
     Route::get('listas/biopsias', [ListaBiopsiaController::class, 'index'])->name('listas.biopsias.index');
     Route::get('listas/biopsias/create', [ListaBiopsiaController::class, 'create'])->name('listas.biopsias.create');
@@ -67,13 +69,10 @@ Route::middleware('auth')->group(function () {
         ->name('biopsias.personas.buscar-lista');
     Route::get('/biopsias-personas/buscar-lista-codigo/{codigo}', [BiopsiaPacienteController::class, 'buscarListaPorCodigo'])
         ->name('biopsias.personas.buscar-lista-codigo');
-
     Route::get('biopsias/{nbiopsia}', [BiopsiaController::class, 'show'])->name('biopsias.show'); // ← AGREGAR ESTA LÍNEA
 
     // RUTA PARA ACCESO DE ADMINISTRADORES
     Route::middleware(['role:admin'])->group(function () {
-
-
         // DOCTORES
         Route::get('doctores/create', [DoctorController::class, 'create'])->name('doctores.create');
         Route::post('doctores', [DoctorController::class, 'store'])->name('doctores.store');
@@ -96,7 +95,6 @@ Route::middleware('auth')->group(function () {
         Route::get('biopsias/personas/{nbiopsia}/edit', [BiopsiaPacienteController::class, 'edit'])->name('biopsias.personas.edit');
         Route::put('biopsias/personas/{nbiopsia}', [BiopsiaPacienteController::class, 'update'])->name('biopsias.personas.update');
         Route::patch('biopsias/personas/{nbiopsia}/toggle-estado', [BiopsiaPacienteController::class, 'toggleEstado'])->name('biopsias.personas.toggle-estado');
-
         // LISTAS DE BIOPSIAS
         Route::get('listas/biopsias/{listaBiopsia}/edit', [ListaBiopsiaController::class, 'edit'])->name('listas.biopsias.edit');
         Route::put('listas/biopsias/{listaBiopsia}', [ListaBiopsiaController::class, 'update'])->name('listas.biopsias.update');

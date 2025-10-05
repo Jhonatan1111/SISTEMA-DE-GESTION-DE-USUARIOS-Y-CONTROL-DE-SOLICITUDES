@@ -37,7 +37,6 @@
                     <x-nav-link :href="route('listas.biopsias.index')" :active="request()->routeIs('listas.biopsias.*')">
                         Listas de Biopsias
                     </x-nav-link>
-
                 </div>
             </div>
 
