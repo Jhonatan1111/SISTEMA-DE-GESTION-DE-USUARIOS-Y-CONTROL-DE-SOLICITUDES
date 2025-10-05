@@ -33,6 +33,17 @@ class LoginRequest extends FormRequest
     }
 
     /**
+     * Limpia los espacios al inicio y final de email y contraseña
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'email' => trim($this->email),
+            'password' => trim($this->password),
+        ]);
+    }
+
+    /**
      * Attempt to authenticate the request's credentials.
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -80,6 +91,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }
