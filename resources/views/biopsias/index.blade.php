@@ -11,6 +11,10 @@
                     class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
                     Personas
                 </a>
+                <a href="{{ route('biopsias.mascotas.index') }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
+                    Mascotas
+                </a>
             </nav>
         </div>
 

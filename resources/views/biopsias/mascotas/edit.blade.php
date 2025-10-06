@@ -8,11 +8,11 @@
                     Biopsias
                 </a>
                 <a href="{{ route('biopsias.personas.index') }}"
-                    class="px-4 py-2 text-sm font-medium bg-white text-gray-900 rounded-md shadow-sm">
+                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
                     Personas
                 </a>
-                <a href="{{ route('mascotas.index') }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
+                <a href="{{ route('biopsias.mascotas.index') }}"
+                    class="px-4 py-2 text-sm font-medium bg-white text-gray-900 rounded-md shadow-sm">
                     Mascotas
                 </a>
             </nav>
@@ -38,7 +38,7 @@
 
         <!-- Formulario -->
         <div class="bg-white shadow-md rounded-lg p-6">
-            <form action="{{ route('biopsias.personas.update', $biopsia->nbiopsia) }}" method="POST">
+            <form action="{{ route('biopsias.mascotas.update', $biopsia->nbiopsia) }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -64,19 +64,19 @@
                             required>
                     </div>
 
-                    <!-- Paciente -->
+                    <!-- Mascota -->
                     <div>
-                        <label for="paciente_id" class="block text-sm font-medium text-gray-700 mb-2">
-                            Paciente <span class="text-red-500">*</span>
+                        <label for="mascota_id" class="block text-sm font-medium text-gray-700 mb-2">
+                            Mascota <span class="text-red-500">*</span>
                         </label>
-                        <select id="paciente_id" name="paciente_id"
+                        <select id="mascota_id" name="mascota_id"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                             required>
-                            <option value="">Seleccione un paciente</option>
-                            @foreach($pacientes as $paciente)
-                            <option value="{{ $paciente->id }}"
-                                {{ old('paciente_id', $biopsia->paciente_id) == $paciente->id ? 'selected' : '' }}>
-                                {{ $paciente->nombre }} {{ $paciente->apellido }} - {{ $paciente->dui }}
+                            <option value="">Seleccione una mascota</option>
+                            @foreach($mascotas as $mascota)
+                            <option value="{{ $mascota->id }}"
+                                {{ old('mascota_id', $biopsia->mascota_id) == $mascota->id ? 'selected' : '' }}>
+                                {{ $mascota->nombre }} - {{ $mascota->propietario }} ({{ $mascota->edad }} años)
                             </option>
                             @endforeach
                         </select>
@@ -129,7 +129,7 @@
                             <div class="flex gap-2">
                                 <input type="text"
                                     id="buscar_codigo"
-                                    placeholder="Ej: BIO-001..."
+                                    placeholder="Ej: L001..."
                                     class="flex-1 px-4 py-2 border border-gray-300 rounded-lg uppercase"
                                     style="text-transform: uppercase;">
                                 <button type="button" id="btn_buscar_codigo"
@@ -209,7 +209,7 @@
 
                 <!-- Botones -->
                 <div class="flex justify-between mt-8 pt-6 border-t">
-                    <a href="{{ route('biopsias.personas.index') }}"
+                    <a href="{{ route('biopsias.mascotas.index') }}"
                         class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
                         Cancelar
                     </a>
@@ -227,7 +227,7 @@
         document.getElementById('lista_id').addEventListener('change', function() {
             const listaId = this.value;
             if (listaId) {
-                cargarLista(`/biopsias-personas/buscar-lista/${listaId}`);
+                cargarLista(`/biopsias-mascotas/buscar-lista/${listaId}`);
                 document.getElementById('buscar_codigo').value = '';
             }
         });
@@ -255,7 +255,7 @@
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
-            fetch(`/biopsias-personas/buscar-lista-codigo/${codigo}`)
+            fetch(`/biopsias-mascotas/buscar-lista-codigo/${codigo}`)
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {

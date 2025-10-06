@@ -16,9 +16,8 @@ class BiopsiaPacienteController extends Controller
     {
         $biopsias = Biopsia::with(['paciente', 'doctor', 'lista_biopsia'])
             ->personas()
-            ->ListaBiopsias()
-            // ->activas()
-            ->orderBy('fecha_recibida',  'desc')
+            // ->ListaBiopsias()
+            ->orderBy('fecha_recibida',  'asc')
             ->paginate(10);
 
         return view('biopsias.personas.index', compact('biopsias'));

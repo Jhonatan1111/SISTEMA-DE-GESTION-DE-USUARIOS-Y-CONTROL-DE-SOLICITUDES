@@ -58,11 +58,23 @@
     </div>
 
     <div class="section">
-        <span class="label">Paciente:</span> {{ $biopsia->paciente->nombre }} {{ $biopsia->paciente->apellido }}
+        <span class="label">Mascota:</span> {{ $biopsia->mascota->nombre }}
     </div>
 
     <div class="section">
-        <span class="label">DUI:</span> {{ $biopsia->paciente->dui ?? 'N/A' }}
+        <span class="label">Propietario:</span> {{ $biopsia->mascota->propietario ?? 'N/A' }}
+    </div>
+
+    <div class="section">
+        <span class="label">Raza:</span> {{ $biopsia->mascota->raza ?? 'N/A' }}
+    </div>
+
+    <div class="section">
+        <span class="label">Edad:</span> {{ $biopsia->mascota->edad }} años
+    </div>
+
+    <div class="section">
+        <span class="label">Sexo:</span> {{ $biopsia->mascota->sexo === 'M' ? 'Masculino' : 'Femenino' }}
     </div>
 
     <div class="section">
@@ -73,6 +85,34 @@
         <span class="label">Diagnóstico Clínico:</span><br>
         <p style="margin-left: 150px; margin-top: 5px;">{{ $biopsia->diagnostico_clinico }}</p>
     </div>
+
+    @if($biopsia->diagnostico)
+    <div class="section">
+        <span class="label">Diagnóstico Final:</span><br>
+        <p style="margin-left: 150px; margin-top: 5px;">{{ $biopsia->diagnostico }}</p>
+    </div>
+    @endif
+
+    @if($biopsia->descripcion)
+    <div class="section">
+        <span class="label">Descripción:</span><br>
+        <p style="margin-left: 150px; margin-top: 5px;">{{ $biopsia->descripcion }}</p>
+    </div>
+    @endif
+
+    @if($biopsia->macroscopico)
+    <div class="section">
+        <span class="label">Macroscópico:</span><br>
+        <p style="margin-left: 150px; margin-top: 5px;">{{ $biopsia->macroscopico }}</p>
+    </div>
+    @endif
+
+    @if($biopsia->microscopico)
+    <div class="section">
+        <span class="label">Microscópico:</span><br>
+        <p style="margin-left: 150px; margin-top: 5px;">{{ $biopsia->microscopico }}</p>
+    </div>
+    @endif
 
     <div class="section">
         <span class="label">Estado:</span> {{ $biopsia->estado ? 'Activa' : 'Inactiva' }}

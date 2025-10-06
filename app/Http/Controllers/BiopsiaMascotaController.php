@@ -10,15 +10,14 @@ use Illuminate\Http\Request;
 
 class BiopsiaMascotaController extends Controller
 {
-
     public function index()
     {
-        $biopsia = Biopsia::with('mascota', 'doctor', 'lista_biopsia')
-            ->mascota()
-            ->ListaBiopsias()
-            ->orderBy('fecha_recibida', 'desc')
+        $biopsias = Biopsia::with('mascota', 'doctor', 'lista_biopsia')
+            ->mascotas()
+            // ->ListaBiopsias()
+            ->orderBy('fecha_recibida', 'asc')
             ->paginate(10);
-        return view('biopsias.mascotas.index', compact('biopsia'));
+        return view('biopsias.mascotas.index', compact('biopsias'));
     }
 
     /**
@@ -27,10 +26,10 @@ class BiopsiaMascotaController extends Controller
     public function create()
     {
         $mascotas = Mascota::orderBy('nombre')->get();
-        $doctor = Doctor::where('estado_servicio', true)->get();
-        $lista = ListaBiopsia::orderBy('codigo')->get();
+        $doctores = Doctor::where('estado_servicio', true)->get();
+        $listas = ListaBiopsia::orderBy('codigo')->get();
         $numeroGenerado = Biopsia::generarNumeroBiopsia();
-        return view('biopsias.mascotas.create', compact('mascotas', 'doctor', 'lista', 'numeroGenerado'));
+        return view('biopsias.mascotas.create', compact('mascotas', 'doctores', 'listas', 'numeroGenerado'));
     }
 
     /**
@@ -85,7 +84,7 @@ class BiopsiaMascotaController extends Controller
     public function show($nbiopsia)
     {
         $biopsia = Biopsia::with(['mascota', 'doctor'])
-            ->mascota()
+            ->mascotas()
             ->where('nbiopsia', $nbiopsia)
             ->firstOrFail();
 
@@ -99,7 +98,7 @@ class BiopsiaMascotaController extends Controller
     {
         // CORREGIR: Buscar por nbiopsia correctamente
         $biopsia = Biopsia::with(['mascota', 'doctor'])
-            ->mascota()
+            ->mascotas()
             ->where('nbiopsia', $nbiopsia)  // Buscar por el campo nbiopsia
             ->firstOrFail();
 
@@ -159,7 +158,7 @@ class BiopsiaMascotaController extends Controller
     }
     public function imprimir($nbiopsia)
     {
-        $biopsia = Biopsia::with(['paciente', 'doctor'])
+        $biopsia = Biopsia::with(['mascota', 'doctor'])
             ->where('nbiopsia', $nbiopsia)
             ->firstOrFail();
 
@@ -190,7 +189,7 @@ class BiopsiaMascotaController extends Controller
 
         // Biopsias por doctor
         $biopsiasPorDoctor = Biopsia::with('doctor')
-            ->mascota()
+            ->mascotas()
             ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
             ->get()
             ->groupBy('doctor_id')

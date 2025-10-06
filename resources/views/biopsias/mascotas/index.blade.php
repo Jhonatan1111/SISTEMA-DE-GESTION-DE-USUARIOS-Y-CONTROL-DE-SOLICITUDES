@@ -8,11 +8,11 @@
                     Biopsias
                 </a>
                 <a href="{{ route('biopsias.personas.index') }}"
-                    class="px-4 py-2 text-sm font-medium bg-white text-gray-900 rounded-md shadow-sm">
+                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
                     Personas
                 </a>
-                <a href="{{ route('mascotas.index') }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
+                <a href="{{ route('biopsias.mascotas.index') }}"
+                    class="px-4 py-2 text-sm font-medium bg-white text-gray-900 rounded-md shadow-sm">
                     Mascotas
                 </a>
 
@@ -22,11 +22,11 @@
         <!-- Header -->
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900">Biopsias - Personas</h1>
-                <p class="text-gray-600 mt-1">Gestión completa de biopsias para pacientes humanos</p>
+                <h1 class="text-3xl font-bold text-gray-900">Biopsias - Mascotas</h1>
+                <p class="text-gray-600 mt-1">Gestión completa de biopsias para mascotas</p>
             </div>
             <div class="flex space-x-3">
-                <a href="{{ route('biopsias.personas.create') }}"
+                <a href="{{ route('biopsias.mascotas.create') }}"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -47,8 +47,8 @@
             <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
                 <div class="flex items-center">
                     <div class="flex-1">
-                        <h3 class="text-sm font-medium text-gray-500 uppercase">Total Biopsias Personas</h3>
-                        <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Biopsia::personas()->count() }}</p>
+                        <h3 class="text-sm font-medium text-gray-500 uppercase">Total Biopsias Mascotas</h3>
+                        <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Biopsia::mascotas()->count() }}</p>
                     </div>
                     <div class="text-blue-500">
                         <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
@@ -62,7 +62,7 @@
                 <div class="flex items-center">
                     <div class="flex-1">
                         <h3 class="text-sm font-medium text-gray-500 uppercase">Biopsias Activas</h3>
-                        <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Biopsia::personas()->activas()->count() }}</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Biopsia::mascotas()->activas()->count() }}</p>
                     </div>
                     <div class="text-green-500">
                         <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
@@ -76,7 +76,7 @@
                 <div class="flex items-center">
                     <div class="flex-1">
                         <h3 class="text-sm font-medium text-gray-500 uppercase">Biopsias Inactivas</h3>
-                        <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Biopsia::personas()->where('estado', 0)->count() }}</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Biopsia::mascotas()->where('estado', 0)->count() }}</p>
                     </div>
                     <div class="text-yellow-500">
                         <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
@@ -90,7 +90,7 @@
                 <div class="flex items-center">
                     <div class="flex-1">
                         <h3 class="text-sm font-medium text-gray-500 uppercase">Este Mes</h3>
-                        <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Biopsia::personas()->whereMonth('fecha_recibida', now()->month)->count() }}</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Biopsia::mascotas()->whereMonth('fecha_recibida', now()->month)->count() }}</p>
                     </div>
                     <div class="text-purple-500">
                         <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
@@ -256,7 +256,7 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex items-center space-x-2">
                                     <!-- Editar -->
-                                    <a href="{{ route('biopsias.personas.edit', $biopsia->nbiopsia) }}"
+                                    <a href="{{ route('biopsias.mascotas.edit', $biopsia->nbiopsia) }}"
                                         class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
                                         title="Editar">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -265,7 +265,7 @@
                                     </a>
 
                                     <!-- Imprimir -->
-                                    <a href="{{ route('biopsias.personas.imprimir', $biopsia->nbiopsia) }}"
+                                    <a href="{{ route('biopsias.mascotas.imprimir', $biopsia->nbiopsia) }}"
                                         target="_blank"
                                         class="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
                                         title="Imprimir">
@@ -275,7 +275,7 @@
                                     </a>
 
                                     <!-- Toggle Estado -->
-                                    <form action="{{ route('biopsias.personas.toggle-estado', $biopsia->nbiopsia) }}" method="POST" class="inline">
+                                    <form action="{{ route('biopsias.mascotas.toggle-estado', $biopsia->nbiopsia) }}" method="POST" class="inline">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit"
@@ -302,10 +302,10 @@
                                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
                                     </svg>
-                                    <h3 class="mt-2 text-sm font-medium text-gray-900">No hay biopsias de personas registradas</h3>
-                                    <p class="mt-1 text-sm text-gray-500">Comienza creando tu primera biopsia para personas.</p>
+                                    <h3 class="mt-2 text-sm font-medium text-gray-900">No hay biopsias de mascotas registradas</h3>
+                                    <p class="mt-1 text-sm text-gray-500">Comienza creando tu primera biopsia para mascotas.</p>
                                     <div class="mt-6">
-                                        <a href="{{ route('biopsias.personas.create') }}"
+                                        <a href="{{ route('biopsias.mascotas.create') }}"
                                             class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -325,6 +325,39 @@
         </div>
     </div>
     <script>
+        const inputBuscar = document.querySelector('input[placeholder*="Buscar"]');
+        const filtroEstado = document.getElementById('filtro_estado');
+        const rows = document.querySelectorAll('tbody tr');
+
+        // Función para aplicar todos los filtros
+        function aplicarFiltros() {
+            const searchTerm = inputBuscar.value.toLowerCase();
+            const estado = filtroEstado.value;
+
+            rows.forEach(row => {
+                // Saltar la fila de "no hay registros"
+                if (row.cells.length === 1) return;
+
+                const text = row.textContent.toLowerCase();
+                const cumpleBusqueda = text.includes(searchTerm) || searchTerm === '';
+
+                let cumpleEstado = true;
+                if (estado === '1') {
+                    cumpleEstado = row.querySelector('.bg-green-100') !== null;
+                } else if (estado === '0') {
+                    cumpleEstado = row.querySelector('.bg-red-100') !== null;
+                }
+
+                row.style.display = (cumpleBusqueda && cumpleEstado) ? '' : 'none';
+            });
+        }
+
+        // Aplicar filtros al escribir
+        inputBuscar.addEventListener('input', aplicarFiltros);
+
+        // Aplicar filtros al cambiar estado
+        filtroEstado.addEventListener('change', aplicarFiltros);
+
         // Búsqueda en tiempo real
         document.querySelector('input[placeholder*="Buscar"]').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
