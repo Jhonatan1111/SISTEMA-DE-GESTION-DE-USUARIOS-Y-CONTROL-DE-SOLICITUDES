@@ -11,7 +11,7 @@
                     class="px-4 py-2 text-sm font-medium bg-white text-gray-900 rounded-md shadow-sm">
                     Personas
                 </a>
-                <a href="{{ route('mascotas.index') }}"
+                <a href="{{ route('biopsias.mascotas.index') }}"
                     class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
                     Mascotas
                 </a>
@@ -325,6 +325,39 @@
         </div>
     </div>
     <script>
+        const inputBuscar = document.querySelector('input[placeholder*="Buscar"]');
+        const filtroEstado = document.getElementById('filtro_estado');
+        const rows = document.querySelectorAll('tbody tr');
+
+        // Función para aplicar todos los filtros
+        function aplicarFiltros() {
+            const searchTerm = inputBuscar.value.toLowerCase();
+            const estado = filtroEstado.value;
+
+            rows.forEach(row => {
+                // Saltar la fila de "no hay registros"
+                if (row.cells.length === 1) return;
+
+                const text = row.textContent.toLowerCase();
+                const cumpleBusqueda = text.includes(searchTerm) || searchTerm === '';
+
+                let cumpleEstado = true;
+                if (estado === '1') {
+                    cumpleEstado = row.querySelector('.bg-green-100') !== null;
+                } else if (estado === '0') {
+                    cumpleEstado = row.querySelector('.bg-red-100') !== null;
+                }
+
+                row.style.display = (cumpleBusqueda && cumpleEstado) ? '' : 'none';
+            });
+        }
+
+        // Aplicar filtros al escribir
+        inputBuscar.addEventListener('input', aplicarFiltros);
+
+        // Aplicar filtros al cambiar estado
+        filtroEstado.addEventListener('change', aplicarFiltros);
+
         // Búsqueda en tiempo real
         document.querySelector('input[placeholder*="Buscar"]').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();

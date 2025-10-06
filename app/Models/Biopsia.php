@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 
 class Biopsia extends Model
 {
@@ -101,22 +102,29 @@ class Biopsia extends Model
 
     public static function generarNumeroBiopsia()
     {
-        $año = date('Y');
-        $mes = date('m');
+        return DB::transaction(function () {
+            $año = date('Y');
+            $mes = date('m');
+            $prefijo = "B{$año}{$mes}";
 
-        // Buscar el último número del mes actual
-        $ultimo = static::where('nbiopsia', 'like', "B{$año}{$mes}%")
-            ->orderBy('nbiopsia', 'desc')
-            ->first();
+            // Bloquear para evitar duplicados si 2 personas crean al mismo tiempo
+            $ultimo = static::where('nbiopsia', 'like', "{$prefijo}%")
+                ->lockForUpdate()
+                ->orderBy('nbiopsia', 'desc')
+                ->first();
 
-        if ($ultimo) {
-            $ultimoNumero = (int)substr($ultimo->nbiopsia, -4);
-            $nuevoNumero = $ultimoNumero++;
-        } else {
-            $nuevoNumero = 1;
-        }
+            if ($ultimo) {
+                // Extraer los últimos 4 dígitos y sumar 1
+                $ultimoNumero = (int)substr($ultimo->nbiopsia, -4);
+                $nuevoNumero = $ultimoNumero + 1;  // ✅ CORRECTO
+            } else {
+                // Primera biopsia del mes
+                $nuevoNumero = 1;
+            }
 
-        return sprintf("B%s%s%04d", $año, $mes, $nuevoNumero);
+            // Formato: B202510XXXX (4 dígitos con ceros a la izquierda)
+            return sprintf("B%s%s%04d", $año, $mes, $nuevoNumero);
+        });
     }
     public function scopeActivas($query)
     {

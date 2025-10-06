@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BiopsiaArchivarController;
 use App\Http\Controllers\BiopsiaController;
+use App\Http\Controllers\BiopsiaMascotaController;
 use App\Http\Controllers\BiopsiaPacienteController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ListaBiopsiaController;
@@ -52,6 +53,17 @@ Route::middleware('auth')->group(function () {
     Route::post('biopsias/personas', [BiopsiaPacienteController::class, 'store'])->name('biopsias.personas.store');
     Route::get('biopsias/personas/{nbiopsia}/imprimir', [BiopsiaPacienteController::class, 'imprimir'])->name('biopsias.personas.imprimir'); // ← MOVER AQUÍ (fuera de admin)
 
+    //BIOPSIAS MASCOTAS
+    Route::get('biopsias/mascotas', [BiopsiaMascotaController::class, 'index'])->name('biopsias.mascotas.index');
+    Route::get('biopsias/mascotas/create', [BiopsiaMascotaController::class, 'create'])->name('biopsias.mascotas.create');
+    Route::post('biopsias/mascotas', [BiopsiaMascotaController::class, 'store'])->name('biopsias.mascotas.store');
+
+    // BUSCADOR DE LISTAS PARA MASCOTAS
+    Route::get('/biopsias-mascotas/buscar-lista/{id}', [BiopsiaMascotaController::class, 'buscarLista'])
+        ->name('biopsias.mascotas.buscar-lista');
+    Route::get('/biopsias-mascotas/buscar-lista-codigo/{codigo}', [BiopsiaMascotaController::class, 'buscarListaPorCodigo'])
+        ->name('biopsias.mascotas.buscar-lista-codigo');
+
     // Rutas para biopsias archivadas
     Route::get('biopsias/archivadas', [BiopsiaArchivarController::class, 'index'])->name('biopsias.archivadas.index');
     Route::post('biopsias/{nbiopsia}/archivar', [BiopsiaArchivarController::class, 'archivar'])->name('biopsias.archivar');
@@ -60,11 +72,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('mascotas/{mascota}', [MascotaController::class, 'destroy'])->name('mascotas.destroy');
     // Ruta resultados
     Route::get('resultados', [ResultadoController::class, 'index'])->name('resultados.index');
-    // Rutas de doctores que requieren permisos de admin
+
     // LISTAS DE BIOPSIAS
     Route::get('listas/biopsias', [ListaBiopsiaController::class, 'index'])->name('listas.biopsias.index');
     Route::get('listas/biopsias/create', [ListaBiopsiaController::class, 'create'])->name('listas.biopsias.create');
     Route::post('listas/biopsias', [ListaBiopsiaController::class, 'store'])->name('listas.biopsias.store');
+
+    // BUSCADOR DE LISTAS PARA PACIENTE
     Route::get('/biopsias-personas/buscar-lista/{id}', [BiopsiaPacienteController::class, 'buscarLista'])
         ->name('biopsias.personas.buscar-lista');
     Route::get('/biopsias-personas/buscar-lista-codigo/{codigo}', [BiopsiaPacienteController::class, 'buscarListaPorCodigo'])
@@ -95,6 +109,13 @@ Route::middleware('auth')->group(function () {
         Route::get('biopsias/personas/{nbiopsia}/edit', [BiopsiaPacienteController::class, 'edit'])->name('biopsias.personas.edit');
         Route::put('biopsias/personas/{nbiopsia}', [BiopsiaPacienteController::class, 'update'])->name('biopsias.personas.update');
         Route::patch('biopsias/personas/{nbiopsia}/toggle-estado', [BiopsiaPacienteController::class, 'toggleEstado'])->name('biopsias.personas.toggle-estado');
+
+        // BIOPSIAS MASCOTAS
+        Route::get('biopsias/mascotas/{nbiopsia}/edit', [BiopsiaMascotaController::class, 'edit'])->name('biopsias.mascotas.edit');
+        Route::put('biopsias/mascotas/{nbiopsia}', [BiopsiaMascotaController::class, 'update'])->name('biopsias.mascotas.update');
+        Route::patch('biopsias/mascotas/{nbiopsia}/toggle-estado', [BiopsiaMascotaController::class, 'toggleEstado'])->name('biopsias.mascotas.toggle-estado');
+        Route::get('biopsias/mascotas/{nbiopsia}/imprimir', [BiopsiaMascotaController::class, 'imprimir'])->name('biopsias.mascotas.imprimir');
+
         // LISTAS DE BIOPSIAS
         Route::get('listas/biopsias/{listaBiopsia}/edit', [ListaBiopsiaController::class, 'edit'])->name('listas.biopsias.edit');
         Route::put('listas/biopsias/{listaBiopsia}', [ListaBiopsiaController::class, 'update'])->name('listas.biopsias.update');

@@ -102,4 +102,5 @@ class MascotaController extends Controller
                 ->with('error', 'No se puede eliminar la mascota porque tiene registros asociados');
         }
     }
+    
 }

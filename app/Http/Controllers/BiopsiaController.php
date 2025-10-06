@@ -13,6 +13,7 @@ class BiopsiaController extends Controller
         $query = Biopsia::with(['paciente', 'mascota', 'doctor', 'lista_biopsia'])
             // ->activas()
             // ->archivadas()
+         
             ->orderBy('fecha_recibida', 'desc');
 
         // Filtro por tipo si se especifica
