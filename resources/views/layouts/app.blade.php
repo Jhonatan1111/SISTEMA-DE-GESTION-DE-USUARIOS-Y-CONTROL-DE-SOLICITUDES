@@ -29,19 +29,47 @@
             localStorage.setItem('dark-mode', isDark);
         }
     </script>
+
+    <style>
+        /* Estilo para botón volver */
+        .btn-back {
+            display: inline-block;
+            padding: 0.4rem 0.9rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1a202c;
+            background-color: #e2e8f0;
+            border-radius: 6px;
+            text-decoration: none;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            transition: background 0.2s ease;
+        }
+
+        .btn-back:hover {
+            background-color: #cbd5e0;
+        }
+    </style>
 </head>
 
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
         <!-- Navbar -->
         <nav class="navbar flex justify-between items-center px-4 py-2 bg-white dark:bg-gray-800 shadow">
-            <div class="logo">
-                <a href="{{ route('dashboard') }}">
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo" style="max-height:40px;">
-                </a>
+            <div class="flex items-center gap-3">
+                <!-- Botón volver -->
+                  @if (!Route::is('dashboard'))
+                    <button onclick="goBack()" class="btn-back" title="Volver">🢀</button>
+                @endif
+
+                <!-- Logo -->
+                <div class="logo">
+                    <a href="{{ route('dashboard') }}">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo" style="max-height:40px;">
+                    </a>
+                </div>
             </div>
 
-            <!-- Solo botón de cerrar sesión -->
+            <!-- Botón cerrar sesión -->
             @auth
             <div class="flex items-center gap-4">
                 <form id="logout-form" action="{{ route('logout') }}" method="POST">
@@ -72,11 +100,10 @@
         </footer>
     </div>
 
-    <!-- SEGURIDAD: Deshabilitar botones del navegador -->
+    <!-- Seguridad: deshabilitar botón atrás del navegador -->
     @auth
     <script>
         (function() {
-            // Función para hacer logout usando el formulario
             function hacerLogout() {
                 const form = document.getElementById('logout-form');
                 if (form) {
@@ -84,18 +111,13 @@
                 }
             }
 
-            // Reemplazar el historial constantemente
             history.pushState(null, null, location.href);
-
             window.addEventListener('popstate', function() {
                 history.pushState(null, null, location.href);
-
-                // Mostrar alerta y cerrar sesión
                 alert('Por seguridad, debes usar solo los botones del sistema. Tu sesión se cerrará.');
                 hacerLogout();
             });
 
-            // Detectar si llegaron con el botón atrás (navegación desde caché)
             window.addEventListener('pageshow', function(event) {
                 if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
                     hacerLogout();
@@ -104,6 +126,34 @@
         })();
     </script>
     @endauth
+
+    <!-- Script de historial personalizado -->
+    <script>
+        const maxHistory = 50;
+        let historyList = JSON.parse(localStorage.getItem('myHistory')) || [];
+
+        if (historyList.length === 0 || historyList[historyList.length - 1] !== window.location.href) {
+            historyList.push(window.location.href);
+            if (historyList.length > maxHistory) {
+                historyList.shift();
+            }
+            localStorage.setItem('myHistory', JSON.stringify(historyList));
+        }
+
+        function goBack() {
+            let historyList = JSON.parse(localStorage.getItem('myHistory')) || [];
+            historyList.pop(); // remove current page
+
+            if (historyList.length > 0) {
+                const previousURL = historyList.pop();
+                localStorage.setItem('myHistory', JSON.stringify(historyList));
+                window.location.href = previousURL;
+            } else {
+                // Si no hay historial, redirige al dashboard
+                window.location.href = "{{ route('dashboard') }}";
+            }
+        }
+    </script>
 
     @stack('scripts')
 </body>

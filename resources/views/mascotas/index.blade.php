@@ -1,15 +1,22 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="admin-header">
-            <h2 class="admin-title">
-                {{ __('Gestión de Mascotas') }}
-            </h2>
-            @if (auth()->user()->role === 'admin')
-                <a href="{{ route('mascotas.create') }}" class="btn">
-                    {{ __('Nueva Mascota') }}
-                </a>
-            @endif
+        <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-6">
+            <a href="{{ route('pacientes.index') }}"
+               class="text-2xl font-bold text-gray-800 {{ request()->routeIs('paciente.*') ? 'underline text-blue-700' : '' }}">
+                Gestión de Personas
+            </a>
+            <a href="{{ route('mascotas.index') }}"
+               class="text-2xl font-bold text-gray-800 {{ request()->routeIs('mascotas.*') ? 'underline text-blue-700' : '' }}">
+                Gestión de Mascotas
+            </a>
         </div>
+        @if (auth()->user()->role === 'admin')
+            <a href="{{ route('mascotas.create') }}" class="btn btn-primary">
+                {{ __('Nueva Mascota') }}
+            </a>
+        @endif
+    </div>
     </x-slot>
 
     <div class="admin-container">
@@ -52,14 +59,14 @@
                             <td>{{ $mascota->correo ?? 'Sin correo' }}</td>
                             <td>{{ $mascota->celular }}</td>
                             <td class="table-actions">
-                                <a href="{{ route('mascotas.edit', $mascota) }}" class="btn">Editar</a>
+                                <a href="{{ route('mascotas.edit', $mascota) }}" class="btn btn-primary">Editar</a>
 
                                 @if (auth()->user()->role === 'admin')
                                     <form action="{{ route('mascotas.destroy', $mascota) }}" method="POST" class="inline-form"
                                           onsubmit="return confirm('¿Está seguro de eliminar esta mascota? Esta acción no se puede deshacer.')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn">Eliminar</button>
+                                        <button type="submit" class="btn btn-danger">Eliminar</button>
                                     </form>
                                 @endif
                             </td>
