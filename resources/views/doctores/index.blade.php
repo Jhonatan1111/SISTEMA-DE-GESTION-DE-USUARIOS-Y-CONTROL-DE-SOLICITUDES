@@ -56,13 +56,13 @@
                             @if (auth()->user()->role === 'admin')
                                 <td>
                                     <div class="table-actions">
-                                        <a href="{{ route('doctores.edit', $doctor) }}" class="btn btn-edit"> Editar</a>
+                                        <a href="{{ route('doctores.edit', $doctor) }}" class="btn btn-primary"> Editar</a>
 
                                         <form action="{{ route('doctores.toggle-estado', $doctor) }}" method="POST"
                                             onsubmit="return confirm('¿Está seguro de cambiar el estado?')">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="btn btn-toggle">
+                                            <button type="submit" class="btn btn-secondary">
                                                 {{ $doctor->estado_servicio ? 'Desactivar' : 'Activar' }}
                                             </button>
                                         </form>
@@ -71,7 +71,7 @@
                                             onsubmit="return confirm('¿Está seguro de eliminar este doctor? Esta acción no se puede deshacer.')">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-delete"> Eliminar</button>
+                                            <button type="submit" class="btn btn-danger"> Eliminar</button>
                                         </form>
                                     </div>
                                 </td>

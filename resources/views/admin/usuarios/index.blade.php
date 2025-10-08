@@ -51,12 +51,12 @@
                             </td>
                             <td>{{ $usuario->created_at->format('d/m/Y') }}</td>
                             <td class="table-actions">
-                                <a href="{{ route('admin.usuarios.edit', $usuario) }}" class="btn">✏️ Editar</a>
+                                <a href="{{ route('admin.usuarios.edit', $usuario) }}" class="btn btn-primary">Editar</a>
                                 @if($usuario->id !== auth()->id())
                                     <form action="{{ route('admin.usuarios.destroy', $usuario) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este usuario?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn">🗑️ Eliminar</button>
+                                        <button type="submit" class="btn btn-danger">Eliminar</button>
                                     </form>
                                 @endif
                             </td>

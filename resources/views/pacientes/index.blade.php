@@ -1,14 +1,23 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="admin-header">
-            <h2 class="admin-title">
-                {{ __('Gestión de Pacientes') }}
-            </h2>
-            <a href="{{ route('pacientes.create') }}" class="btn">
-                {{ __('Nuevo Paciente') }}
+        <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-6">
+            <a href="{{ route('pacientes.index') }}"
+               class="text-2xl font-bold text-gray-800 {{ request()->routeIs('pacientes.*') ? 'underline text-blue-700' : '' }}">
+                Gestión de Personas
+            </a>
+            <a href="{{ route('mascotas.index') }}"
+               class="text-2xl font-bold text-gray-800 {{ request()->routeIs('mascotas.*') ? 'underline text-blue-700' : '' }}">
+                Gestión de Mascotas
             </a>
         </div>
+        <a href="{{ route('pacientes.create') }}" class="btn btn-primary">
+            {{ __('Nuevo Paciente') }}
+        </a>
+    </div>
     </x-slot>
+
+    
 
     @if (session('success'))
         <div class="alert-success">{{ session('success') }}</div>
@@ -45,13 +54,13 @@
                         <td>{{ $paciente->correo ?? 'Sin correo' }}</td>
                         <td title="{{ $paciente->direccion }}">{{ $paciente->direccion ?? 'Sin dirección' }}</td>
                         <td class="table-actions">
-                            <a href="{{ route('pacientes.edit', $paciente) }}" class="btn">Editar</a>
+                            <a href="{{ route('pacientes.edit', $paciente) }}" class="btn btn-primary">Editar</a>
                             @if (auth()->user()->role === 'admin')
                                 <form action="{{ route('pacientes.destroy', $paciente) }}" method="POST" class="inline-form"
                                       onsubmit="return confirm('¿Está seguro de eliminar este paciente? Esta acción no se puede deshacer.')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn">Eliminar</button>
+                                    <button type="submit" class="btn btn-danger">Eliminar</button>
                                 </form>
                             @endif
                         </td>

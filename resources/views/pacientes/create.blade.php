@@ -1,6 +1,5 @@
 <x-app-layout>
     <x-slot name="header">
-        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
         <h2 class="create-title">
             {{ __('Crear Nuevo Paciente') }}
         </h2>
