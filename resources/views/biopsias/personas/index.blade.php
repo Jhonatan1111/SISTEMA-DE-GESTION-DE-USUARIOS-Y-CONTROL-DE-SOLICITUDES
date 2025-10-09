@@ -2,7 +2,7 @@
     <div class="container mx-auto px-4 py-6">
         <!-- Navegación separada -->
         <div class="mb-6">
-            <nav class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+            <nav class="flex space-x-1 bg-blue-300 p-1 rounded-lg">
                 <a href="{{ route('biopsias.index') }}"
                     class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
                     Biopsias
@@ -27,7 +27,7 @@
             </div>
             <div class="flex space-x-3">
                 <a href="{{ route('biopsias.personas.create') }}"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                    class="bg-blue-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
@@ -102,32 +102,45 @@
         </div>
 
         <!-- Filtros y búsqueda -->
-        <div class="bg-white p-4 rounded-lg shadow-md mb-6">
-            <div class="flex flex-wrap gap-4 items-center">
-                <div class="flex-1 min-w-64">
-                    <div class="relative">
-                        <input type="text" placeholder="Buscar por paciente, doctor o diagnóstico..."
-                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </div>
-                    </div>
+<div class="bg-green-200 p-4 rounded-lg shadow-md mb-6">
+    <div class="flex flex-wrap items-center gap-4">
+        <!-- Campo de búsqueda -->
+        <div class="flex-1 min-w-[230px]">
+            <div class="relative">
+                <input type="text" placeholder="Buscar por paciente, doctor o diagnóstico..."
+                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
                 </div>
-                <select id="filtro_estado" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="">Todos los estados</option>
-                    <option value="1">Activas</option>
-                    <option value="0">Inactivas</option>
-                </select>
-                <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <option value="">Todos los doctores</option>
-                    @foreach(\App\Models\Doctor::all() as $doctor)
-                    <option value="{{ $doctor->id }}">Dr. {{ $doctor->nombre }} {{ $doctor->apellido }}</option>
-                    @endforeach
-                </select>
             </div>
         </div>
+
+        <!-- Filtro por estado -->
+        <div class="flex-shrink-0">
+            <select id="filtro_estado"
+                class="min-w-[180px]  px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="">Todos los estados</option>
+                <option value="1">Activas</option>
+                <option value="0">Inactivas</option>
+            </select>
+        </div>
+
+        <!-- Filtro por doctor -->
+        <div class="flex-shrink-0">
+            <select
+                class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <option value="">Todos los doctores</option>
+                @foreach(\App\Models\Doctor::all() as $doctor)
+                    <option value="{{ $doctor->id }}">Dr. {{ $doctor->nombre }} {{ $doctor->apellido }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+</div>
+
 
         <!-- Mensajes de éxito/error -->
         @if(session('success'))
@@ -156,34 +169,34 @@
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                    <thead class="bg-blue-400">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 N° Biopsia
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 Fecha Recibida
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 Paciente
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 Doctor
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Diagnóstico
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                Diagnostico
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 Estado
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 Acciones
                             </th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($biopsias as $biopsia)
-                        <tr class="hover:bg-gray-50 transition-colors">
+                        <tr class="hover:bg-purple-200 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">{{ $biopsia->nbiopsia }}</div>
                             </td>

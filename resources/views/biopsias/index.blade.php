@@ -2,7 +2,7 @@
     <div class="container mx-auto px-4 py-6">
         <!-- Navegación separada -->
         <div class="mb-6">
-            <nav class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+            <nav class="flex space-x-1 bg-blue-300 p-1 rounded-lg">
                 <a href="{{ route('biopsias.index') }}"
                     class="px-4 py-2 text-sm font-medium bg-white text-gray-900 rounded-md shadow-sm">
                     Biopsias
@@ -113,31 +113,31 @@
         <!-- Tabla de biopsias -->
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
+                <table class="min-w-full divide-y divide-violet-200">
+                    <thead class="bg-blue-400">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 N° Biopsia
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 Fecha Recibida
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 Tipo
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 Paciente/Mascota
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 Doctor
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 Diagnóstico
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 Estado
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 Acciones
                             </th>
                         </tr>
@@ -145,7 +145,7 @@
                     <!-- Fragmento corregido para biopsias.index -->
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($biopsias as $biopsia)
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-purple-200">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">{{ $biopsia->nbiopsia }}</div>
                             </td>
