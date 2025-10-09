@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="container mx-auto px-4 py-6">
-        <!-- Navegación separada -->
+        <!-- Navegación separada. -->
         <div class="mb-6">
             <nav class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
                 <a href="{{ route('biopsias.index') }}"
@@ -19,7 +19,7 @@
             </nav>
         </div>
 
-        <!-- Header -->
+        <!-- Header. -->
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Biopsias - Mascotas</h1>
@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        <!-- Estadísticas -->
+        <!-- Estadísticas. -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
             <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
                 <div class="flex items-center">
@@ -101,7 +101,7 @@
             </div>
         </div>
 
-        <!-- Filtros y búsqueda -->
+        <!-- Filtros y búsqueda. -->
         <div class="bg-white p-4 rounded-lg shadow-md mb-6">
             <div class="flex flex-wrap gap-4 items-center">
                 <div class="flex-1 min-w-64">
@@ -129,7 +129,7 @@
             </div>
         </div>
 
-        <!-- Mensajes de éxito/error -->
+        <!-- Mensajes de éxito/error. -->
         @if(session('success'))
         <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
             <div class="flex items-center">
@@ -329,13 +329,13 @@
         const filtroEstado = document.getElementById('filtro_estado');
         const rows = document.querySelectorAll('tbody tr');
 
-        // Función para aplicar todos los filtros
+        // Función para aplicar todos los filtros.
         function aplicarFiltros() {
             const searchTerm = inputBuscar.value.toLowerCase();
             const estado = filtroEstado.value;
 
             rows.forEach(row => {
-                // Saltar la fila de "no hay registros"
+                // Saltar la fila de "no hay registros."
                 if (row.cells.length === 1) return;
 
                 const text = row.textContent.toLowerCase();
@@ -358,7 +358,7 @@
         // Aplicar filtros al cambiar estado
         filtroEstado.addEventListener('change', aplicarFiltros);
 
-        // Búsqueda en tiempo real
+        // Búsqueda en tiempo real.
         document.querySelector('input[placeholder*="Buscar"]').addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
             const rows = document.querySelectorAll('tbody tr:not(:last-child)');
