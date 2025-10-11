@@ -7,6 +7,7 @@ on:
 permissions:
   contents: read
   packages: write
+  id-token: write # ← Agrega esto
 
 jobs:
   test_build:
