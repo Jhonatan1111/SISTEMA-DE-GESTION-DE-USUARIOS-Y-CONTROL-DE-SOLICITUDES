@@ -6,6 +6,7 @@ use App\Http\Controllers\BiopsiaMascotaController;
 use App\Http\Controllers\BiopsiaPacienteController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ListaBiopsiaController;
+use App\Http\Controllers\ListaCitologiaController;
 use App\Http\Controllers\MascotaController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
@@ -77,6 +78,11 @@ Route::middleware('auth')->group(function () {
     Route::get('listas/biopsias', [ListaBiopsiaController::class, 'index'])->name('listas.biopsias.index');
     Route::get('listas/biopsias/create', [ListaBiopsiaController::class, 'create'])->name('listas.biopsias.create');
     Route::post('listas/biopsias', [ListaBiopsiaController::class, 'store'])->name('listas.biopsias.store');
+
+    // LISTAS DE CITOLOGÍAS
+    Route::get('listas/citologias', [ListaCitologiaController::class, 'index'])->name('listas.citologias.index');
+    Route::get('listas/citologias/create', [ListaCitologiaController::class, 'create'])->name('listas.citologias.create');
+    Route::post('listas/citologias', [ListaCitologiaController::class, 'store'])->name('listas.citologias.store');
 
     // BUSCADOR DE LISTAS PARA PACIENTE
     Route::get('/biopsias-personas/buscar-lista/{id}', [BiopsiaPacienteController::class, 'buscarLista'])
