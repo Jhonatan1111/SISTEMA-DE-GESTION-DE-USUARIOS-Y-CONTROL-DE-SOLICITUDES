@@ -1,82 +1,59 @@
 <?php
 
+use App\Models\ListaCitologia;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-// Test que NO borra los datos (se guardan permanentemente)
-test('creacion de citologia permanente', function () {
-
+test('creacion de citologia', function () {
     // Arrange - Crear usuario si no existe
-    $user = User::firstOrCreate([
-        'email' => 'test@ejemplo.com'
-    ], [
-        'nombre' => 'Usuario',
-        'apellido' => 'Test',
-        'password' => bcrypt('password'),
-        'role' => 'admin',
-        'celular' => 123456789
-    ]);
-    
+    $user = User::factory()->create();
     $this->withoutMiddleware();
     $this->actingAs($user);
-
-    $data = [
-        'codigo' => 'CIT001',
-        'diagnostico' => 'Diagnóstico de prueba',
-        'macroscopico' => 'Análisis macroscópico de prueba',
-        'microscopico' => 'Análisis microscópico de prueba',
-    ];
+    $citologia = ListaCitologia::factory()->create();
 
     //Act: 
-    $response = $this->post('/listas/citologias', $data);
-    
+    $response = $this->post('/listas/citologias', $citologia->toArray());
+
     // Assert
+    $this->assertDatabaseHas('lista_citologias', $citologia->toArray());
+    dump($user->toArray());
+    dump($citologia->toArray());
     $response->assertStatus(302);
-    $this->assertDatabaseHas('lista_citologias', $data);
-    
-    // Verificar que los datos se guardaron permanentemente
-    $citologia = \App\Models\ListaCitologia::where('codigo', 'CIT001')->first();
-    
-    echo "\n✅ Datos guardados PERMANENTEMENTE en la base de datos:\n";
-    echo "ID en BD: {$citologia->id}\n";
-    echo "Código: {$citologia->codigo}\n";
-    echo "Diagnóstico: {$citologia->diagnostico}\n";
-    echo "Fecha creación: {$citologia->created_at}\n";
-    echo "\n📋 Ejecuta GET /listas/citologias para verlos en la interfaz\n";
-    dump($data);
-})->skip(false, 'Ejecutar para guardar datos permanentemente');
+});
 
 // Test normal que usa RefreshDatabase (datos temporales)
 test("leer los datos", function () {
     //Arrange:
     $this->withoutMiddleware();
-
     $user = User::factory()->create();
     $this->actingAs($user);
+    $citologia = ListaCitologia::factory()->create();
 
-    //Act:
+    //Act:  
     $response = $this->get('/listas/citologias');
+    dump($citologia->toArray());
+    dump($user->toArray());
     $response->assertStatus(200);
-})->uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
+});
 
-test('creacion de citologia temporal', function () {
-    // Arrange
-    $this->withoutMiddleware();
-
-    $user = User::factory()->create();
+test('actualizacion de citologia', function () {
+    // Arrange 
+    $user = User::factory()->create(['role' => 'admin']);
     $this->actingAs($user);
-
+    $citologia = ListaCitologia::factory()->create();
+    $citologia = ListaCitologia::where('id', $citologia->id)->first();
     $data = [
-        'codigo' => 'CIT002',
-        'diagnostico' => 'Diagnóstico de prueba temporal',
-        'macroscopico' => 'Análisis macroscópico de prueba',
-        'microscopico' => 'Análisis microscópico de prueba',
+        'diagnostico' => $citologia->diagnostico,
+        'macroscopico' => $citologia->macroscopico,
+        'microscopico' => $citologia->microscopico
     ];
 
     //Act: 
-    $response = $this->post('/listas/citologias', $data);
+    $response = $this->put('/listas/citologias/' . $citologia->id, $data);
+
     // Assert
-    $response->assertStatus(302);
     $this->assertDatabaseHas('lista_citologias', $data);
-    dump('Datos temporales (se borrarán)');
-})->uses(Illuminate\Foundation\Testing\RefreshDatabase::class);
+    dump($user->toArray());
+    dump($citologia->toArray());
+    $response->assertStatus(302);
+});

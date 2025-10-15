@@ -72,7 +72,7 @@ Route::middleware('auth')->group(function () {
     Route::post('biopsias/archivar-antiguas', [BiopsiaArchivarController::class, 'archivarAntiguas'])->name('biopsias.archivar-antiguas');
     Route::delete('mascotas/{mascota}', [MascotaController::class, 'destroy'])->name('mascotas.destroy');
     // Ruta resultados
-    Route::get('resultados', [ResultadoController::class, 'index'])->name('resultados.index');
+    // Route::get('resultados', [ResultadoController::class, 'index'])->name('resultados.index');
 
     // LISTAS DE BIOPSIAS
     Route::get('listas/biopsias', [ListaBiopsiaController::class, 'index'])->name('listas.biopsias.index');
@@ -126,6 +126,10 @@ Route::middleware('auth')->group(function () {
         Route::get('listas/biopsias/{listaBiopsia}/edit', [ListaBiopsiaController::class, 'edit'])->name('listas.biopsias.edit');
         Route::put('listas/biopsias/{listaBiopsia}', [ListaBiopsiaController::class, 'update'])->name('listas.biopsias.update');
         Route::delete('listas/biopsias/{listaBiopsia}', [ListaBiopsiaController::class, 'destroy'])->name('listas.biopsias.destroy');
+
+        // LISTA DE CITOLOGIAS
+        Route::get('listas/citologias/{listaCitologia}/edit', [ListaCitologiaController::class, 'edit'])->name('listas.citologias.edit');
+        Route::put('listas/citologias/{listaCitologia}', [ListaCitologiaController::class, 'update'])->name('listas.citologias.update');
     });
 
     // Rutas de administración de usuarios - solo para administradores

@@ -80,7 +80,7 @@ class ListaCitologiaController extends Controller
      */
     public function edit(ListaCitologia $listaCitologia)
     {
-        //
+        return view('listas.citologias.edit', compact('listaCitologia'));
     }
 
     /**
@@ -88,7 +88,20 @@ class ListaCitologiaController extends Controller
      */
     public function update(Request $request, ListaCitologia $listaCitologia)
     {
-        //
+        $validated = $request->validate([
+            'diagnostico' => 'required|string',
+            'macroscopico' => 'nullable|string',
+            'microscopico' => 'nullable|string'
+        ]);
+
+        try {
+            $listaCitologia->update($validated);
+            return redirect()->route('listas.citologias.index')->with('success', 'Citología actualizada exitosamente.');
+        } catch (\Exception $e) {
+            return back()
+                ->withInput()
+                ->with('error', 'Error al actualizar la citología: ' . $e->getMessage());
+        }
     }
 
     /**

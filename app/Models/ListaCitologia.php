@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class ListaCitologia extends Model
 {
+    use HasFactory, Notifiable;
     protected $table = 'lista_citologias';
-    
+
     protected $fillable = [
         'codigo',
         'diagnostico',
@@ -15,10 +18,9 @@ class ListaCitologia extends Model
         'microscopico'
     ];
 
-    /**
-     * Genera un código único para citología
-     * Formato: C001, C002, C003...
-     */
+    protected $hidden = [
+        'codigo',
+    ];
     public static function generarCodigoLista()
     {
         // Buscar el último código que empiece con 'C'
