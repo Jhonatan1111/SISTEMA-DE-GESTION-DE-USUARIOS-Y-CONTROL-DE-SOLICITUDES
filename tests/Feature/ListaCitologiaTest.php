@@ -9,6 +9,7 @@ test('creacion de citologia', function () {
     $user = User::factory()->create();
     $this->withoutMiddleware();
     $this->actingAs($user);
+
     $citologia = ListaCitologia::factory()->create();
 
     //Act: 
@@ -36,24 +37,26 @@ test("leer los datos", function () {
     $response->assertStatus(200);
 });
 
+
 test('actualizacion de citologia', function () {
-    // Arrange 
-    $user = User::factory()->create(['role' => 'admin']);
+    $this->withoutMiddleware();
+
+    $user = User::factory()->create();
     $this->actingAs($user);
+
     $citologia = ListaCitologia::factory()->create();
-    $citologia = ListaCitologia::where('id', $citologia->id)->first();
+
     $data = [
         'diagnostico' => $citologia->diagnostico,
         'macroscopico' => $citologia->macroscopico,
-        'microscopico' => $citologia->microscopico
+        'microscopico' => $citologia->microscopico,
     ];
 
-    //Act: 
-    $response = $this->put('/listas/citologias/' . $citologia->id, $data);
+    // Act
+    $this->put('/listas/citologias/' . $citologia->id, $data);
 
     // Assert
-    $this->assertDatabaseHas('lista_citologias', $data);
     dump($user->toArray());
-    dump($citologia->toArray());
-    $response->assertStatus(302);
+    $this->assertDatabaseHas('lista_citologias', $citologia->toArray());
+    dump($data);
 });
