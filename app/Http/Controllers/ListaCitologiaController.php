@@ -31,28 +31,25 @@ class ListaCitologiaController extends Controller
      */
     public function store(Request $request)
     {
-
-        $codigoGenerado = ListaCitologia::generarCodigoLista();
         // Cambiar la validación para permitir actualización de registros existentes
         $validated = $request->validate([
+            'codigo' => 'required|string|max:255',
             'diagnostico' => 'required|string',
             'macroscopico' => 'nullable|string',
             'microscopico' => 'nullable|string'
         ]);
 
         try {
-            $citologia = ListaCitologia::create(
+            // Usar updateOrCreate para evitar duplicados
+            // Si existe un registro con el mismo código, lo actualiza
+            // Si no existe, crea uno nuevo
+            $citologia = ListaCitologia::updateOrCreate(
+                ['codigo' => $validated['codigo']], // Condición de búsqueda
                 [
-                    'codigo' => $codigoGenerado,
                     'diagnostico' => $validated['diagnostico'],
                     'macroscopico' => $validated['macroscopico'] ?? null,
                     'microscopico' => $validated['microscopico'] ?? null,
                 ]
-                // [
-                //     'diagnostico' => $validated['diagnostico'],
-                //     'macroscopico' => $validated['macroscopico'] ?? null,
-                //     'microscopico' => $validated['microscopico'] ?? null,
-                // ]
             );
 
             if ($citologia->wasRecentlyCreated) {
@@ -60,12 +57,14 @@ class ListaCitologiaController extends Controller
             } else {
                 $mensaje = 'Citología actualizada exitosamente (refrescada con nuevos datos).';
             }
+
+            return redirect()->route('listas.citologias.index')->with('success', $mensaje);
+            
         } catch (\Exception $e) {
             return back()
                 ->withInput()
                 ->with('error', 'Error al procesar la citología: ' . $e->getMessage());
         }
-        return redirect()->route('listas.citologias.index')->with('success', $mensaje);
     }
 
     /**
@@ -82,7 +81,6 @@ class ListaCitologiaController extends Controller
     public function edit(ListaCitologia $listaCitologia)
     {
         //
-        return view('listas.citologias.edit', compact('listaCitologia'));
     }
 
     /**
@@ -90,18 +88,7 @@ class ListaCitologiaController extends Controller
      */
     public function update(Request $request, ListaCitologia $listaCitologia)
     {
-        $request->validate([
-            'diagnostico' => 'required|string',
-            'macroscopico' => 'nullable|string',
-            'microscopico' => 'nullable|string'
-        ]);
-
-        $listaCitologia->update($request->only(
-            'diagnostico',
-            'macroscopico',
-            'microscopico'
-        ));
-        return redirect()->route('listas.citologias.index')->with('success', 'Citología actualizada exitosamente.');
+        //
     }
 
     /**
@@ -110,12 +97,5 @@ class ListaCitologiaController extends Controller
     public function destroy(ListaCitologia $listaCitologia)
     {
         //
-    }
-    public function getCodigos()
-    {
-        $codigos = ListaCitologia::select('codigo', 'diagnostico')
-            ->orderBy('codigo')
-            ->get();
-        return response()->json($codigos);
     }
 }
