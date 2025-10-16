@@ -6,6 +6,7 @@ use App\Http\Controllers\BiopsiaMascotaController;
 use App\Http\Controllers\BiopsiaPacienteController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ListaBiopsiaController;
+use App\Http\Controllers\ListaCitologiaController;
 use App\Http\Controllers\MascotaController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
@@ -70,13 +71,16 @@ Route::middleware('auth')->group(function () {
     Route::post('biopsias/{nbiopsia}/restaurar', [BiopsiaArchivarController::class, 'restaurar'])->name('biopsias.restaurar');
     Route::post('biopsias/archivar-antiguas', [BiopsiaArchivarController::class, 'archivarAntiguas'])->name('biopsias.archivar-antiguas');
     Route::delete('mascotas/{mascota}', [MascotaController::class, 'destroy'])->name('mascotas.destroy');
-    // Ruta resultados
-    Route::get('resultados', [ResultadoController::class, 'index'])->name('resultados.index');
 
     // LISTAS DE BIOPSIAS
     Route::get('listas/biopsias', [ListaBiopsiaController::class, 'index'])->name('listas.biopsias.index');
     Route::get('listas/biopsias/create', [ListaBiopsiaController::class, 'create'])->name('listas.biopsias.create');
     Route::post('listas/biopsias', [ListaBiopsiaController::class, 'store'])->name('listas.biopsias.store');
+
+    // LISTAS DE CITOLOGÍAS
+    Route::get('listas/citologias', [ListaCitologiaController::class, 'index'])->name('listas.citologias.index');
+    Route::get('listas/citologias/create', [ListaCitologiaController::class, 'create'])->name('listas.citologias.create');
+    Route::post('listas/citologias', [ListaCitologiaController::class, 'store'])->name('listas.citologias.store');
 
     // BUSCADOR DE LISTAS PARA PACIENTE
     Route::get('/biopsias-personas/buscar-lista/{id}', [BiopsiaPacienteController::class, 'buscarLista'])
@@ -84,6 +88,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/biopsias-personas/buscar-lista-codigo/{codigo}', [BiopsiaPacienteController::class, 'buscarListaPorCodigo'])
         ->name('biopsias.personas.buscar-lista-codigo');
     Route::get('biopsias/{nbiopsia}', [BiopsiaController::class, 'show'])->name('biopsias.show'); // ← AGREGAR ESTA LÍNEA
+
 
     // RUTA PARA ACCESO DE ADMINISTRADORES
     Route::middleware(['role:admin'])->group(function () {
@@ -120,6 +125,10 @@ Route::middleware('auth')->group(function () {
         Route::get('listas/biopsias/{listaBiopsia}/edit', [ListaBiopsiaController::class, 'edit'])->name('listas.biopsias.edit');
         Route::put('listas/biopsias/{listaBiopsia}', [ListaBiopsiaController::class, 'update'])->name('listas.biopsias.update');
         Route::delete('listas/biopsias/{listaBiopsia}', [ListaBiopsiaController::class, 'destroy'])->name('listas.biopsias.destroy');
+
+        // LISTA DE CITOLOGIAS
+        Route::get('listas/citologias/{listaCitologia}/edit', [ListaCitologiaController::class, 'edit'])->name('listas.citologias.edit');
+        Route::put('listas/citologias/{listaCitologia}', [ListaCitologiaController::class, 'update'])->name('listas.citologias.update');
     });
 
     // Rutas de administración de usuarios - solo para administradores
