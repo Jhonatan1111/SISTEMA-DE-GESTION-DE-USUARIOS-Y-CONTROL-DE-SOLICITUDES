@@ -18,9 +18,6 @@ class ListaCitologia extends Model
         'microscopico'
     ];
 
-    protected $hidden = [
-        'codigo',
-    ];
     public static function generarCodigoLista()
     {
         // Buscar el último código que empiece con 'C'

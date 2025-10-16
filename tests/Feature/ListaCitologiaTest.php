@@ -5,7 +5,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 test('creacion de citologia', function () {
-    // Arrange - Crear usuario si no existe
+    // Arrange
     $user = User::factory()->create();
     $this->withoutMiddleware();
     $this->actingAs($user);
@@ -29,12 +29,21 @@ test("leer los datos", function () {
     $user = User::factory()->create();
     $this->actingAs($user);
     $citologia = ListaCitologia::factory()->create();
+    $citologia->UpdateOrCreate([
+        'codigo' => $citologia->codigo,
+        'diagnostico' => $citologia->diagnostico,
+        'macroscopico' => $citologia->macroscopico,
+        'microscopico' => $citologia->microscopico,
+    ]);
 
     //Act:  
     $response = $this->get('/listas/citologias');
-    dump($citologia->toArray());
-    dump($user->toArray());
+
+    //Assert:
     $response->assertStatus(200);
+    $response->assertSee($citologia->codigo);
+    $response->assertSee($citologia->diagnostico);
+    dump($citologia->toArray());
 });
 
 
@@ -58,5 +67,7 @@ test('actualizacion de citologia', function () {
     // Assert
     dump($user->toArray());
     $this->assertDatabaseHas('lista_citologias', $citologia->toArray());
+    // dump($data);
     dump($data);
+    dump('Código actualizado: ' . $citologia->codigo);
 });
