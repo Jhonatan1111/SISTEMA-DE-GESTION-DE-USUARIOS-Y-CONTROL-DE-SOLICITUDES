@@ -16,7 +16,7 @@ class Doctor extends Model
         'celular',
         'fax',
         'correo',
-        'activo',
+        'estado_servicio',
     ];
 
     // Casts de atributos

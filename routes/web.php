@@ -4,6 +4,7 @@ use App\Http\Controllers\BiopsiaArchivarController;
 use App\Http\Controllers\BiopsiaController;
 use App\Http\Controllers\BiopsiaMascotaController;
 use App\Http\Controllers\BiopsiaPacienteController;
+use App\Http\Controllers\CitolgiaPersonaController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ListaBiopsiaController;
 use App\Http\Controllers\ListaCitologiaController;
@@ -53,6 +54,24 @@ Route::middleware('auth')->group(function () {
     Route::get('biopsias/personas/create', [BiopsiaPacienteController::class, 'create'])->name('biopsias.personas.create');
     Route::post('biopsias/personas', [BiopsiaPacienteController::class, 'store'])->name('biopsias.personas.store');
     Route::get('biopsias/personas/{nbiopsia}/imprimir', [BiopsiaPacienteController::class, 'imprimir'])->name('biopsias.personas.imprimir'); // ← MOVER AQUÍ (fuera de admin)
+
+    // CITOLOGÍAS PERSONAS
+    Route::get('citologias/personas', [CitolgiaPersonaController::class, 'index'])->name('citologias.personas.index');
+    Route::get('citologias/personas/create', [CitolgiaPersonaController::class, 'create'])->name('citologias.personas.create');
+    Route::post('citologias/personas', [CitolgiaPersonaController::class, 'store'])->name('citologias.personas.store');
+    Route::get('citologias/personas/{ncitologia}', [CitolgiaPersonaController::class, 'show'])->name('citologias.personas.show');
+    Route::get('citologias/personas/{ncitologia}/edit', [CitolgiaPersonaController::class, 'edit'])->name('citologias.personas.edit');
+    Route::put('citologias/personas/{ncitologia}', [CitolgiaPersonaController::class, 'update'])->name('citologias.personas.update');
+    Route::patch('citologias/personas/{ncitologia}/toggle-estado', [CitolgiaPersonaController::class, 'toggleEstado'])->name('citologias.personas.toggle-estado');
+    Route::get('citologias/personas/{ncitologia}/imprimir', [CitolgiaPersonaController::class, 'imprimir'])->name('citologias.personas.imprimir');
+    Route::get('citologias/personas/historial/{pacienteId}', [CitolgiaPersonaController::class, 'historialPaciente'])->name('citologias.personas.historial');
+    Route::get('citologias/personas/estadisticas', [CitolgiaPersonaController::class, 'estadisticas'])->name('citologias.personas.estadisticas');
+    Route::get('citologias/personas/buscar-pacientes', [CitolgiaPersonaController::class, 'buscarPacientes'])->name('citologias.personas.buscar-pacientes');
+    Route::get('citologias/personas/obtener-paciente/{id}', [CitolgiaPersonaController::class, 'obtenerPaciente'])->name('citologias.personas.obtener-paciente');
+    Route::get('citologias/personas/buscar-lista/{id}', [CitolgiaPersonaController::class, 'buscarLista'])->name('citologias.personas.buscar-lista');
+    Route::get('citologias/personas/buscar-lista-codigo/{codigo}', [CitolgiaPersonaController::class, 'buscarListaPorCodigo'])->name('citologias.personas.buscar-lista-codigo');
+    Route::get('citologias/personas/exportar-csv', [CitolgiaPersonaController::class, 'exportarCsv'])->name('citologias.personas.exportar-csv');
+    Route::get('citologias/personas/reporte-paciente/{pacienteId}', [CitolgiaPersonaController::class, 'reportePaciente'])->name('citologias.personas.reporte-paciente');
 
     //BIOPSIAS MASCOTAS
     Route::get('biopsias/mascotas', [BiopsiaMascotaController::class, 'index'])->name('biopsias.mascotas.index');
