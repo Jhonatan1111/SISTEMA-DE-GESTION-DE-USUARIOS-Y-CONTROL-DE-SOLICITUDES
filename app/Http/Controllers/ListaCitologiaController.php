@@ -109,6 +109,12 @@ class ListaCitologiaController extends Controller
      */
     public function destroy(ListaCitologia $listaCitologia)
     {
-        //
+         try {
+        $listaCitologia->delete();
+        return redirect()->route('listas.citologias.index')
+            ->with('success', 'Citología eliminada exitosamente.');
+    } catch (\Exception $e) {
+        return back()->with('error', 'Error al eliminar la citología: ' . $e->getMessage());
+    }
     }
 }

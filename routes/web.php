@@ -81,6 +81,12 @@ Route::middleware('auth')->group(function () {
     Route::get('listas/citologias', [ListaCitologiaController::class, 'index'])->name('listas.citologias.index');
     Route::get('listas/citologias/create', [ListaCitologiaController::class, 'create'])->name('listas.citologias.create');
     Route::post('listas/citologias', [ListaCitologiaController::class, 'store'])->name('listas.citologias.store');
+    Route::get('listas/citologias', [ListaCitologiaController::class, 'index'])->name('listas.citologias.index');
+    Route::get('listas/citologias/create', [ListaCitologiaController::class, 'create'])->name('listas.citologias.create');
+    Route::post('listas/citologias', [ListaCitologiaController::class, 'store'])->name('listas.citologias.store');
+    Route::get('listas/citologias/{listaCitologia}/edit', [ListaCitologiaController::class, 'edit'])->name('listas.citologias.edit');
+    Route::put('listas/citologias/{listaCitologia}', [ListaCitologiaController::class, 'update'])->name('listas.citologias.update');
+    Route::delete('listas/citologias/{listaCitologia}', [ListaCitologiaController::class, 'destroy'])->name('listas.citologias.destroy');
 
     // BUSCADOR DE LISTAS PARA PACIENTE
     Route::get('/biopsias-personas/buscar-lista/{id}', [BiopsiaPacienteController::class, 'buscarLista'])
