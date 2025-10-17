@@ -36,8 +36,8 @@
             <!-- Gestión de Doctores -->
             <a href="{{ route('listas.biopsias.index') }}" class="card">
                 <div class="card-icon">📝</div>
-                <h2 class="card-title">Gestión de listas de biopsias</h2>
-                <p class="card-text">Muestra detalladamente una listas de las biopsias guardadas previamente.</p>
+                <h2 class="card-title">Gestión de listas</h2>
+                <p class="card-text">Muestra detalladamente una listas de las biopsias y citologías guardadas previamente.</p>
             </a>
 
 
