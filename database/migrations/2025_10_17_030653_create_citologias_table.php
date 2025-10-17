@@ -20,8 +20,6 @@ return new class extends Migration
             $table->text('diagnostico')->nullable()->comment('Diagnóstico final');
             $table->text('macroscopico')->nullable()->comment('Análisis macroscópico');
             $table->text('microscopico')->nullable()->comment('Análisis microscópico');
-            $table->timestamps();
-
 
             //RELACIONES 
             $table->unsignedBigInteger('doctor_id')->comment('ID del doctor');
