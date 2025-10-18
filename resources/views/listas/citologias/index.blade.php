@@ -1,20 +1,34 @@
 <x-app-layout>
-    
-        <div class="bg-white from-slate-900 to-slate-800">
-            <div class="max-w-7xl bg-gradient-to-br from-slate-50 to-slate-100 mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
-                <h2 class="text-4xl font-bold text-blue-700">
-                    {{ __('Lista de Citologías') }}
-                </h2>
-                @if (auth()->user()->role === 'admin')
-                    <a href="{{ route('listas.citologias.create') }}" class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:shadow-lg hover:scale-105 flex items-center gap-2 text-sm">
-                        <span class="text-lg">➕</span> Agregar
-                    </a>
-                @endif
-            </div>
+ 
+<div class="container mx-auto px-4 py-6">
+        <!-- Navegación separada -->
+        <div class="mb-6">
+            <nav class="flex space-x-1 bg-blue-300 p-1 rounded-lg">
+                <a href="{{ route('listas.biopsias.index') }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
+                    Biopsias
+                </a>
+                <a href="{{ route('listas.citologias.index') }}"
+                    class="px-4 py-2 text-sm font-medium bg-white text-gray-900 rounded-md shadow-sm">
+                    Citologías
+                </a>
+            </nav>
         </div>
-   
-    <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-8 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-7xl mx-auto">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Lista de Citologías</h1>
+                <p class="text-gray-600 mt-1">Gestión de listas predefinidas para citologías</p>
+            </div>
+            @if (auth()->user()->role === 'admin')
+                <a href="{{ route('listas.citologias.create') }}" 
+                   class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:shadow-lg flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Nueva Lista
+                </a>
+            @endif
+        </div>
 
             {{-- Mensaje de éxito --}}
             @if (session('success'))
@@ -81,30 +95,21 @@
                                         </div>
                                     </td>
                                     @if (auth()->user()->role === 'admin')
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="flex gap-2 justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-wrap">
-                                                {{-- Editar --}}
-                                                <a href="{{ route('listas.citologias.edit', $lista->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-lg text-xs font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105 whitespace-nowrap">
-                                                    ✏️ Editar
-                                                </a>
-
-                                                {{-- Eliminar --}}
-                                                <form action="{{ route('listas.citologias.destroy', $lista->id) }}" method="POST" onsubmit="return confirm('¿Está seguro de eliminar esta citología?');" class="inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white py-2 px-3 rounded-lg text-xs font-semibold transition-all duration-300 hover:shadow-lg transform hover:scale-105">
-                                                        🗑️ Eliminar
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    @endif
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex space-x-2">
+                                    <a href="{{ route('listas.citologias.edit', $lista->id) }}"
+                                        class="text-indigo-600 hover:text-indigo-900">
+                                        Editar
+                                    </a>
+                                </div>
+                            </td>
+                            @endif
                                 </tr>
                             @empty
                                 <tr>
                                     <td colspan="{{ auth()->user()->role === 'admin' ? '5' : '4' }}" class="px-6 py-12 text-center">
                                         <div class="flex flex-col items-center gap-3">
-                                            <span class="text-6xl">📋</span>
+                                            <span class="text-6xl"></span>
                                             <p class="text-gray-500 text-lg">No hay citologías registradas</p>
                                             @if (auth()->user()->role === 'admin')
                                                 <a href="{{ route('listas.citologias.create') }}" class="text-blue-600 hover:text-blue-800 font-semibold mt-2">
@@ -126,7 +131,4 @@
                     {{ $listaCitologia->links() }}
                 </div>
             @endif
-
-        </div>
-    </div>
 </x-app-layout>
