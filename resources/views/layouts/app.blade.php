@@ -51,7 +51,7 @@
             @auth
             <div class="flex items-center gap-4">
                 <span class="text-gray-500 dark:text-gray-300 font-medium">
-                    {{ Auth::user()->nombre . ' ' . user()->apellido }}
+                    {{ Auth::user()->nombre . ' ' . Auth::user()->apellido }}
                 </span>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST">
                     @csrf
