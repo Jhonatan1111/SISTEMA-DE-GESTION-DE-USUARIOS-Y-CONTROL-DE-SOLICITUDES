@@ -31,6 +31,7 @@ test("leer los datos", function () {
     $citologia = ListaCitologia::factory()->create();
     $citologia->UpdateOrCreate([
         'codigo' => $citologia->codigo,
+        'descripcion' => $citologia->descripcion,
         'diagnostico' => $citologia->diagnostico,
         'macroscopico' => $citologia->macroscopico,
         'microscopico' => $citologia->microscopico,
@@ -42,6 +43,7 @@ test("leer los datos", function () {
     //Assert:
     $response->assertStatus(200);
     $response->assertSee($citologia->codigo);
+    $response->assertSee($citologia->descripcion);
     $response->assertSee($citologia->diagnostico);
     dump($citologia->toArray());
 });
@@ -56,6 +58,7 @@ test('actualizacion de citologia', function () {
     $citologia = ListaCitologia::factory()->create();
 
     $data = [
+        'descripcion' => $citologia->descripcion,
         'diagnostico' => $citologia->diagnostico,
         'macroscopico' => $citologia->macroscopico,
         'microscopico' => $citologia->microscopico,

@@ -34,6 +34,7 @@ class ListaCitologiaController extends Controller
         // Cambiar la validación para permitir actualización de registros existentes
         $validated = $request->validate([
             'codigo' => 'required|string|max:255',
+            'descripcion' => 'required|string',
             'diagnostico' => 'required|string',
             'macroscopico' => 'nullable|string',
             'microscopico' => 'nullable|string'
@@ -46,6 +47,7 @@ class ListaCitologiaController extends Controller
             $citologia = ListaCitologia::updateOrCreate(
                 ['codigo' => $validated['codigo']], // Condición de búsqueda
                 [
+                    'descripcion' => $validated['descripcion'],
                     'diagnostico' => $validated['diagnostico'],
                     'macroscopico' => $validated['macroscopico'] ?? null,
                     'microscopico' => $validated['microscopico'] ?? null,
@@ -59,7 +61,6 @@ class ListaCitologiaController extends Controller
             }
 
             return redirect()->route('listas.citologias.index')->with('success', $mensaje);
-            
         } catch (\Exception $e) {
             return back()
                 ->withInput()
@@ -89,6 +90,7 @@ class ListaCitologiaController extends Controller
     public function update(Request $request, ListaCitologia $listaCitologia)
     {
         $validated = $request->validate([
+            'descripcion' => 'required|string',
             'diagnostico' => 'required|string',
             'macroscopico' => 'nullable|string',
             'microscopico' => 'nullable|string'
@@ -109,12 +111,12 @@ class ListaCitologiaController extends Controller
      */
     public function destroy(ListaCitologia $listaCitologia)
     {
-         try {
-        $listaCitologia->delete();
-        return redirect()->route('listas.citologias.index')
-            ->with('success', 'Citología eliminada exitosamente.');
-    } catch (\Exception $e) {
-        return back()->with('error', 'Error al eliminar la citología: ' . $e->getMessage());
-    }
+        try {
+            $listaCitologia->delete();
+            return redirect()->route('listas.citologias.index')
+                ->with('success', 'Citología eliminada exitosamente.');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al eliminar la citología: ' . $e->getMessage());
+        }
     }
 }
