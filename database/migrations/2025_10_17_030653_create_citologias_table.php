@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('fecha_recibida')->comment('Fecha de recepción de la citología');
             $table->enum('tipo', ['normal', 'liquida'])->comment('Tipo de citología');
             $table->boolean('estado')->default(true)->comment(' Estado de la citología');
+            $table->text('descripcion')->nullable()->comment('Descripción de la citología');
             $table->text('diagnostico')->nullable()->comment('Diagnóstico final');
             $table->text('macroscopico')->nullable()->comment('Análisis macroscópico');
             $table->text('microscopico')->nullable()->comment('Análisis microscópico');

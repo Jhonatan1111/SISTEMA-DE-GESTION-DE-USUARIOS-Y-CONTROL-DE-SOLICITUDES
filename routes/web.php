@@ -4,6 +4,7 @@ use App\Http\Controllers\BiopsiaArchivarController;
 use App\Http\Controllers\BiopsiaController;
 use App\Http\Controllers\BiopsiaMascotaController;
 use App\Http\Controllers\BiopsiaPacienteController;
+use App\Http\Controllers\CitolgiaController;
 use App\Http\Controllers\CitolgiaPersonaController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\ListaBiopsiaController;
@@ -56,9 +57,12 @@ Route::middleware('auth')->group(function () {
     Route::get('biopsias/personas/{nbiopsia}/imprimir', [BiopsiaPacienteController::class, 'imprimir'])->name('biopsias.personas.imprimir'); // ← MOVER AQUÍ (fuera de admin)
 
     // CITOLOGÍAS PERSONAS
+    // creacion de indez citologia
+    Route::get('citologias', [CitolgiaController::class, 'index'])->name('citologias.index');
     Route::get('citologias/personas', [CitolgiaPersonaController::class, 'index'])->name('citologias.personas.index');
     Route::get('citologias/personas/create', [CitolgiaPersonaController::class, 'create'])->name('citologias.personas.create');
     Route::post('citologias/personas', [CitolgiaPersonaController::class, 'store'])->name('citologias.personas.store');
+    Route::get('citologias/personas/obtener-numero-correlativo', [CitolgiaPersonaController::class, 'obtenerNumeroCorrelativo'])->name('citologias.personas.obtener-numero-correlativo');
     Route::get('citologias/personas/{ncitologia}', [CitolgiaPersonaController::class, 'show'])->name('citologias.personas.show');
     Route::get('citologias/personas/{ncitologia}/edit', [CitolgiaPersonaController::class, 'edit'])->name('citologias.personas.edit');
     Route::put('citologias/personas/{ncitologia}', [CitolgiaPersonaController::class, 'update'])->name('citologias.personas.update');

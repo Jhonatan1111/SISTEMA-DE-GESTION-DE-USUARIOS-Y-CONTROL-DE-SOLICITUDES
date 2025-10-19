@@ -31,8 +31,7 @@ class CitolgiaPersonaController extends Controller
             ->get();
         $listas = ListaCitologia::orderBy('codigo')
             ->get();
-        $numeroGenerado = Citolgia::generarNumeroCitologia();
-        return view('citologias.personas.create', compact('doctores', 'pacientes', 'listas', 'numeroGenerado'));
+        return view('citologias.personas.create', compact('doctores', 'pacientes', 'listas'));
     }
 
     // Guardar nueva citología de paciente humano
@@ -40,17 +39,19 @@ class CitolgiaPersonaController extends Controller
     {
         $request->validate([
             'diagnostico_clinico' => 'required|string',
+            'tipo' => 'required|in:normal,liquida',
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'doctor_id' => 'required|exists:doctores,id',
             'paciente_id' => 'required|exists:pacientes,id'
         ], [
             'fecha_recibida.before_or_equal' => 'La fecha no puede ser futura',
             'diagnostico_clinico.required' => 'El diagnóstico clínico es obligatorio',
+            'tipo.required' => 'Debe seleccionar un tipo de citología',
             'doctor_id.required' => 'Debe seleccionar un doctor',
             'paciente_id.required' => 'Debe seleccionar un paciente'
         ]);
 
-        $numeroGenerado = Citolgia::generarNumeroCitologia();
+        $numeroGenerado = Citolgia::generarNumeroCitologia($request->tipo);
         $datos = [
             'ncitologia' => $numeroGenerado,
             'diagnostico_clinico' => $request->diagnostico_clinico,
@@ -58,6 +59,7 @@ class CitolgiaPersonaController extends Controller
             'doctor_id' => $request->doctor_id,
             'paciente_id' => $request->paciente_id,
             'estado' => true,
+            'tipo' => $request->tipo,
             'mascota_id' => null,
             'lista_id' => $request->lista_id ?? null,
         ];
@@ -66,12 +68,14 @@ class CitolgiaPersonaController extends Controller
             $lista = ListaCitologia::find($request->lista_id);
             if ($lista) {
                 $datos['diagnostico'] = $lista->diagnostico;
+                $datos['descripcion'] = $lista->descripcion;
                 $datos['macroscopico'] = $lista->macroscopico;
                 $datos['microscopico'] = $lista->microscopico;
             }
         } else {
             // Sin lista, usar campos manuales (si vienen)
             $datos['diagnostico'] = $request->diagnostico;
+            $datos['descripcion'] = $request->descripcion;
             $datos['macroscopico'] = $request->macroscopico;
             $datos['microscopico'] = $request->microscopico;
         }
@@ -117,11 +121,13 @@ class CitolgiaPersonaController extends Controller
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'paciente_id' => 'required|exists:pacientes,id',
             'doctor_id' => 'required|exists:doctores,id',
+            // 'tipo' => 'required|in:normal,liquida',
         ], [
             'fecha_recibida.before_or_equal' => 'La fecha no puede ser futura',
             'diagnostico_clinico.required' => 'El diagnóstico clínico es obligatorio',
             'doctor_id.required' => 'Debe seleccionar un doctor',
-            'paciente_id.required' => 'Debe seleccionar un paciente'
+            'paciente_id.required' => 'Debe seleccionar un paciente',
+            // 'tipo' => 'Debe seleccionar un tipo de citología'
         ]);
 
         $citologia->update([
@@ -131,6 +137,7 @@ class CitolgiaPersonaController extends Controller
             'doctor_id' => $request->doctor_id,
             'lista_id' => $request->lista_id ?? null,
             'diagnostico' => $request->diagnostico,
+            'descripcion' => $request->descripcion,
             'macroscopico' => $request->macroscopico,
             'microscopico' => $request->microscopico,
             'mascota_id' => null,
@@ -162,6 +169,14 @@ class CitolgiaPersonaController extends Controller
 
         $estadisticas = [
             'total_citologias' => Citolgia::personas()
+                ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
+                ->count(),
+            'normales' => Citolgia::personas()
+                ->where('tipo', 'normal')
+                ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
+                ->count(),
+            'liquidas' => Citolgia::personas()
+                ->where('tipo', 'liquida')
                 ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
                 ->count(),
             'activas' => Citolgia::personas()
@@ -404,5 +419,16 @@ class CitolgiaPersonaController extends Controller
             'success' => false,
             'message' => 'Código no encontrado'
         ], 404);
+    }
+    public function obtenerNumeroCorrelativo(Request $request)
+    {
+        $tipo = $request->tipo ?? 'normal';
+        $numero = Citolgia::generarNumeroCitologia($tipo);
+
+        return response()->json([
+            'success' => true,
+            'numero' => $numero,
+            'tipo' => $tipo
+        ]);
     }
 }

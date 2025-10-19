@@ -20,8 +20,8 @@ class ListaCitologiaFactory extends Factory
     {
         return [
             'codigo' => ListaCitologia::generarCodigoLista(),
-            'diagnostico' => fake()->sentence(),
             'descripcion' => fake()->sentence(),
+            'diagnostico' => fake()->sentence(),
             'macroscopico' => fake()->sentence(),
             'microscopico' => fake()->sentence(),
         ];
