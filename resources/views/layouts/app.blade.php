@@ -14,21 +14,6 @@
 
     <!-- Scripts y CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <!-- <script>
-        // Modo oscuro persistente
-        document.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('dark-mode') === 'true') {
-                document.body.classList.add('dark-mode');
-            }
-        });
-
-        function toggleDarkMode() {
-            const isDark = document.body.classList.toggle('dark-mode');
-            localStorage.setItem('dark-mode', isDark);
-        }
-    </script> -->
-
     
 </head>
 
