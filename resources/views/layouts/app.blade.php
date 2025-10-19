@@ -9,46 +9,12 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <!-- Scripts y CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <script>
-        // Modo oscuro persistente
-        document.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('dark-mode') === 'true') {
-                document.body.classList.add('dark-mode');
-            }
-        });
-
-        function toggleDarkMode() {
-            const isDark = document.body.classList.toggle('dark-mode');
-            localStorage.setItem('dark-mode', isDark);
-        }
-    </script>
-
-    <style>
-        /* Estilo para botón volver */
-        .btn-back {
-            display: inline-block;
-            padding: 0.4rem 0.9rem;
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #1a202c;
-            background-color: #e2e8f0;
-            border-radius: 6px;
-            text-decoration: none;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-            transition: background 0.2s ease;
-        }
-
-        .btn-back:hover {
-            background-color: #cbd5e0;
-        }
-    </style>
+    
 </head>
 
 <body class="font-sans antialiased">
@@ -56,25 +22,24 @@
         <!-- Navbar -->
         <nav class="navbar flex justify-between items-center px-4 py-2 bg-white dark:bg-gray-800 shadow">
             <div class="flex items-center gap-3">
-                <!-- Botón volver -->
-                  @if (!Route::is('dashboard'))
-                    <button onclick="goBack()" class="btn-back" title="Volver">🢀</button>
-                @endif
 
                 <!-- Logo -->
-                <div class="logo">
+                <div class="logo" style="display: flex; justify-content: center; align-items: center;">
                     <a href="{{ route('dashboard') }}">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo" style="max-height:40px;">
+                        <img src="{{ asset('image/logo.png') }}" alt="Logo" style="max-height:50px;">
                     </a>
                 </div>
             </div>
 
-            <!-- Botón cerrar sesión -->
+            <!-- Usuario y botón cerrar sesión -->
             @auth
             <div class="flex items-center gap-4">
+                <span class="text-gray-500 dark:text-gray-300 font-medium">
+                    {{ Auth::user()->nombre . ' ' . Auth::user()->apellido }}
+                </span>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="btn-logout">Cerrar sesión</button>
+                    <button type="submit" class="btn-logout text-blue-700 font-medium">Cerrar sesión</button>
                 </form>
             </div>
             @endauth

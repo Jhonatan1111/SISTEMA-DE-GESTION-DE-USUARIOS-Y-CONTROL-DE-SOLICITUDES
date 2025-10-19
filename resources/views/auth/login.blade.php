@@ -10,7 +10,7 @@
 
 <body>
     <main class="auth-card fade-in">
-        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="logo" style="max-width:100px; display:block; margin:0 auto 15px;">
+        <img src="{{ asset('image/logo.png') }}" alt="Logo" class="logo" style="max-width:100px; display:block; margin:0 auto 15px;">
         <h2 class="auth-title">Iniciar Sesión</h2>
 
         @if(session('status'))
@@ -30,10 +30,6 @@
             @csrf
             <input type="email" name="email" placeholder="Correo electrónico" required autofocus value="{{ old('email') }}">
             <input type="password" name="password" placeholder="Contraseña" required>
-            <!-- <div style="display:flex; align-items:center; margin:10px 0;">
-                <input type="checkbox" name="remember" id="remember" style="margin-right:5px;">
-                <label for="remember">Recordarme</label>
-            </div> -->
             <button type="submit" class="btn-gradient w-100">Ingresar</button>
         </form>
 
