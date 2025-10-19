@@ -9,14 +9,13 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
     <!-- Scripts y CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <script>
+    <!-- <script>
         // Modo oscuro persistente
         document.addEventListener('DOMContentLoaded', () => {
             if (localStorage.getItem('dark-mode') === 'true') {
@@ -28,7 +27,7 @@
             const isDark = document.body.classList.toggle('dark-mode');
             localStorage.setItem('dark-mode', isDark);
         }
-    </script>
+    </script> -->
 
     
 </head>
