@@ -31,36 +31,63 @@ class CitolgiaPersonaController extends Controller
             ->get();
         $listas = ListaCitologia::orderBy('codigo')
             ->get();
-        $numeroGenerado = Citolgia::generarNumeroCitologia();
-        return view('citologias.personas.create', compact('doctores', 'pacientes', 'listas', 'numeroGenerado'));
+        return view('citologias.personas.create', compact('doctores', 'pacientes', 'listas'));
     }
 
     // Guardar nueva citología de paciente humano
     public function store(Request $request)
     {
-        $request->validate([
+        // Validación dinámica según tipo
+        $rules = [
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
-            'doctor_id' => 'required|exists:doctores,id',
-            'paciente_id' => 'required|exists:pacientes,id'
-        ], [
+            'paciente_id' => 'required|exists:pacientes,id',
+            'tipo' => 'required|in:normal,liquida,especial'
+        ];
+
+        // Si es especial, requiere remitente_especial en lugar de doctor_id
+        if ($request->tipo === 'especial') {
+            $rules['remitente_especial'] = 'required|string|max:255';
+            $rules['celular_remitente_especial'] = 'required|digits:8';
+        } else {
+            $rules['doctor_id'] = 'required|exists:doctores,id';
+        }
+
+        $request->validate($rules, [
             'fecha_recibida.before_or_equal' => 'La fecha no puede ser futura',
             'diagnostico_clinico.required' => 'El diagnóstico clínico es obligatorio',
             'doctor_id.required' => 'Debe seleccionar un doctor',
-            'paciente_id.required' => 'Debe seleccionar un paciente'
+            'paciente_id.required' => 'Debe seleccionar un paciente',
+            'tipo.required' => 'Debe seleccionar el tipo de citología',
+            'remitente_especial.required' => 'Debe ingresar el remitente especial',
+            'celular_remitente_especial.required' => 'Debe ingresar el celular del remitente especial',
+            'celular_remitente_especial.digits' => 'El celular debe tener exactamente 8 dígitos'
         ]);
 
-        $numeroGenerado = Citolgia::generarNumeroCitologia();
+        // Generar número correlativo según el tipo
+        $numeroGenerado = Citolgia::generarNumeroCitologia($request->tipo);
+
         $datos = [
             'ncitologia' => $numeroGenerado,
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
-            'doctor_id' => $request->doctor_id,
             'paciente_id' => $request->paciente_id,
+            'tipo' => $request->tipo,
             'estado' => true,
             'mascota_id' => null,
             'lista_id' => $request->lista_id ?? null,
         ];
+
+        // Asignar doctor_id o remitente_especial según el tipo
+        if ($request->tipo === 'especial') {
+            $datos['remitente_especial'] = $request->remitente_especial;
+            $datos['celular_remitente_especial'] = $request->celular_remitente_especial;
+            $datos['doctor_id'] = null; // O puedes asignar un doctor por defecto
+        } else {
+            $datos['doctor_id'] = $request->doctor_id;
+            $datos['remitente_especial'] = null;
+            $datos['celular_remitente_especial'] = null;
+        }
 
         if ($request->lista_id) {
             $lista = ListaCitologia::find($request->lista_id);
@@ -77,7 +104,15 @@ class CitolgiaPersonaController extends Controller
         }
 
         Citolgia::create($datos);
-        return redirect()->route('citologias.personas.index')->with('success', 'Citología creada exitosamente');
+
+        $tipoTexto = match ($request->tipo) {
+            'liquida' => 'líquida',
+            'especial' => 'especial',
+            default => 'normal'
+        };
+
+        return redirect()->route('citologias.personas.index')
+            ->with('success', "Citología {$tipoTexto} creada exitosamente con número {$numeroGenerado}");
     }
 
     // Ver detalles de citología de paciente
@@ -112,35 +147,62 @@ class CitolgiaPersonaController extends Controller
     {
         $citologia = Citolgia::where('ncitologia', $ncitologia)->firstOrFail();
 
-        $request->validate([
+        // Validación dinámica según si es remitente especial o no
+        $rules = [
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'paciente_id' => 'required|exists:pacientes,id',
-            'doctor_id' => 'required|exists:doctores,id',
-        ], [
+            'tipo' => 'required|in:normal,liquida'
+        ];
+
+        // Si es remitente especial, requiere remitente_especial en lugar de doctor_id
+        if ($request->doctor_id === 'especial') {
+            $rules['remitente_especial'] = 'required|string|max:255';
+            $rules['celular_remitente_especial'] = 'required|digits:8';
+        } else {
+            $rules['doctor_id'] = 'required|exists:doctores,id';
+        }
+
+        $request->validate($rules, [
             'fecha_recibida.before_or_equal' => 'La fecha no puede ser futura',
             'diagnostico_clinico.required' => 'El diagnóstico clínico es obligatorio',
-            'doctor_id.required' => 'Debe seleccionar un doctor',
-            'paciente_id.required' => 'Debe seleccionar un paciente'
+            'doctor_id.required' => 'Debe seleccionar un remitente',
+            'paciente_id.required' => 'Debe seleccionar un paciente',
+            'tipo.required' => 'Debe seleccionar el tipo de citología',
+            'remitente_especial.required' => 'Debe ingresar el nombre del remitente especial',
+            'celular_remitente_especial.required' => 'Debe ingresar el celular del remitente especial',
+            'celular_remitente_especial.digits' => 'El celular debe tener exactamente 8 dígitos'
         ]);
 
-        $citologia->update([
+        // Preparar datos para actualizar
+        $updateData = [
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
             'paciente_id' => $request->paciente_id,
-            'doctor_id' => $request->doctor_id,
+            'tipo' => $request->tipo,
             'lista_id' => $request->lista_id ?? null,
             'diagnostico' => $request->diagnostico,
             'macroscopico' => $request->macroscopico,
             'microscopico' => $request->microscopico,
             'mascota_id' => null,
-        ]);
+        ];
 
-        $citologia->save();
+        // Manejar doctor_id y remitente_especial según el caso
+        if ($request->doctor_id === 'especial') {
+            $updateData['doctor_id'] = null;
+            $updateData['remitente_especial'] = $request->remitente_especial;
+            $updateData['celular_remitente_especial'] = $request->celular_remitente_especial;
+        } else {
+            $updateData['doctor_id'] = $request->doctor_id;
+            $updateData['remitente_especial'] = null;
+            $updateData['celular_remitente_especial'] = null;
+        }
+
+        $citologia->update($updateData);
+
         return redirect()->route('citologias.personas.index')
             ->with('success', 'Citología de persona actualizada exitosamente.');
     }
-
     // Ver historial de citologías de un paciente específico
     public function historialPaciente($pacienteId)
     {
@@ -162,6 +224,14 @@ class CitolgiaPersonaController extends Controller
 
         $estadisticas = [
             'total_citologias' => Citolgia::personas()
+                ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
+                ->count(),
+            'normales' => Citolgia::personas()
+                ->where('tipo', 'normal')
+                ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
+                ->count(),
+            'liquidas' => Citolgia::personas()
+                ->where('tipo', 'liquida')
                 ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
                 ->count(),
             'activas' => Citolgia::personas()
@@ -404,5 +474,16 @@ class CitolgiaPersonaController extends Controller
             'success' => false,
             'message' => 'Código no encontrado'
         ], 404);
+    }
+    public function obtenerNumeroCorrelativo(Request $request)
+    {
+        $tipo = $request->tipo ?? 'normal';
+        $numero = Citolgia::generarNumeroCitologia($tipo);
+
+        return response()->json([
+            'success' => true,
+            'numero' => $numero,
+            'tipo' => $tipo
+        ]);
     }
 }

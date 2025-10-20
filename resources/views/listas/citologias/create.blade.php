@@ -62,34 +62,45 @@
                     </svg>
                     Información Básica
                 </h2>
-                
-                <div class="space-y-4">
-                    <!-- Código -->
-                    <div>
-                        <label for="codigo" class="block text-sm font-semibold text-gray-700 mb-1">
-                            Código <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text" 
-                               id="codigo" 
-                               name="codigo" 
-                               value="{{ old('codigo', $codigoGenerado) }}"
-                               readonly
-                               class="w-full px-4 py-2 bg-gray-100 border-2 border-gray-300 rounded-lg cursor-not-allowed text-gray-600 font-semibold">
-                        <p class="mt-1 text-xs text-gray-500">Código generado automáticamente</p>
-                    </div>
 
-                    <!-- Diagnóstico -->
-                    <div>
-                        <label for="diagnostico" class="block text-sm font-semibold text-gray-700 mb-1">
-                            Diagnóstico <span class="text-red-500">*</span>
-                        </label>
-                        <textarea id="diagnostico" 
-                                  name="diagnostico" 
-                                  rows="4"
-                                  required
-                                  class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all"
-                                  placeholder="Ingrese el diagnóstico detallado...">{{ old('diagnostico') }}</textarea>
-                    </div>
+                <!-- Código -->
+                <div>
+                    <label for="codigo" class="block text-sm font-semibold text-gray-700 mb-1">
+                        Código <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text"
+                        id="codigo"
+                        name="codigo"
+                        value="{{ old('codigo', $codigoGenerado) }}"
+                        readonly
+                        class="w-full px-4 py-2 bg-gray-100 border-2 border-gray-300 rounded-lg cursor-not-allowed text-gray-600 font-semibold">
+                    <p class="mt-1 text-xs text-gray-500">Código generado automáticamente</p>
+                </div>
+                <!-- descripcion  -->
+
+                <div>
+                    <label for="descripcion" class="block text-sm font-semibold text-gray-700 mb-1">
+                        Descripción <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="descripcion"
+                        name="descripcion"
+                        rows="4"
+                        required
+                        class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all"
+                        placeholder="Ingrese la descripción detallada...">{{ old('descripcion') }}</textarea>
+                </div>
+
+                <!-- Diagnóstico -->
+                <div>
+                    <label for="diagnostico" class="block text-sm font-semibold text-gray-700 mb-1">
+                        Diagnóstico <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="diagnostico"
+                        name="diagnostico"
+                        rows="4"
+                        required
+                        class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all"
+                        placeholder="Ingrese el diagnóstico detallado...">{{ old('diagnostico') }}</textarea>
                 </div>
             </div>
 
@@ -108,11 +119,11 @@
                         <label for="macroscopico" class="block text-sm font-semibold text-gray-700 mb-1">
                             Análisis Macroscópico
                         </label>
-                        <textarea id="macroscopico" 
-                                  name="macroscopico" 
-                                  rows="4"
-                                  class="w-full px-4 py-2 border-2 border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-purple-500 transition-all"
-                                  placeholder="Descripción de observaciones macroscópicas...">{{ old('macroscopico') }}</textarea>
+                        <textarea id="macroscopico"
+                            name="macroscopico"
+                            rows="4"
+                            class="w-full px-4 py-2 border-2 border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-purple-500 transition-all"
+                            placeholder="Descripción de observaciones macroscópicas...">{{ old('macroscopico') }}</textarea>
                     </div>
 
                     <!-- Microscópico -->
@@ -120,11 +131,11 @@
                         <label for="microscopico" class="block text-sm font-semibold text-gray-700 mb-1">
                             Análisis Microscópico
                         </label>
-                        <textarea id="microscopico" 
-                                  name="microscopico" 
-                                  rows="4"
-                                  class="w-full px-4 py-2 border-2 border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-purple-500 transition-all"
-                                  placeholder="Descripción de observaciones microscópicas...">{{ old('microscopico') }}</textarea>
+                        <textarea id="microscopico"
+                            name="microscopico"
+                            rows="4"
+                            class="w-full px-4 py-2 border-2 border-purple-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-purple-500 transition-all"
+                            placeholder="Descripción de observaciones microscópicas...">{{ old('microscopico') }}</textarea>
                     </div>
                 </div>
             </div>

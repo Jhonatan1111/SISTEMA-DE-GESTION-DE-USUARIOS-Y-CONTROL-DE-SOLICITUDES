@@ -13,6 +13,7 @@ class ListaCitologia extends Model
 
     protected $fillable = [
         'codigo',
+        'descripcion',
         'diagnostico',
         'macroscopico',
         'microscopico'
