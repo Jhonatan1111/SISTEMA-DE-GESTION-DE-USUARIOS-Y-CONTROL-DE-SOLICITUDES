@@ -87,18 +87,41 @@
 
                         <!-- Remitente Especial (solo visible si tipo es especial) -->
                         <div id="campo-remitente" style="display: none;">
-                            <label for="remitente_especial" class="block text-sm font-semibold text-gray-700 mb-1">
-                                Remitente Especial <span class="text-red-500">*</span>
-                            </label>
-                            <input type="text"
-                                id="remitente_especial"
-                                name="remitente_especial"
-                                value="{{ old('remitente_especial') }}"
-                                placeholder="Nombre del remitente especial..."
-                                class="w-full px-4 py-2 border-2 border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-500">
-                            @error('remitente_especial')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Nombre del Remitente Especial -->
+                                <div>
+                                    <label for="remitente_especial" class="block text-sm font-semibold text-gray-700 mb-1">
+                                        Remitente Especial <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text"
+                                        id="remitente_especial"
+                                        name="remitente_especial"
+                                        value="{{ old('remitente_especial') }}"
+                                        placeholder="Nombre del remitente especial..."
+                                        class="w-full px-4 py-2 border-2 border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-500">
+                                    @error('remitente_especial')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <!-- Celular del Remitente Especial -->
+                                <div>
+                                    <label for="celular_remitente_especial" class="block text-sm font-semibold text-gray-700 mb-1">
+                                        Celular del Remitente Especial <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text"
+                                        id="celular_remitente_especial"
+                                        name="celular_remitente_especial"
+                                        value="{{ old('celular_remitente_especial') }}"
+                                        placeholder="12345678"
+                                        pattern="[0-9]{8}"
+                                        maxlength="8"
+                                        class="w-full px-4 py-2 border-2 border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-500">
+                                    @error('celular_remitente_especial')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Paciente -->

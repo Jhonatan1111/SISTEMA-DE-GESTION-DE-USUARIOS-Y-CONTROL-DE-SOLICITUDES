@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('ncitologia', 15)->primary()->comment('Número de citología siendo llave primaria');
             $table->string('remitente_especial',)->nullable()->comment('Remitente especial si el tipo es especial');
             $table->text('diagnostico_clinico')->comment('Diagnóstico por parte del laboratorio');
+            $table->string('celular_remitente_especial', 8)->nullable()->comment('Número de celular del remitente especial');
             $table->date('fecha_recibida')->comment('Fecha de recepción de la citología');
             $table->enum('tipo', ['normal', 'liquida', 'especial'])->comment('Tipo de citología');
             $table->boolean('estado')->default(true)->comment(' Estado de la citología');
