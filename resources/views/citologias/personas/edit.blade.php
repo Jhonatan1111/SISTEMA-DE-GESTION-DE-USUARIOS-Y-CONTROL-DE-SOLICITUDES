@@ -63,7 +63,7 @@
                         @enderror
                     </div>
 
-                    <!-- Doctor -->
+                    <!-- Remitente -->
                     <div>
                         <label for="doctor_id" class="block text-sm font-semibold text-gray-700 mb-1">
                             Remitente <span class="text-red-500">*</span>
@@ -75,12 +75,12 @@
                             <option value="">-- Seleccione un remitente --</option>
                             @foreach($doctores as $doctor)
                             <option value="{{ $doctor->id }}"
-                                {{ old('doctor_id', $citologia->doctor_id ?? 'especial') == $doctor->id ? 'selected' : '' }}>
+                                {{ old('doctor_id', $citologia->doctor_id) == $doctor->id ? 'selected' : '' }}>
                                 {{ $doctor->nombre }} {{ $doctor->apellido }}
                             </option>
                             @endforeach
                             <option value="especial"
-                                {{ old('doctor_id', $citologia->doctor_id ? '' : 'especial') == 'especial' ? 'selected' : '' }}>
+                                {{ old('doctor_id', $citologia->doctor_id === null && $citologia->remitente_especial ? 'especial' : '') == 'especial' ? 'selected' : '' }}>
                                 Remitente Especial
                             </option>
                         </select>
@@ -90,30 +90,71 @@
                     </div>
 
                     <!-- Campo Remitente Especial (solo si se selecciona "Remitente Especial") -->
-                    <div id="remitente_especial_container" class="{{ old('doctor_id', $citologia->doctor_id ? '' : 'especial') == 'especial' ? '' : 'hidden' }}">
-                        <label for="remitente_especial" class="block text-sm font-semibold text-gray-700 mb-1">
-                            Nombre del Remitente Especial <span class="text-red-500">*</span>
-                        </label>
-                        <input type="text"
-                            id="remitente_especial"
-                            name="remitente_especial"
-                            value="{{ old('remitente_especial', $citologia->remitente_especial) }}"
-                            class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500">
-                        @error('remitente_especial')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                    <div id="remitente_especial_container" class="{{ old('doctor_id', $citologia->doctor_id === null && $citologia->remitente_especial ? 'especial' : '') == 'especial' ? '' : 'hidden' }}">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Nombre del Remitente Especial -->
+                            <div>
+                                <label for="remitente_especial" class="block text-sm font-semibold text-gray-700 mb-1">
+                                    Nombre del Remitente Especial <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text"
+                                    id="remitente_especial"
+                                    name="remitente_especial"
+                                    value="{{ old('remitente_especial', $citologia->remitente_especial) }}"
+                                    class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500"
+                                    {{ old('doctor_id', $citologia->doctor_id === null && $citologia->remitente_especial ? 'especial' : '') == 'especial' ? 'required' : '' }}>
+                                @error('remitente_especial')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Celular del Remitente Especial -->
+                            <div>
+                                <label for="celular_remitente_especial" class="block text-sm font-semibold text-gray-700 mb-1">
+                                    Celular del Remitente Especial <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text"
+                                    id="celular_remitente_especial"
+                                    name="celular_remitente_especial"
+                                    value="{{ old('celular_remitente_especial', $citologia->celular_remitente_especial) }}"
+                                    class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500"
+                                    pattern="[0-9]{8}"
+                                    maxlength="8"
+                                    placeholder="12345678"
+                                    {{ old('doctor_id', $citologia->doctor_id === null && $citologia->remitente_especial ? 'especial' : '') == 'especial' ? 'required' : '' }}>
+                                @error('celular_remitente_especial')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
 
                     <script>
-                        document.getElementById('doctor_id').addEventListener('change', function() {
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const doctorSelect = document.getElementById('doctor_id');
                             const container = document.getElementById('remitente_especial_container');
-                            if (this.value === 'especial') {
-                                container.classList.remove('hidden');
-                                document.getElementById('remitente_especial').setAttribute('required', 'required');
-                            } else {
-                                container.classList.add('hidden');
-                                document.getElementById('remitente_especial').removeAttribute('required');
+                            const remitenteInput = document.getElementById('remitente_especial');
+                            const celularInput = document.getElementById('celular_remitente_especial');
+
+                            function toggleRemitenteEspecial() {
+                                if (doctorSelect.value === 'especial') {
+                                    container.classList.remove('hidden');
+                                    remitenteInput.setAttribute('required', 'required');
+                                    celularInput.setAttribute('required', 'required');
+                                } else {
+                                    container.classList.add('hidden');
+                                    remitenteInput.removeAttribute('required');
+                                    celularInput.removeAttribute('required');
+                                    remitenteInput.value = '';
+                                    celularInput.value = '';
+                                }
                             }
+
+                            // Ejecutar al cargar la página
+                            toggleRemitenteEspecial();
+
+                            // Ejecutar cuando cambie la selección
+                            doctorSelect.addEventListener('change', toggleRemitenteEspecial);
                         });
                     </script>
 

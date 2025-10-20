@@ -20,6 +20,7 @@ class Citolgia extends Model
         'fecha_recibida',
         'estado',
         'remitente_especial',
+        'celular_remitente_especial',
         'tipo',
         'descripcion',
         'diagnostico',

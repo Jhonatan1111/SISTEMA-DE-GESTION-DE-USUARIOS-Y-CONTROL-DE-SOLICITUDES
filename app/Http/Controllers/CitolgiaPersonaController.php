@@ -48,6 +48,7 @@ class CitolgiaPersonaController extends Controller
         // Si es especial, requiere remitente_especial en lugar de doctor_id
         if ($request->tipo === 'especial') {
             $rules['remitente_especial'] = 'required|string|max:255';
+            $rules['celular_remitente_especial'] = 'required|digits:8';
         } else {
             $rules['doctor_id'] = 'required|exists:doctores,id';
         }
@@ -58,7 +59,9 @@ class CitolgiaPersonaController extends Controller
             'doctor_id.required' => 'Debe seleccionar un doctor',
             'paciente_id.required' => 'Debe seleccionar un paciente',
             'tipo.required' => 'Debe seleccionar el tipo de citología',
-            'remitente_especial.required' => 'Debe ingresar el remitente especial'
+            'remitente_especial.required' => 'Debe ingresar el remitente especial',
+            'celular_remitente_especial.required' => 'Debe ingresar el celular del remitente especial',
+            'celular_remitente_especial.digits' => 'El celular debe tener exactamente 8 dígitos'
         ]);
 
         // Generar número correlativo según el tipo
@@ -78,10 +81,12 @@ class CitolgiaPersonaController extends Controller
         // Asignar doctor_id o remitente_especial según el tipo
         if ($request->tipo === 'especial') {
             $datos['remitente_especial'] = $request->remitente_especial;
+            $datos['celular_remitente_especial'] = $request->celular_remitente_especial;
             $datos['doctor_id'] = null; // O puedes asignar un doctor por defecto
         } else {
             $datos['doctor_id'] = $request->doctor_id;
             $datos['remitente_especial'] = null;
+            $datos['celular_remitente_especial'] = null;
         }
 
         if ($request->lista_id) {
@@ -142,34 +147,59 @@ class CitolgiaPersonaController extends Controller
     {
         $citologia = Citolgia::where('ncitologia', $ncitologia)->firstOrFail();
 
-        $request->validate([
+        // Validación dinámica según si es remitente especial o no
+        $rules = [
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'paciente_id' => 'required|exists:pacientes,id',
-            'doctor_id' => 'required|exists:doctores,id',
             'tipo' => 'required|in:normal,liquida'
-        ], [
+        ];
+
+        // Si es remitente especial, requiere remitente_especial en lugar de doctor_id
+        if ($request->doctor_id === 'especial') {
+            $rules['remitente_especial'] = 'required|string|max:255';
+            $rules['celular_remitente_especial'] = 'required|digits:8';
+        } else {
+            $rules['doctor_id'] = 'required|exists:doctores,id';
+        }
+
+        $request->validate($rules, [
             'fecha_recibida.before_or_equal' => 'La fecha no puede ser futura',
             'diagnostico_clinico.required' => 'El diagnóstico clínico es obligatorio',
-            'doctor_id.required' => 'Debe seleccionar un doctor',
+            'doctor_id.required' => 'Debe seleccionar un remitente',
             'paciente_id.required' => 'Debe seleccionar un paciente',
-            'tipo.required' => 'Debe seleccionar el tipo de citología'
+            'tipo.required' => 'Debe seleccionar el tipo de citología',
+            'remitente_especial.required' => 'Debe ingresar el nombre del remitente especial',
+            'celular_remitente_especial.required' => 'Debe ingresar el celular del remitente especial',
+            'celular_remitente_especial.digits' => 'El celular debe tener exactamente 8 dígitos'
         ]);
 
-        $citologia->update([
+        // Preparar datos para actualizar
+        $updateData = [
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
             'paciente_id' => $request->paciente_id,
-            'doctor_id' => $request->doctor_id,
             'tipo' => $request->tipo,
             'lista_id' => $request->lista_id ?? null,
             'diagnostico' => $request->diagnostico,
             'macroscopico' => $request->macroscopico,
             'microscopico' => $request->microscopico,
             'mascota_id' => null,
-        ]);
+        ];
 
-        $citologia->save();
+        // Manejar doctor_id y remitente_especial según el caso
+        if ($request->doctor_id === 'especial') {
+            $updateData['doctor_id'] = null;
+            $updateData['remitente_especial'] = $request->remitente_especial;
+            $updateData['celular_remitente_especial'] = $request->celular_remitente_especial;
+        } else {
+            $updateData['doctor_id'] = $request->doctor_id;
+            $updateData['remitente_especial'] = null;
+            $updateData['celular_remitente_especial'] = null;
+        }
+
+        $citologia->update($updateData);
+
         return redirect()->route('citologias.personas.index')
             ->with('success', 'Citología de persona actualizada exitosamente.');
     }

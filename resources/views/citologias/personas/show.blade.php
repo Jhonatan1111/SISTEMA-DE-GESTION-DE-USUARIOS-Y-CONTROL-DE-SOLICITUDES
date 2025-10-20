@@ -114,7 +114,7 @@
                 <div>
                     <label class="block text-sm font-semibold text-gray-600">Celular</label>
                     <p class="text-lg text-gray-900">@if ($citologia->remitente_especial)
-                        {{ $citologia->remitente_especial }}
+                        {{ $citologia->celular_remitente_especial }}
                         @else
                         {{ $citologia->doctor->celular }}
                         @endif
