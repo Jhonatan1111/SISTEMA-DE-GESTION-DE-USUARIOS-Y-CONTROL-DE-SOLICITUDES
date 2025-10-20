@@ -65,14 +65,13 @@
                             @enderror
                         </div>
 
-                        <!-- Doctor -->
-                        <div>
+                        <!-- Doctor (oculto si es especial) -->
+                        <div id="campo-doctor">
                             <label for="doctor_id" class="block text-sm font-semibold text-gray-700 mb-1">
                                 Doctor <span class="text-red-500">*</span>
                             </label>
                             <select id="doctor_id"
                                 name="doctor_id"
-                                required
                                 class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500">
                                 <option value="">Seleccione doctor...</option>
                                 @foreach($doctores as $doctor)
@@ -82,6 +81,22 @@
                                 @endforeach
                             </select>
                             @error('doctor_id')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Remitente Especial (solo visible si tipo es especial) -->
+                        <div id="campo-remitente" style="display: none;">
+                            <label for="remitente_especial" class="block text-sm font-semibold text-gray-700 mb-1">
+                                Remitente Especial <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text"
+                                id="remitente_especial"
+                                name="remitente_especial"
+                                value="{{ old('remitente_especial') }}"
+                                placeholder="Nombre del remitente especial..."
+                                class="w-full px-4 py-2 border-2 border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-500">
+                            @error('remitente_especial')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
@@ -172,7 +187,7 @@
 
     <!-- Modal de Selección de Tipo -->
     <div id="modal-tipo" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-md w-full mx-4">
+        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-2xl w-full mx-4">
             <h2 class="text-2xl font-bold text-gray-900 mb-4 text-center">
                 ¿Qué tipo de citología desea crear?
             </h2>
@@ -180,40 +195,37 @@
                 Seleccione el tipo para generar el número correlativo correspondiente
             </p>
 
-            <div class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <!-- Opción Normal -->
                 <button type="button"
                     onclick="seleccionarTipo('normal')"
-                    class="w-full p-6 bg-gradient-to-r from-gray-100 to-gray-50 hover:from-gray-200 hover:to-gray-100 border-2 border-gray-300 hover:border-gray-400 rounded-lg transition-all transform hover:scale-105">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-4">
-                            <span class="text-4xl">📄</span>
-                            <div class="text-left">
-                                <h3 class="text-xl font-bold text-gray-900">Citología Normal</h3>
-                                <p class="text-sm text-gray-600">Correlativo: C202510XXX</p>
-                            </div>
-                        </div>
-                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
+                    class="p-6 bg-gradient-to-br from-gray-100 to-gray-50 hover:from-gray-200 hover:to-gray-100 border-2 border-gray-300 hover:border-gray-400 rounded-lg transition-all transform hover:scale-105">
+                    <div class="text-center">
+                        <span class="text-5xl mb-3 block">📄</span>
+                        <h3 class="text-lg font-bold text-gray-900 mb-1">Normal</h3>
+                        <p class="text-sm text-gray-600">CN2025XXXXX</p>
                     </div>
                 </button>
 
                 <!-- Opción Líquida -->
                 <button type="button"
                     onclick="seleccionarTipo('liquida')"
-                    class="w-full p-6 bg-gradient-to-r from-purple-100 to-purple-50 hover:from-purple-200 hover:to-purple-100 border-2 border-purple-300 hover:border-purple-400 rounded-lg transition-all transform hover:scale-105">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-4">
-                            <span class="text-4xl">💧</span>
-                            <div class="text-left">
-                                <h3 class="text-xl font-bold text-purple-900">Citología Líquida</h3>
-                                <p class="text-sm text-purple-600">Correlativo: L202510XXX</p>
-                            </div>
-                        </div>
-                        <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                        </svg>
+                    class="p-6 bg-gradient-to-br from-purple-100 to-purple-50 hover:from-purple-200 hover:to-purple-100 border-2 border-purple-300 hover:border-purple-400 rounded-lg transition-all transform hover:scale-105">
+                    <div class="text-center">
+                        <span class="text-5xl mb-3 block">💧</span>
+                        <h3 class="text-lg font-bold text-purple-900 mb-1">Líquida</h3>
+                        <p class="text-sm text-purple-600">CL2025XXXXX</p>
+                    </div>
+                </button>
+
+                <!-- Opción Especial -->
+                <button type="button"
+                    onclick="seleccionarTipo('especial')"
+                    class="p-6 bg-gradient-to-br from-orange-100 to-orange-50 hover:from-orange-200 hover:to-orange-100 border-2 border-orange-300 hover:border-orange-400 rounded-lg transition-all transform hover:scale-105">
+                    <div class="text-center">
+                        <span class="text-5xl mb-3 block">⭐</span>
+                        <h3 class="text-lg font-bold text-orange-900 mb-1">Especial</h3>
+                        <p class="text-sm text-orange-600">CE2025XXXXX</p>
                     </div>
                 </button>
             </div>
@@ -247,9 +259,15 @@
                     if (tipo === 'liquida') {
                         tipoBadge.innerHTML = '<span class="inline-flex items-center bg-purple-100 text-purple-800 px-4 py-2 rounded-full text-sm font-semibold">💧 Citología Líquida</span>';
                         document.getElementById('prefijo_info').textContent = 'Prefijo L = Líquida';
+                        mostrarCampoDoctor();
+                    } else if (tipo === 'especial') {
+                        tipoBadge.innerHTML = '<span class="inline-flex items-center bg-orange-100 text-orange-800 px-4 py-2 rounded-full text-sm font-semibold">⭐ Citología Especial</span>';
+                        document.getElementById('prefijo_info').textContent = 'Prefijo E = Especial';
+                        mostrarCampoRemitente();
                     } else {
                         tipoBadge.innerHTML = '<span class="inline-flex items-center bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm font-semibold">📄 Citología Normal</span>';
                         document.getElementById('prefijo_info').textContent = 'Prefijo C = Normal';
+                        mostrarCampoDoctor();
                     }
 
                     // Ocultar modal y mostrar formulario
@@ -260,6 +278,22 @@
                 console.error('Error al obtener número correlativo:', error);
                 alert('Error al generar el número. Por favor, intente de nuevo.');
             }
+        }
+
+        // Función para mostrar campo doctor y ocultar remitente
+        function mostrarCampoDoctor() {
+            document.getElementById('campo-doctor').style.display = 'block';
+            document.getElementById('campo-remitente').style.display = 'none';
+            document.getElementById('doctor_id').required = true;
+            document.getElementById('remitente_especial').required = false;
+        }
+
+        // Función para mostrar campo remitente y ocultar doctor
+        function mostrarCampoRemitente() {
+            document.getElementById('campo-doctor').style.display = 'none';
+            document.getElementById('campo-remitente').style.display = 'block';
+            document.getElementById('doctor_id').required = false;
+            document.getElementById('remitente_especial').required = true;
         }
 
         // Función para cambiar tipo (volver a mostrar modal)

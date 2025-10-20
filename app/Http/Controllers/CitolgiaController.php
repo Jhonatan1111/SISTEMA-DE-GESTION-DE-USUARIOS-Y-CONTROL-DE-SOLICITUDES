@@ -9,16 +9,21 @@ class CitolgiaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Citolgia::with(['doctor', 'paciente', 'mascota', 'lista_citologias'])
-            ->orderBy('fecha_recibida', 'asc');
+        $query = Citolgia::with(['doctor', 'paciente', 'mascota'])
+            ->orderBy('fecha_recibida', 'desc');
 
 
-        // Filtro por tipo si se especifica
+        // Filtro por tipo de citología (normal/liquida)
         if ($request->has('tipo') && $request->tipo !== '') {
-            if ($request->tipo === 'personas') {
-                $query->personas();
-            } elseif ($request->tipo === 'mascotas') {
-                $query->mascotas();
+            $query->where('tipo', $request->tipo);
+        }
+
+        // Filtro por estado
+        if ($request->has('estado') && $request->estado !== '') {
+            if ($request->estado === 'activas') {
+                $query->activas();
+            } elseif ($request->estado === 'archivadas') {
+                $query->archivadas();
             }
         }
 
@@ -29,48 +34,59 @@ class CitolgiaController extends Controller
                 $q->where('ncitologia', 'like', "%{$buscar}%")
                     ->orWhere('diagnostico_clinico', 'like', "%{$buscar}%")
                     ->orWhereHas('doctor', function ($subq) use ($buscar) {
-                        $subq->where('nombre, apellido', 'like', "%{$buscar}%")
-                            ->orWhere('jvpm', 'like', "%{$buscar}%");
+                        $subq->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('apellido', 'like', "%{$buscar}%");
                     })
                     ->orWhereHas('paciente', function ($subq) use ($buscar) {
                         $subq->where('nombre', 'like', "%{$buscar}%")
-                            ->orWhere('apellido', 'like', "%{$buscar}%");
+                            ->orWhere('apellido', 'like', "%{$buscar}%")
+                            ->orWhere('DUI', 'like', "%{$buscar}%");
                     })
                     ->orWhereHas('mascota', function ($subq) use ($buscar) {
                         $subq->where('nombre', 'like', "%{$buscar}%")
                             ->orWhere('propietario', 'like', "%{$buscar}%");
-                    })
-                    ->orWhereHas('lista_citologias', function ($subq) use ($buscar) {
-                        $subq->where('codigo', 'like', "%{$buscar}%")
-                            ->orWhere('diagnostico', 'like', "%{$buscar}%");
                     });
             });
         }
-        $citologias = $query->paginate(10);
 
-        // Estadísticas simples
-        $totalCitologias = Citolgia::activas()->count();
-        $citologiaPersonas = Citolgia::activas()->personas()->count();
-        $citologiaMascotas = Citolgia::activas()->mascotas()->count();
-        $archivadasPersonas = Citolgia::archivadas()->personas()->count();
-        $archivadasMascotas = Citolgia::archivadas()->mascotas()->count();
+        $citologias = $query->paginate(15);
+
+        // Estadísticas generales
+        $totalActivas = Citolgia::activas()->count();
+        $totalPersonas = Citolgia::activas()->personas()->count();
+        $totalMascotas = Citolgia::activas()->mascotas()->count();
+
+        // Contar normales (incluye NULL como normal por defecto)
+        $totalNormales = Citolgia::activas()
+            ->where(function ($q) {
+                $q->where('tipo', 'normal')->orWhereNull('tipo');
+            })
+            ->count();
+
+        $totalLiquidas = Citolgia::activas()->where('tipo', 'liquida')->count();
+        $totalEspeciales = Citolgia::activas()->where('tipo', 'especial')->count();
+        $totalArchivadas = Citolgia::archivadas()->count();
 
         $estadisticas = [
-            'total' => $totalCitologias,
-            'personas' => $citologiaPersonas,
-            'mascotas' => $citologiaMascotas,
-            'archivadas' => $archivadasPersonas + $archivadasMascotas
+            'total' => $totalActivas,
+            'personas' => $totalPersonas,
+            'mascotas' => $totalMascotas,
+            'normales' => $totalNormales,
+            'liquidas' => $totalLiquidas,
+            'especiales' => $totalEspeciales,
+            'archivadas' => $totalArchivadas,
         ];
+
 
         return view('citologias.index', compact('citologias', 'estadisticas'));
     }
-    public function show($nbiopsia)
+
+    public function show($ncitologia)
     {
-        $citologia = Citolgia::with(['paciente', 'mascota', 'doctor', 'lista_citologias'])
-            ->where('ncitologia', $nbiopsia)
+        $citologia = Citolgia::with(['paciente', 'mascota', 'doctor'])
+            ->where('ncitologia', $ncitologia)
             ->firstOrFail();
 
         return view('citologias.show', compact('citologia'));
     }
-    //
 }

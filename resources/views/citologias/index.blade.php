@@ -1,5 +1,21 @@
 <x-app-layout>
     <div class="container mx-auto px-4 py-6">
+        <!-- Navegación separada. -->
+        <div class="mb-6">
+            <nav class="flex space-x-1 bg-blue-300 p-1 rounded-lg">
+                <a href="{{ route('citologias.index') }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
+                    Citologías
+                </a>
+                <a href="{{ route('citologias.personas.index') }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
+                    Personas
+                </a>
+
+
+            </nav>
+        </div>
+
         <!-- Header -->
         <div class="mb-6">
             <h1 class="text-3xl font-bold text-gray-900">Índice General de Citologías</h1>
@@ -7,7 +23,7 @@
         </div>
 
         <!-- Tarjetas de Estadísticas -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4 mb-6">
             <!-- Total -->
             <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-lg p-4 text-white">
                 <div class="text-2xl font-bold">{{ $estadisticas['total'] }}</div>
@@ -38,6 +54,12 @@
                 <div class="text-sm opacity-90">💧 Líquidas</div>
             </div>
 
+            <!-- Especiales -->
+            <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg shadow-lg p-4 text-white">
+                <div class="text-2xl font-bold">{{ $estadisticas['especiales'] }}</div>
+                <div class="text-sm opacity-90">⭐ Especiales</div>
+            </div>
+
             <!-- Archivadas -->
             <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-lg shadow-lg p-4 text-white">
                 <div class="text-2xl font-bold">{{ $estadisticas['archivadas'] }}</div>
@@ -62,20 +84,9 @@
                         class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500">
                 </div>
 
-                <!-- Categoría (Personas/Mascotas) -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">
-                        Categoría
-                    </label>
-                    <select name="categoria"
-                        class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500">
-                        <option value="">Todas</option>
-                        <option value="personas" {{ request('categoria') == 'personas' ? 'selected' : '' }}>Personas</option>
-                        <option value="mascotas" {{ request('categoria') == 'mascotas' ? 'selected' : '' }}>Mascotas</option>
-                    </select>
-                </div>
 
-                <!-- Tipo (Normal/Líquida) -->
+
+                <!-- Tipo (Normal/Líquida/Especial) -->
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">
                         Tipo
@@ -85,6 +96,7 @@
                         <option value="">Todos los tipos</option>
                         <option value="normal" {{ request('tipo') == 'normal' ? 'selected' : '' }}>📄 Normal</option>
                         <option value="liquida" {{ request('tipo') == 'liquida' ? 'selected' : '' }}>💧 Líquida</option>
+                        <option value="especial" {{ request('tipo') == 'especial' ? 'selected' : '' }}>⭐ Especial</option>
                     </select>
                 </div>
 
@@ -130,7 +142,6 @@
                         <tr>
                             <th class="px-6 py-4 text-left text-sm font-bold">N° Citología</th>
                             <th class="px-6 py-4 text-left text-sm font-bold">Tipo</th>
-                            <th class="px-6 py-4 text-left text-sm font-bold">Categoría</th>
                             <th class="px-6 py-4 text-left text-sm font-bold">Paciente/Mascota</th>
                             <th class="px-6 py-4 text-left text-sm font-bold">Doctor</th>
                             <th class="px-6 py-4 text-left text-sm font-bold">Fecha</th>
@@ -154,6 +165,10 @@
                                 <span class="inline-flex items-center bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-semibold">
                                     💧 Líquida
                                 </span>
+                                @elseif($citologia->tipo == 'especial')
+                                <span class="inline-flex items-center bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                    ⭐ Especial
+                                </span>
                                 @else
                                 <span class="inline-flex items-center bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-semibold">
                                     📄 Normal
@@ -161,18 +176,7 @@
                                 @endif
                             </td>
 
-                            <!-- Categoría -->
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @if($citologia->paciente_id)
-                                <span class="inline-flex items-center bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
-                                    👤 Persona
-                                </span>
-                                @else
-                                <span class="inline-flex items-center bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold">
-                                    🐾 Mascota
-                                </span>
-                                @endif
-                            </td>
+
 
                             <!-- Paciente/Mascota -->
                             <td class="px-6 py-4">
@@ -197,9 +201,12 @@
 
                             <!-- Doctor -->
                             <td class="px-6 py-4">
-                                <span class="text-gray-700 text-sm">
-                                    {{ $citologia->doctor->nombre }} {{ $citologia->doctor->apellido }}
-                                </span>
+                                <span class="text-gray-700">
+                                    @if ($citologia->remitente_especial)
+                                    {{ $citologia->remitente_especial }}
+                                    @else
+                                    {{ $citologia->doctor->nombre.' '.$citologia->doctor->apellido }}
+                                    @endif </span>
                             </td>
 
                             <!-- Fecha -->
@@ -247,7 +254,7 @@
                                 <div class="flex flex-col items-center gap-3">
                                     <span class="text-6xl">🔬</span>
                                     <p class="text-gray-500 text-lg">No se encontraron citologías</p>
-                                    @if(request()->anyFilled(['buscar', 'categoria', 'tipo', 'estado']))
+                                    @if(request()->anyFilled(['buscar', 'tipo', 'estado']))
                                     <a href="{{ route('citologias.index') }}"
                                         class="text-blue-600 hover:text-blue-800 font-semibold mt-2">
                                         Limpiar filtros →

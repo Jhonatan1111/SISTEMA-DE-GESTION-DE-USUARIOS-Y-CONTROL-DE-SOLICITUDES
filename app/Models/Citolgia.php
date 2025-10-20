@@ -19,6 +19,7 @@ class Citolgia extends Model
         'diagnostico_clinico',
         'fecha_recibida',
         'estado',
+        'remitente_especial',
         'tipo',
         'descripcion',
         'diagnostico',
@@ -100,24 +101,47 @@ class Citolgia extends Model
     public static function generarNumeroCitologia($tipo = 'normal')
     {
         $año = now()->year;
-        $mes = str_pad(now()->month, 2, '0', STR_PAD_LEFT);
 
-        // Prefijo según tipo: C para normal, L para líquida
-        $prefijo = ($tipo === 'liquida') ? 'L' : 'C';
+        // Prefijo según tipo: C para normal, L para líquida, E para especial
+        $prefijo = match ($tipo) {
+            'liquida' => 'CL',
+            'especial' => 'CE',
+            default => 'CN',
+        };
 
-        $ultimaCitologia = self::where('ncitologia', 'like', "{$prefijo}{$año}{$mes}%")
+        $ultimaCitologia = self::where('ncitologia', 'like', "{$prefijo}{$año}%")
             ->orderBy('ncitologia', 'desc')
             ->first();
 
         if ($ultimaCitologia) {
-            $ultimoNumero = intval(substr($ultimaCitologia->ncitologia, 7));
+            $ultimoNumero = intval(substr($ultimaCitologia->ncitologia, 5)); // Después del año (5 caracteres)
             $nuevoNumero = $ultimoNumero + 1;
         } else {
             $nuevoNumero = 1;
         }
 
-        return "{$prefijo}{$año}{$mes}" . str_pad($nuevoNumero, 3, '0', STR_PAD_LEFT);
+        return "{$prefijo}{$año}" . str_pad($nuevoNumero, 5, '0', STR_PAD_LEFT);
     }
+    // public static function generarNumeroCitologia($tipo = 'normal')
+    // {
+    //     $año = now()->year;
+
+    //     // Prefijo según tipo: C para normal, L para líquida
+    //     $prefijo = ($tipo === 'liquida') ? 'L' : 'C';
+
+    //     $ultimaCitologia = self::where('ncitologia', 'like', "{$prefijo}{$año}%")
+    //         ->orderBy('ncitologia', 'desc')
+    //         ->first();
+
+    //     if ($ultimaCitologia) {
+    //         $ultimoNumero = intval(substr($ultimaCitologia->ncitologia, 7));
+    //         $nuevoNumero = $ultimoNumero + 1;
+    //     } else {
+    //         $nuevoNumero = 1;
+    //     }
+
+    //     return "{$prefijo}{$año}" . str_pad($nuevoNumero, 3, '0', STR_PAD_LEFT);
+    // }
     // public static function generarNumeroCitologia()
     // {
     //     return DB::transaction(function () {

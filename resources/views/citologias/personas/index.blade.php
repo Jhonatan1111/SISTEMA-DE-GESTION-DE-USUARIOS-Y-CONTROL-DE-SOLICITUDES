@@ -1,6 +1,19 @@
 <x-app-layout>
     <div class="container mx-auto px-4 py-6">
-        <!-- Header -->
+        <!-- Navegación separada -->
+        <div class="mb-6">
+            <nav class="flex space-x-1 bg-blue-300 p-1 rounded-lg">
+                <a href="{{ route('citologias.index') }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
+                    General
+                </a>
+                <a href="{{ route('citologias.personas.index') }}"
+                    class="px-4 py-2 text-sm font-medium bg-white text-gray-900 rounded-md shadow-sm">
+                    Personas
+                </a>
+
+            </nav>
+        </div>
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Citologías de Personas</h1>
@@ -31,7 +44,7 @@
                             <th class="px-6 py-4 text-left text-sm font-bold">N° Citología</th>
                             <th class="px-6 py-4 text-left text-sm font-bold">Tipo</th>
                             <th class="px-6 py-4 text-left text-sm font-bold">Paciente</th>
-                            <th class="px-6 py-4 text-left text-sm font-bold">Doctor</th>
+                            <th class="px-6 py-4 text-left text-sm font-bold">Remitente</th>
                             <th class="px-6 py-4 text-left text-sm font-bold">Fecha</th>
                             <th class="px-6 py-4 text-left text-sm font-bold">Estado</th>
                             <th class="px-6 py-4 text-center text-sm font-bold">Acciones</th>
@@ -49,6 +62,10 @@
                                 @if($citologia->tipo == 'liquida')
                                 <span class="inline-flex items-center bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-semibold">
                                     💧 Líquida
+                                </span>
+                                @elseif($citologia->tipo == 'especial')
+                                <span class="inline-flex items-center bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-semibold">
+                                    🍱 Especial
                                 </span>
                                 @else
                                 <span class="inline-flex items-center bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-xs font-semibold">
@@ -68,8 +85,11 @@
                             </td>
                             <td class="px-6 py-4">
                                 <span class="text-gray-700">
-                                    {{ $citologia->doctor->nombre }} {{ $citologia->doctor->apellido }}
-                                </span>
+                                    @if ($citologia->remitente_especial)
+                                    {{ $citologia->remitente_especial }}
+                                    @else
+                                    {{ $citologia->doctor->nombre.' '.$citologia->doctor->apellido }}
+                                    @endif </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="text-gray-600">

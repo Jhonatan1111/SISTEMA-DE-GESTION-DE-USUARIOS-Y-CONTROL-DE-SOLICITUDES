@@ -95,20 +95,30 @@
         <!-- Información del Doctor -->
         <div class="bg-white rounded-lg shadow p-6 mb-6">
             <h2 class="text-xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-200 pb-2">
-                👨‍⚕️ Doctor Responsable
+                👨‍⚕️ Remitente Responsable
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-sm font-semibold text-gray-600">Nombre del Doctor</label>
+                    <label class="block text-sm font-semibold text-gray-600">Nombre del Remitente</label>
+
                     <p class="text-lg font-bold text-gray-900">
-                        {{ $citologia->doctor->nombre }} {{ $citologia->doctor->apellido }}
+                        @if ($citologia->remitente_especial)
+                        {{ $citologia->remitente_especial }}
+                        @else
+                        {{ $citologia->doctor->nombre.' '.$citologia->doctor->apellido }}
+                        @endif
                     </p>
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold text-gray-600">Celular</label>
-                    <p class="text-lg text-gray-900">{{ $citologia->doctor->celular }}</p>
+                    <p class="text-lg text-gray-900">@if ($citologia->remitente_especial)
+                        {{ $citologia->remitente_especial }}
+                        @else
+                        {{ $citologia->doctor->celular }}
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>

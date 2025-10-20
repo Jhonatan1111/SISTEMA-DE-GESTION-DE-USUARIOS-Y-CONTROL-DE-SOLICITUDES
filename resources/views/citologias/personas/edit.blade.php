@@ -66,23 +66,56 @@
                     <!-- Doctor -->
                     <div>
                         <label for="doctor_id" class="block text-sm font-semibold text-gray-700 mb-1">
-                            Doctor <span class="text-red-500">*</span>
+                            Remitente <span class="text-red-500">*</span>
                         </label>
                         <select id="doctor_id"
                             name="doctor_id"
                             required
                             class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500">
+                            <option value="">-- Seleccione un remitente --</option>
                             @foreach($doctores as $doctor)
                             <option value="{{ $doctor->id }}"
-                                {{ old('doctor_id', $citologia->doctor_id) == $doctor->id ? 'selected' : '' }}>
+                                {{ old('doctor_id', $citologia->doctor_id ?? 'especial') == $doctor->id ? 'selected' : '' }}>
                                 {{ $doctor->nombre }} {{ $doctor->apellido }}
                             </option>
                             @endforeach
+                            <option value="especial"
+                                {{ old('doctor_id', $citologia->doctor_id ? '' : 'especial') == 'especial' ? 'selected' : '' }}>
+                                Remitente Especial
+                            </option>
                         </select>
                         @error('doctor_id')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <!-- Campo Remitente Especial (solo si se selecciona "Remitente Especial") -->
+                    <div id="remitente_especial_container" class="{{ old('doctor_id', $citologia->doctor_id ? '' : 'especial') == 'especial' ? '' : 'hidden' }}">
+                        <label for="remitente_especial" class="block text-sm font-semibold text-gray-700 mb-1">
+                            Nombre del Remitente Especial <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text"
+                            id="remitente_especial"
+                            name="remitente_especial"
+                            value="{{ old('remitente_especial', $citologia->remitente_especial) }}"
+                            class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500">
+                        @error('remitente_especial')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <script>
+                        document.getElementById('doctor_id').addEventListener('change', function() {
+                            const container = document.getElementById('remitente_especial_container');
+                            if (this.value === 'especial') {
+                                container.classList.remove('hidden');
+                                document.getElementById('remitente_especial').setAttribute('required', 'required');
+                            } else {
+                                container.classList.add('hidden');
+                                document.getElementById('remitente_especial').removeAttribute('required');
+                            }
+                        });
+                    </script>
 
                     <!-- Paciente -->
                     <div class="md:col-span-2">
