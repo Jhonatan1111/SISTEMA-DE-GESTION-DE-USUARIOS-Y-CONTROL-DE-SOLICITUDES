@@ -136,19 +136,16 @@ class BiopsiaMascotaController extends Controller
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'mascota_id' => 'required|exists:mascotas,id',
             'doctor_id' => 'required|exists:doctores,id',
-            'tipo' => 'required|in:normal,liquida'
         ], [
             'fecha_recibida.before_or_equal' => 'La fecha no puede ser futura',
             'diagnostico_clinico.required' => 'El diagnóstico clínico es obligatorio',
             'doctor_id.required' => 'Debe seleccionar un doctor',
             'mascota_id.required' => 'Debe seleccionar una mascota',
-            'tipo.required' => 'Debe seleccionar el tipo de biopsia'
         ]);
 
         $biopsia->update([
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
-            'tipo' => $request->tipo,
             'mascota_id' => $request->mascota_id,
             'doctor_id' => $request->doctor_id,
             'lista_id' => $request->lista_id ?? null,

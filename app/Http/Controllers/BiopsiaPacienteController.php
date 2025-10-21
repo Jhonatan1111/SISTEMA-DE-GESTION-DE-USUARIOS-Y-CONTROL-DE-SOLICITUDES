@@ -131,19 +131,19 @@ class BiopsiaPacienteController extends Controller
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'paciente_id' => 'required|exists:pacientes,id',
             'doctor_id' => 'required|exists:doctores,id',
-            'tipo' => 'required|in:normal,liquida'
+            // 'tipo' => 'required|in:normal,liquida'
         ], [
             'fecha_recibida.before_or_equal' => 'La fecha no puede ser futura',
             'diagnostico_clinico.required' => 'El diagnóstico clínico es obligatorio',
             'doctor_id.required' => 'Debe seleccionar un doctor',
             'paciente_id.required' => 'Debe seleccionar un paciente',
-            'tipo.required' => 'Debe seleccionar el tipo de biopsia'
+            // 'tipo.required' => 'Debe seleccionar el tipo de biopsia'
         ]);
 
         $biopsia->update([
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
-            'tipo' => $request->tipo,
+            // 'tipo' => $request->tipo,
             'paciente_id' => $request->paciente_id,
             'doctor_id' => $request->doctor_id,
             'lista_id' => $request->lista_id ?? null,
@@ -418,5 +418,17 @@ class BiopsiaPacienteController extends Controller
             'success' => false,
             'message' => 'Código no encontrado'
         ], 404);
+    }
+    public function obtenerNumeroCorrelativo(Request $request)
+    {
+        $tipo = $request->tipo ?? 'normal';
+        $tipoBiopsia = 'persona-' . $tipo;
+        $numero = Biopsia::generarNumeroBiopsia($tipoBiopsia);
+
+        return response()->json([
+            'success' => true,
+            'numero' => $numero,
+            'tipo' => $tipo
+        ]);
     }
 }

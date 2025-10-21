@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
     Route::put('mascotas/{mascota}', [MascotaController::class, 'update'])->name('mascotas.update');
 
     // BIOPSIAS
+    Route::get('biopsias/personas/obtener-numero-correlativo', [BiopsiaPacienteController::class, 'obtenerNumeroCorrelativo'])->name('biopsias.personas.obtener-numero-correlativo');
+
     Route::get('biopsias', [BiopsiaController::class, 'index'])->name('biopsias.index');
     Route::get('/api/biopsias/obtener-numero/{tipo}', function ($tipo) {
         try {
