@@ -28,8 +28,7 @@ class BiopsiaMascotaController extends Controller
         $mascotas = Mascota::orderBy('nombre')->get();
         $doctores = Doctor::where('estado_servicio', true)->get();
         $listas = ListaBiopsia::orderBy('codigo')->get();
-        $numeroGenerado = Biopsia::generarNumeroBiopsia();
-        return view('biopsias.mascotas.create', compact('mascotas', 'doctores', 'listas', 'numeroGenerado'));
+        return view('biopsias.mascotas.create', compact('mascotas', 'doctores', 'listas'));
     }
 
     /**
@@ -38,27 +37,36 @@ class BiopsiaMascotaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'doctor_id' => 'required|exists:doctores,id',
-            'mascota_id' => 'required|exists:mascotas,id'
+            'mascota_id' => 'required|exists:mascotas,id',
+            'tipo' => 'required|in:normal,liquida'
         ], [
             'fecha_recibida.before_or_equal' => 'La fecha no puede ser futura',
             'diagnostico_clinico.required' => 'El diagnóstico clínico es obligatorio',
             'doctor_id.required' => 'Debe seleccionar un doctor',
-            'mascota_id.required' => 'Debe seleccionar una mascota'
+            'mascota_id.required' => 'Debe seleccionar una mascota',
+            'tipo.required' => 'Debe seleccionar el tipo de biopsia'
         ]);
-        $numeroGenerado = Biopsia::generarNumeroBiopsia();
+
+        // Generar número correlativo según el tipo
+        $tipoBiopsia = 'mascota-' . $request->tipo;
+        $numeroGenerado = Biopsia::generarNumeroBiopsia($tipoBiopsia);
+
         $datos = [
             'nbiopsia' => $numeroGenerado,
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
+            'tipo' => $request->tipo,
             'doctor_id' => $request->doctor_id,
             'mascota_id' => $request->mascota_id,
             'estado' => true,
+            'paciente_id' => null,
             'lista_id' => $request->lista_id ?? null,
         ];
+
+        // Si seleccionó una lista, copiar los datos
         if ($request->lista_id) {
             $lista = ListaBiopsia::find($request->lista_id);
             if ($lista) {
@@ -74,8 +82,13 @@ class BiopsiaMascotaController extends Controller
             $datos['microscopico'] = $request->microscopico;
             $datos['macroscopico'] = $request->macroscopico;
         }
+
         Biopsia::create($datos);
-        return redirect()->route('biopsias.mascotas.index')->with('success', 'Biopsia creada exitosamente');
+
+        $tipoTexto = $request->tipo === 'liquida' ? 'líquida' : 'normal';
+
+        return redirect()->route('biopsias.mascotas.index')
+            ->with('success', "Biopsia {$tipoTexto} creada exitosamente con número {$numeroGenerado}");
     }
 
     /**
@@ -116,24 +129,26 @@ class BiopsiaMascotaController extends Controller
      */
     public function update(Request $request, $nbiopsia)
     {
-
         $biopsia = Biopsia::where('nbiopsia', $nbiopsia)->firstOrFail();
 
         $request->validate([
-            // 'nbiopsia' => 'required|string|max:15|unique:biopsias,nbiopsia,' . $biopsia->nbiopsia . ',nbiopsia',
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'mascota_id' => 'required|exists:mascotas,id',
             'doctor_id' => 'required|exists:doctores,id',
+            'tipo' => 'required|in:normal,liquida'
         ], [
             'fecha_recibida.before_or_equal' => 'La fecha no puede ser futura',
             'diagnostico_clinico.required' => 'El diagnóstico clínico es obligatorio',
             'doctor_id.required' => 'Debe seleccionar un doctor',
-            'mascota_id.required' => 'Debe seleccionar una mascota'
+            'mascota_id.required' => 'Debe seleccionar una mascota',
+            'tipo.required' => 'Debe seleccionar el tipo de biopsia'
         ]);
+
         $biopsia->update([
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
+            'tipo' => $request->tipo,
             'mascota_id' => $request->mascota_id,
             'doctor_id' => $request->doctor_id,
             'lista_id' => $request->lista_id ?? null,
@@ -141,9 +156,9 @@ class BiopsiaMascotaController extends Controller
             'descripcion' => $request->descripcion,
             'microscopico' => $request->microscopico,
             'macroscopico' => $request->macroscopico,
-            'persona_id' => null,
+            'paciente_id' => null,
         ]);
-        $biopsia->save();
+
         return redirect()->route('biopsias.mascotas.index')
             ->with('success', 'Biopsia de mascota actualizada exitosamente.');
     }
