@@ -33,36 +33,43 @@ class BiopsiaPacienteController extends Controller
             ->get();
         $listas = ListaBiopsia::orderBy('codigo')
             ->get();
-        $numeroGenerado = Biopsia::generarNumeroBiopsia();
-        return view('biopsias.personas.create', compact('doctores', 'pacientes', 'listas', 'numeroGenerado'));
+        return view('biopsias.personas.create', compact('doctores', 'pacientes', 'listas'));
     }
 
     // Guardar nueva biopsia de paciente humano
     public function store(Request $request)
     {
         $request->validate([
-
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'doctor_id' => 'required|exists:doctores,id',
-            'paciente_id' => 'required|exists:pacientes,id'
+            'paciente_id' => 'required|exists:pacientes,id',
+            'tipo' => 'required|in:normal,liquida'
         ], [
             'fecha_recibida.before_or_equal' => 'La fecha no puede ser futura',
             'diagnostico_clinico.required' => 'El diagnóstico clínico es obligatorio',
             'doctor_id.required' => 'Debe seleccionar un doctor',
-            'paciente_id.required' => 'Debe seleccionar un paciente'
+            'paciente_id.required' => 'Debe seleccionar un paciente',
+            'tipo.required' => 'Debe seleccionar el tipo de biopsia'
         ]);
-        $numeroGenerado = Biopsia::generarNumeroBiopsia();
+
+        // Generar número correlativo según el tipo
+        $tipoBiopsia = 'persona-' . $request->tipo;
+        $numeroGenerado = Biopsia::generarNumeroBiopsia($tipoBiopsia);
+
         $datos = [
             'nbiopsia' => $numeroGenerado,
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
+            'tipo' => $request->tipo,
             'doctor_id' => $request->doctor_id,
             'paciente_id' => $request->paciente_id,
             'estado' => true,
             'mascota_id' => null,
             'lista_id' => $request->lista_id ?? null,
         ];
+
+        // Si seleccionó una lista, copiar los datos
         if ($request->lista_id) {
             $lista = ListaBiopsia::find($request->lista_id);
             if ($lista) {
@@ -78,8 +85,13 @@ class BiopsiaPacienteController extends Controller
             $datos['microscopico'] = $request->microscopico;
             $datos['macroscopico'] = $request->macroscopico;
         }
+
         Biopsia::create($datos);
-        return redirect()->route('biopsias.personas.index')->with('success', 'Biopsia creada exitosamente');
+
+        $tipoTexto = $request->tipo === 'liquida' ? 'líquida' : 'normal';
+
+        return redirect()->route('biopsias.personas.index')
+            ->with('success', "Biopsia {$tipoTexto} creada exitosamente con número {$numeroGenerado}");
     }
 
     // Ver detalles de biopsia de paciente
@@ -112,24 +124,26 @@ class BiopsiaPacienteController extends Controller
     // Actualizar biopsia de paciente
     public function update(Request $request, $nbiopsia)
     {
-
         $biopsia = Biopsia::where('nbiopsia', $nbiopsia)->firstOrFail();
 
         $request->validate([
-            // 'nbiopsia' => 'required|string|max:15|unique:biopsias,nbiopsia,' . $biopsia->nbiopsia . ',nbiopsia',
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'paciente_id' => 'required|exists:pacientes,id',
             'doctor_id' => 'required|exists:doctores,id',
+            // 'tipo' => 'required|in:normal,liquida'
         ], [
             'fecha_recibida.before_or_equal' => 'La fecha no puede ser futura',
             'diagnostico_clinico.required' => 'El diagnóstico clínico es obligatorio',
             'doctor_id.required' => 'Debe seleccionar un doctor',
-            'paciente_id.required' => 'Debe seleccionar un paciente'
+            'paciente_id.required' => 'Debe seleccionar un paciente',
+            // 'tipo.required' => 'Debe seleccionar el tipo de biopsia'
         ]);
+
         $biopsia->update([
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
+            // 'tipo' => $request->tipo,
             'paciente_id' => $request->paciente_id,
             'doctor_id' => $request->doctor_id,
             'lista_id' => $request->lista_id ?? null,
@@ -139,13 +153,10 @@ class BiopsiaPacienteController extends Controller
             'macroscopico' => $request->macroscopico,
             'mascota_id' => null,
         ]);
-        $biopsia->save();
+
         return redirect()->route('biopsias.personas.index')
             ->with('success', 'Biopsia de persona actualizada exitosamente.');
     }
-
-    // Eliminar biopsia
-
 
     // Ver historial de biopsias de un paciente específico
     public function historialPaciente($pacienteId)
@@ -407,5 +418,17 @@ class BiopsiaPacienteController extends Controller
             'success' => false,
             'message' => 'Código no encontrado'
         ], 404);
+    }
+    public function obtenerNumeroCorrelativo(Request $request)
+    {
+        $tipo = $request->tipo ?? 'normal';
+        $tipoBiopsia = 'persona-' . $tipo;
+        $numero = Biopsia::generarNumeroBiopsia($tipoBiopsia);
+
+        return response()->json([
+            'success' => true,
+            'numero' => $numero,
+            'tipo' => $tipo
+        ]);
     }
 }
