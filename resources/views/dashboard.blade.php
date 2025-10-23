@@ -91,6 +91,26 @@
                 </div>
             </a>
 
+             <!-- Gestión de Citologías -->
+            <a href="{{ route('citologias.personas.index') }}" class="group">
+                <div class="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden h-full">
+                    <div class="bg-gradient-to-r from-pink-500 to-pink-600 px-6 py-8 flex justify-center">
+                        <img src="/image/normal.png" alt="Biopsias" class="w-16 h-16 mb-2">
+                    </div>
+                    <div class="p-6">
+                        <h2 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-pink-600 transition-colors">
+                            Gestión de Citologías
+                        </h2>
+                        <p class="text-gray-600 leading-relaxed">
+                            Administra las citologías normales, líquidas y especiales generadas.
+                        </p>
+                        <div class="mt-4 flex items-center text-pink-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                            Ir a Citologías →
+                        </div>
+                    </div>
+                </div>
+            </a>
+
             <!-- Gestión de Listas de Biopsias -->
             <a href="{{ route('listas.biopsias.index') }}" class="group">
                 <div class="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden h-full">
