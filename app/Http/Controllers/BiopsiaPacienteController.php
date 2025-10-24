@@ -12,13 +12,48 @@ use Illuminate\Http\Request;
 class BiopsiaPacienteController extends Controller
 {
     // MOSTRAR BIOPSIAS DE PERSONAS
-    public function index()
+    public function index(Request $request)
     {
-        $biopsias = Biopsia::with(['paciente', 'doctor', 'lista_biopsia'])
-            ->personas()
-            // ->ListaBiopsias()
-            ->orderBy('fecha_recibida',  'asc')
-            ->paginate(10);
+        $query = Biopsia::with(['paciente', 'doctor', 'lista_biopsia'])
+            ->whereNotNull('paciente_id')
+            ->whereNull('mascota_id');
+
+        // Filtro de búsqueda
+        if ($request->filled('buscar')) {
+            $buscar = $request->buscar;
+            $query->where(function($q) use ($buscar) {
+                $q->where('nbiopsia', 'like', "%{$buscar}%")
+                ->orWhere('diagnostico_clinico', 'like', "%{$buscar}%")
+                ->orWhereHas('doctor', function($q) use ($buscar) {
+                    $q->where('nombre', 'like', "%{$buscar}%")
+                        ->orWhere('apellido', 'like', "%{$buscar}%")
+                        ->orWhere('jvpm', 'like', "%{$buscar}%");
+                })
+                ->orWhereHas('paciente', function($q) use ($buscar) {
+                    $q->where('nombre', 'like', "%{$buscar}%")
+                        ->orWhere('apellido', 'like', "%{$buscar}%")
+                        ->orWhere('DUI', 'like', "%{$buscar}%");
+                })
+                ->orWhereHas('lista_biopsia', function($q) use ($buscar) {
+                    $q->where('codigo', 'like', "%{$buscar}%")
+                        ->orWhere('diagnostico', 'like', "%{$buscar}%");
+                });
+            });
+        }
+
+        // Filtro de estado
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        // Filtro de doctor
+        if ($request->filled('doctor')) {
+            $query->where('doctor_id', $request->doctor);
+        }
+
+        $biopsias = $query->orderBy('fecha_recibida', 'asc')
+            ->paginate(10)
+            ->appends($request->all());
 
         return view('biopsias.personas.index', compact('biopsias'));
     }

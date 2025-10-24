@@ -10,15 +10,51 @@ use Illuminate\Http\Request;
 
 class BiopsiaMascotaController extends Controller
 {
-    public function index()
-    {
-        $biopsias = Biopsia::with('mascota', 'doctor', 'lista_biopsia')
-            ->mascotas()
-            // ->ListaBiopsias()
-            ->orderBy('fecha_recibida', 'asc')
-            ->paginate(10);
-        return view('biopsias.mascotas.index', compact('biopsias'));
+    public function index(Request $request)
+{
+    $query = Biopsia::with('mascota', 'doctor', 'lista_biopsia')
+        ->whereNotNull('mascota_id')
+        ->whereNull('paciente_id');
+
+    // Filtro de búsqueda
+    if ($request->filled('buscar')) {
+        $buscar = $request->buscar;
+        $query->where(function($q) use ($buscar) {
+            $q->where('nbiopsia', 'like', "%{$buscar}%")
+              ->orWhere('diagnostico_clinico', 'like', "%{$buscar}%")
+              ->orWhereHas('doctor', function($q) use ($buscar) {
+                  $q->where('nombre', 'like', "%{$buscar}%")
+                    ->orWhere('apellido', 'like', "%{$buscar}%")
+                    ->orWhere('jvpm', 'like', "%{$buscar}%");
+              })
+              ->orWhereHas('mascota', function($q) use ($buscar) {
+                  $q->where('nombre', 'like', "%{$buscar}%")
+                    ->orWhere('propietario', 'like', "%{$buscar}%")
+                    ->orWhere('raza', 'like', "%{$buscar}%");
+              })
+              ->orWhereHas('lista_biopsia', function($q) use ($buscar) {
+                  $q->where('codigo', 'like', "%{$buscar}%")
+                    ->orWhere('diagnostico', 'like', "%{$buscar}%");
+              });
+        });
     }
+
+    // Filtro de estado
+    if ($request->filled('estado')) {
+        $query->where('estado', $request->estado);
+    }
+
+    // Filtro de doctor
+    if ($request->filled('doctor')) {
+        $query->where('doctor_id', $request->doctor);
+    }
+
+    $biopsias = $query->orderBy('fecha_recibida', 'asc')
+        ->paginate(10)
+        ->appends($request->all());
+
+    return view('biopsias.mascotas.index', compact('biopsias'));
+}
 
     /**
      * Show the form for creating a new resource.

@@ -222,22 +222,29 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Biopsia Mascota Normal -->
                 <button type="button" onclick="seleccionarTipo('mascota-normal')"
-                    class="p-6 border-2 border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all">
-                    <div class="text-4xl mb-2 text-center">🐾</div>
-                    <h3 class="text-lg font-bold text-gray-900 text-center">Biopsia Normal</h3>
-                    <p class="text-xs text-green-600 font-mono text-center mt-2">BMN2025-0001</p>
+                    class="p-6 bg-gradient-to-br from-blue-100 to-blue-50 hover:from-blue-200 hover:to-blue-100 border-2 border-blue-300 hover:border-blue-400 rounded-lg transition-all transform hover:scale-105">
+                    <div class="text-4xl mb-2 text-center">
+                        <img src="/image/bnormal.png" alt="Bnormal" class="mx-auto w-12 h-12">
+                    </div>
+                    <h3 class="text-lg font-bold text-blue-900 text-center">Normal</h3>
+                    <p class="text-xs text-blue-600 font-mono text-center mt-2">BMN2025-0001</p>
                 </button>
 
                 <!-- Biopsia Mascota Líquida -->
                 <button type="button" onclick="seleccionarTipo('mascota-liquida')"
-                    class="p-6 border-2 border-gray-300 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition-all">
-                    <div class="text-4xl mb-2 text-center">💧🐾</div>
-                    <h3 class="text-lg font-bold text-gray-900 text-center">Biopsia Líquida</h3>
-                    <p class="text-xs text-orange-600 font-mono text-center mt-2">BML2025-0001</p>
+                    class="p-6 bg-gradient-to-br from-purple-100 to-purple-50 hover:from-purple-200 hover:to-purple-100 border-2 border-purple-300 hover:border-purple-400 rounded-lg transition-all transform hover:scale-105">
+                    <div class="text-4xl mb-2 text-center">
+                        <img src="/image/lavado.png" alt="Lavado" class="mx-auto w-12 h-12">
+                    </div>
+                    <h3 class="text-lg font-bold text-purple-900 text-center">Lavado</h3>
+                    <p class="text-xs text-purple-600 font-mono text-center mt-2">BML2025-0001</p>
                 </button>
             </div>
             <div class="mt-6 text-center">
-                <a href="{{ route('biopsias.mascotas.index') }}" class="text-gray-500 hover:text-gray-700 text-sm underline">Cancelar y volver</a>
+                <a href="{{ route('biopsias.mascotas.index') }}" 
+                class="text-1xl text-blue-700 hover:text-blue-800 font-semibold">
+                    ← Cancelar y volver
+            </a>
             </div>
         </div>
     </div>

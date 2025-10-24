@@ -15,7 +15,9 @@
                     onclick="seleccionarTipo('normal')"
                     class="p-6 bg-gradient-to-br from-blue-100 to-blue-50 hover:from-blue-200 hover:to-blue-100 border-2 border-blue-300 hover:border-blue-400 rounded-lg transition-all transform hover:scale-105">
                     <div class="text-center">
-                        <span class="text-5xl mb-3 block">📄</span>
+                        <span class="text-5xl mb-3 block">
+                            <img src="/image/bnormal.png" alt="Bnormal" class="mx-auto w-12 h-12">
+                        </span>
                         <h3 class="text-lg font-bold text-blue-900 mb-1">Normal</h3>
                         <p class="text-sm text-blue-600">BPN2025XXXX</p>
                     </div>
@@ -26,8 +28,10 @@
                     onclick="seleccionarTipo('liquida')"
                     class="p-6 bg-gradient-to-br from-purple-100 to-purple-50 hover:from-purple-200 hover:to-purple-100 border-2 border-purple-300 hover:border-purple-400 rounded-lg transition-all transform hover:scale-105">
                     <div class="text-center">
-                        <span class="text-5xl mb-3 block">💧</span>
-                        <h3 class="text-lg font-bold text-purple-900 mb-1">Líquida</h3>
+                        <span class="text-5xl mb-3 block">
+                            <img src="/image/lavado.png" alt="Lavado" class="mx-auto w-12 h-12">
+                        </span>
+                        <h3 class="text-lg font-bold text-purple-900 mb-1">Lavado</h3>
                         <p class="text-sm text-purple-600">BPL2025XXXX</p>
                     </div>
                 </button>
@@ -35,8 +39,8 @@
 
             <div class="mt-6 text-center">
                 <a href="{{ route('biopsias.personas.index') }}"
-                    class="text-gray-500 hover:text-gray-700 text-sm underline">
-                    Cancelar y volver
+                    class="text-1xl text-blue-700 hover:text-blue-800 font-semibold">
+                    ← Cancelar y volver
                 </a>
             </div>
         </div>

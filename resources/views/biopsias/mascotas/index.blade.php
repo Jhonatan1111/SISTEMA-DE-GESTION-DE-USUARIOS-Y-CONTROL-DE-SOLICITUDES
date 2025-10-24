@@ -27,7 +27,7 @@
             </div>
             <div class="flex space-x-3">
                 <a href="{{ route('biopsias.mascotas.create') }}"
-                    class="bg-blue-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
@@ -100,45 +100,62 @@
                 </div>
             </div>
         </div>
-        <!-- Filtros y búsqueda. -->
-        <div class="bg-white p-4 rounded-lg shadow-md mb-6">
-            <div class="flex flex-wrap gap-4 items-center">
-                <div class="flex-1 min-w-64">
-                    <div class="relative">
-                        <input type="text" placeholder="Buscar por paciente, doctor o diagnóstico..."
-                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                        </div>
-                    </div>
+<!-- Filtros y búsqueda -->
+<div class="bg-green-100 p-4 rounded-lg shadow-md mb-6">
+    <form method="GET" action="{{ route('biopsias.mascotas.index') }}" class="flex flex-wrap items-center gap-4">
+        <!-- Campo de búsqueda -->
+        <div class="flex-1 min-w-[230px]">
+            <div class="relative">
+                <input type="text" 
+                    name="buscar"
+                    value="{{ request('buscar') }}"
+                    placeholder="Buscar por mascota, propietario, doctor o diagnóstico..."
+                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
                 </div>
             </div>
         </div>
-        <!-- Filtro por estado (más ancho) -->
-        <div class="flex-shrink-0">
-            <select id="filtro_estado"
-                class="min-w-[180px] px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+
+        <!-- Filtro por estado -->
+        <div class="flex-shrink-0 min-w-[180px]">
+            <select name="estado"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
                 <option value="">Todos los estados</option>
-                <option value="1">Activas</option>
-                <option value="0">Inactivas</option>
+                <option value="1" {{ request('estado') == '1' ? 'selected' : '' }}>Activas</option>
+                <option value="0" {{ request('estado') == '0' ? 'selected' : '' }}>Inactivas</option>
             </select>
         </div>
 
         <!-- Filtro por doctor -->
-        <div class="flex-shrink-0">
-            <select
-                class="min-w-[180px] px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <div class="flex-shrink-0 min-w-[180px]">
+            <select name="doctor"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
                 <option value="">Todos los doctores</option>
                 @foreach(\App\Models\Doctor::all() as $doctor)
-                    <option value="{{ $doctor->id }}">Dr. {{ $doctor->nombre }} {{ $doctor->apellido }}</option>
+                    <option value="{{ $doctor->id }}" {{ request('doctor') == $doctor->id ? 'selected' : '' }}>
+                        Dr. {{ $doctor->nombre }} {{ $doctor->apellido }}
+                    </option>
                 @endforeach
             </select>
         </div>
-    </div>
-</div>
 
+        <!-- Botones -->
+        <div class="flex gap-4 items-center mt-1">
+            <button type="submit"
+                class="text-blue-600 font-semibold hover:underline transition-colors">
+                Filtrar
+            </button>
+            <a href="{{ route('biopsias.mascotas.index') }}"
+                class="text-purple-600 font-semibold hover:underline transition-colors">
+                Limpiar
+            </a>
+        </div>
+    </form>
+</div>
 
         <!-- Mensajes de éxito/error -->
         @if(session('success'))
@@ -194,7 +211,7 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($biopsias as $biopsia)
-                        <tr class="hover:bg-purple-200 transition-colors">
+                        <tr class="hover:bg-blue-50 transition-colors">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">{{ $biopsia->nbiopsia }}</div>
                             </td>
@@ -203,20 +220,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                            <span class="text-sm font-medium text-blue-800">
-                                                @if($biopsia->paciente_id && $biopsia->paciente)
-                                                {{ substr($biopsia->paciente->nombre, 0, 1) }}{{ substr($biopsia->paciente->apellido, 0, 1) }}
-                                                @elseif($biopsia->mascota_id && $biopsia->mascota)
-                                                {{ substr($biopsia->mascota->nombre, 0, 1) }}{{ substr($biopsia->mascota->propietario ?? 'M', 0, 1) }}
-                                                @else
-                                                N/A
-                                                @endif
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="ml-4">
+                                    <div class="ml-0">
                                         <div class="text-sm font-medium text-gray-900">
                                             @if($biopsia->paciente_id && $biopsia->paciente)
                                             {{ $biopsia->paciente->nombre }} {{ $biopsia->paciente->apellido }}
@@ -265,24 +269,18 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex items-center space-x-2">
+                                <div class="flex items-center space-x-4">
                                     <!-- Editar -->
                                     <a href="{{ route('biopsias.mascotas.edit', $biopsia->nbiopsia) }}"
-                                        class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
-                                        title="Editar">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
+                                        class="text-blue-600 font-semibold hover:text-blue-800 transition-colors">
+                                        Editar
                                     </a>
 
                                     <!-- Imprimir -->
                                     <a href="{{ route('biopsias.mascotas.imprimir', $biopsia->nbiopsia) }}"
                                         target="_blank"
-                                        class="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
-                                        title="Imprimir">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                                        </svg>
+                                        class="text-purple-600 font-semibold hover:text-purple-800 transition-colors">
+                                        Imprimir
                                     </a>
 
                                     <!-- Toggle Estado -->
@@ -290,17 +288,8 @@
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit"
-                                            class="inline-flex items-center px-3 py-1.5 {{ $biopsia->estado ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200' : 'bg-green-100 text-green-700 hover:bg-green-200' }} rounded-md transition-colors"
-                                            title="{{ $biopsia->estado ? 'Desactivar' : 'Activar' }}">
-                                            @if($biopsia->estado)
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                            @else
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                            @endif
+                                            class="font-semibold transition-colors {{ $biopsia->estado ? 'text-yellow-600 hover:text-yellow-800' : 'text-green-600 hover:text-green-800' }}">
+                                            {{ $biopsia->estado ? 'Desactivar' : 'Activar' }}
                                         </button>
                                     </form>
                                 </div>

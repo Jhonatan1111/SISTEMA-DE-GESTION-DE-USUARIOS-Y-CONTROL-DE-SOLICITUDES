@@ -145,7 +145,7 @@
                     <!-- Fragmento corregido para biopsias.index -->
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($biopsias as $biopsia)
-                        <tr class="hover:bg-purple-200">
+                        <tr class="hover:bg-blue-50">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">{{ $biopsia->nbiopsia }}</div>
                             </td>
