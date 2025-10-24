@@ -111,7 +111,7 @@
                 </div>
             </a>
 
-            <!-- Gestión de Listas de Biopsias -->
+            <!-- Gestión de Listas -->
             <a href="{{ route('listas.biopsias.index') }}" class="group">
                 <div class="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden h-full">
                     <div class="bg-gradient-to-r from-amber-500 to-amber-600 px-6 py-8 flex justify-center">
@@ -119,10 +119,10 @@
                     </div>
                     <div class="p-6">
                         <h2 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-amber-600 transition-colors">
-                            Gestión de Listas de Biopsias
+                            Gestión de Listas
                         </h2>
                         <p class="text-gray-600 leading-relaxed">
-                            Muestra detalladamente una lista de las biopsias guardadas previamente.
+                            Muestra detalladamente las plantillas de resultados de biopsias y citologías.
                         </p>
                         <div class="mt-4 flex items-center text-amber-600 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
                             Ver listas →
