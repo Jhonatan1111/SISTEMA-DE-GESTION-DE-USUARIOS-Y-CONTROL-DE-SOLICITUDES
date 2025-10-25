@@ -111,64 +111,20 @@ class Citolgia extends Model
         };
 
         $ultimaCitologia = self::where('ncitologia', 'like', "{$prefijo}{$año}%")
+            ->lockForUpdate()
             ->orderBy('ncitologia', 'desc')
             ->first();
 
         if ($ultimaCitologia) {
-            $ultimoNumero = intval(substr($ultimaCitologia->ncitologia, 5)); // Después del año (5 caracteres)
-            $nuevoNumero = $ultimoNumero + 1;
+            $longitudPrefijo = 6; // CN2025 o CL2025 o CE2025
+            $ultimoCorrelativo = intval(substr($ultimaCitologia->ncitologia, $longitudPrefijo));
+            $nuevoNumero = $ultimoCorrelativo + 1;
         } else {
             $nuevoNumero = 1;
         }
 
-        return "{$prefijo}{$año}" . str_pad($nuevoNumero, 5, '0', STR_PAD_LEFT);
+        return sprintf("%s%s%05d", $prefijo, $año, $nuevoNumero);
     }
-    // public static function generarNumeroCitologia($tipo = 'normal')
-    // {
-    //     $año = now()->year;
-
-    //     // Prefijo según tipo: C para normal, L para líquida
-    //     $prefijo = ($tipo === 'liquida') ? 'L' : 'C';
-
-    //     $ultimaCitologia = self::where('ncitologia', 'like', "{$prefijo}{$año}%")
-    //         ->orderBy('ncitologia', 'desc')
-    //         ->first();
-
-    //     if ($ultimaCitologia) {
-    //         $ultimoNumero = intval(substr($ultimaCitologia->ncitologia, 7));
-    //         $nuevoNumero = $ultimoNumero + 1;
-    //     } else {
-    //         $nuevoNumero = 1;
-    //     }
-
-    //     return "{$prefijo}{$año}" . str_pad($nuevoNumero, 3, '0', STR_PAD_LEFT);
-    // }
-    // public static function generarNumeroCitologia()
-    // {
-    //     return DB::transaction(function () {
-    //         $año = date('Y');
-    //         $mes = date('m');
-    //         $prefijo = "B{$año}{$mes}";
-
-    //         // Bloquear para evitar duplicados si 2 personas crean al mismo tiempo
-    //         $ultimo = static::where('ncitologia', 'like', "{$prefijo}%")
-    //             ->lockForUpdate()
-    //             ->orderBy('ncitologia', 'desc')
-    //             ->first();
-
-    //         if ($ultimo) {
-    //             // Extraer los últimos 4 dígitos y sumar 1
-    //             $ultimoNumero = (int)substr($ultimo->ncitologia, -4);
-    //             $nuevoNumero = $ultimoNumero + 1;  // ✅ CORRECTO
-    //         } else {
-    //             // Primera biopsia del mes
-    //             $nuevoNumero = 1;
-    //         }
-
-    //         // Formato: B202510XXXX (4 dígitos con ceros a la izquierda)
-    //         return sprintf("C%s%s%04d", $año, $mes, $nuevoNumero);
-    //     });
-    // }
     public function scopeActivas($query)
     {
         return $query->where('estado', true);
