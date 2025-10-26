@@ -65,8 +65,6 @@
                             <th class="px-6 py-4 text-left text-sm font-bold w-24">Código</th>
                             <th class="px-6 py-4 text-left text-sm font-bold w-48">Descripción</th>
                             <th class="px-6 py-4 text-left text-sm font-bold">Diagnóstico</th>
-                            <th class="px-6 py-4 text-left text-sm font-bold">Macroscópico</th>
-                            <th class="px-6 py-4 text-left text-sm font-bold">Microscópico</th>
                             @if (auth()->user()->role === 'admin')
                             <th class="px-6 py-4 text-center text-sm font-bold w-32">Acciones</th>
                             @endif
@@ -90,16 +88,8 @@
                                     <span class="text-gray-900 font-semibold">{{ $lista->diagnostico }}</span>
                                 </div>
                             </td>
-                            <td class="px-6 py-4">
-                                <div class="break-words">
-                                    <span class="text-gray-700">{{ $lista->macroscopico ?? '-' }}</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="break-words">
-                                    <span class="text-gray-600">{{ $lista->microscopico ?? '-' }}</span>
-                                </div>
-                            </td>
+
+
                             @if (auth()->user()->role === 'admin')
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
