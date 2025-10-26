@@ -93,14 +93,12 @@ class CitolgiaPersonaController extends Controller
             $lista = ListaCitologia::find($request->lista_id);
             if ($lista) {
                 $datos['diagnostico'] = $lista->diagnostico;
-                $datos['macroscopico'] = $lista->macroscopico;
-                $datos['microscopico'] = $lista->microscopico;
+                $datos['descripcion'] = $lista->descripcion;
             }
         } else {
             // Sin lista, usar campos manuales (si vienen)
             $datos['diagnostico'] = $request->diagnostico;
-            $datos['macroscopico'] = $request->macroscopico;
-            $datos['microscopico'] = $request->microscopico;
+            $datos['descripcion'] = $request->descripcion;
         }
 
         Citolgia::create($datos);
@@ -182,8 +180,7 @@ class CitolgiaPersonaController extends Controller
             'tipo' => $request->tipo,
             'lista_id' => $request->lista_id ?? null,
             'diagnostico' => $request->diagnostico,
-            'macroscopico' => $request->macroscopico,
-            'microscopico' => $request->microscopico,
+            'descripcion' => $request->descripcion,
             'mascota_id' => null,
         ];
 
@@ -442,8 +439,18 @@ class CitolgiaPersonaController extends Controller
             ->where('ncitologia', $ncitologia)
             ->firstOrFail();
 
-        return view('citologias.personas.imprimir', compact('citologia'));
+        // Seleccionar la vista según el tipo de citología
+        $vista = match ($citologia->tipo) {
+            'normal' => 'citologias.personas.print.imprimir-normal',
+            'liquida' => 'citologias.personas.print.imprimir-liquida',
+            'especial' => 'citologias.personas.print.imprimir-especial',
+            default => 'citologias.personas.print.imprimir-normal'
+        };
+
+        return view($vista, compact('citologia'));
     }
+
+
 
     // Descargar PDF (versión simple sin librería)
     public function descargarPdf($ncitologia)

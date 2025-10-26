@@ -40,7 +40,7 @@ class CitolgiaController extends Controller
                     ->orWhereHas('paciente', function ($subq) use ($buscar) {
                         $subq->where('nombre', 'like', "%{$buscar}%")
                             ->orWhere('apellido', 'like', "%{$buscar}%")
-                            ->orWhere('DUI', 'like', "%{$buscar}%");
+                            ->orWhere('dui', 'like', "%{$buscar}%");
                     })
                     ->orWhereHas('mascota', function ($subq) use ($buscar) {
                         $subq->where('nombre', 'like', "%{$buscar}%")

@@ -36,8 +36,7 @@ class ListaCitologiaController extends Controller
             'codigo' => 'required|string|max:255',
             'descripcion' => 'required|string',
             'diagnostico' => 'required|string',
-            'macroscopico' => 'nullable|string',
-            'microscopico' => 'nullable|string'
+
         ]);
 
         try {
@@ -47,10 +46,8 @@ class ListaCitologiaController extends Controller
             $citologia = ListaCitologia::updateOrCreate(
                 ['codigo' => $validated['codigo']], // Condición de búsqueda
                 [
-                    'descripcion' => $validated['descripcion'],
-                    'diagnostico' => $validated['diagnostico'],
-                    'macroscopico' => $validated['macroscopico'] ?? null,
-                    'microscopico' => $validated['microscopico'] ?? null,
+                    'descripcion' => $validated['descripcion'] ?? null,
+                    'diagnostico' => $validated['diagnostico'] ?? null,
                 ]
             );
 
@@ -92,8 +89,6 @@ class ListaCitologiaController extends Controller
         $validated = $request->validate([
             'descripcion' => 'required|string',
             'diagnostico' => 'required|string',
-            'macroscopico' => 'nullable|string',
-            'microscopico' => 'nullable|string'
         ]);
 
         try {

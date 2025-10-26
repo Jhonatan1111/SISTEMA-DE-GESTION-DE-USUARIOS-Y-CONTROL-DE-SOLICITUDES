@@ -15,26 +15,25 @@ class ListaCitologia extends Model
         'codigo',
         'descripcion',
         'diagnostico',
-        'macroscopico',
-        'microscopico'
+
     ];
 
     public static function generarCodigoLista()
     {
-        // Buscar el último código que empiece con 'C'
-        $ultimo = static::where('codigo', 'like', 'C%')
+        // Buscar el último código que empiece con 'LC'
+        $ultimo = static::where('codigo', 'like', 'LC%')
             ->orderBy('codigo', 'desc')
             ->first();
 
         if ($ultimo) {
-            // Extraer el número del código (ej: C003 -> 3)
-            $ultimoNumero = (int)substr($ultimo->codigo, 1);
+            // Extraer el número del código (ej: LC003 -> 3)
+            $ultimoNumero = (int)substr($ultimo->codigo, 2);
             $nuevoNumero = $ultimoNumero + 1;
         } else {
             $nuevoNumero = 1;
         }
 
-        // Formato: C001, C002, C003...
-        return sprintf("C%03d", $nuevoNumero);
+        // Formato: LC001, LC002, LC003...
+        return sprintf("LC%03d", $nuevoNumero);
     }
 }
