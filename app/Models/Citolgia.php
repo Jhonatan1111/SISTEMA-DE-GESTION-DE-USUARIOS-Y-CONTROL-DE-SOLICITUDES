@@ -24,8 +24,6 @@ class Citolgia extends Model
         'tipo',
         'descripcion',
         'diagnostico',
-        'macroscopico',
-        'microscopico',
         'doctor_id',
         'paciente_id',
         'mascota_id',
