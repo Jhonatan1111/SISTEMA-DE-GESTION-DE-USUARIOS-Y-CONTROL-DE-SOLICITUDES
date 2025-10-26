@@ -329,7 +329,7 @@
         </span>
         <span style="margin-left: 60px;"></span>
         <span class="info-label">REGISTRO:</span>
-        <span class="info-value">{{ $citologia->paciente->id ?? 'S/R' }}</span>
+        <span class="info-value">{{ $citologia->doctor->jvpm ?? 'S/R' }}</span>
     </div>
 
     <div class="info-line">
@@ -399,7 +399,7 @@
     <div class="footer-seal">
         <div class="seal-box">
             <div class="seal-name">Dra. Marta Evelyn Echeverría Martínez</div>
-          
+
             <div class="seal-info">DOCTORA EN MEDICINA</div>
             <div class="seal-id">J.V.P.M. No. 4448</div>
         </div>

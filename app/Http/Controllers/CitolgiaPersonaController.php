@@ -433,7 +433,7 @@ class CitolgiaPersonaController extends Controller
     }
 
     // Vista para imprimir citología
-   public function imprimir($ncitologia)
+    public function imprimir($ncitologia)
     {
         $citologia = Citolgia::with(['paciente', 'doctor'])
             ->where('ncitologia', $ncitologia)
@@ -449,6 +449,7 @@ class CitolgiaPersonaController extends Controller
 
         return view($vista, compact('citologia'));
     }
+
 
 
     // Descargar PDF (versión simple sin librería)
