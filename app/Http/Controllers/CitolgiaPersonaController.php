@@ -48,7 +48,7 @@ class CitolgiaPersonaController extends Controller
         // Si es especial, requiere remitente_especial en lugar de doctor_id
         if ($request->tipo === 'especial') {
             $rules['remitente_especial'] = 'required|string|max:255';
-            $rules['celular_remitente_especial'] = 'required|digits:8';
+            $rules['celular_remitente_especial'] = 'digits:8';
         } else {
             $rules['doctor_id'] = 'required|exists:doctores,id';
         }
@@ -60,7 +60,7 @@ class CitolgiaPersonaController extends Controller
             'paciente_id.required' => 'Debe seleccionar un paciente',
             'tipo.required' => 'Debe seleccionar el tipo de citología',
             'remitente_especial.required' => 'Debe ingresar el remitente especial',
-            'celular_remitente_especial.required' => 'Debe ingresar el celular del remitente especial',
+            'celular_remitente_especial' => 'Debe ingresar el celular del remitente especial',
             'celular_remitente_especial.digits' => 'El celular debe tener exactamente 8 dígitos'
         ]);
 
@@ -92,15 +92,12 @@ class CitolgiaPersonaController extends Controller
         if ($request->lista_id) {
             $lista = ListaCitologia::find($request->lista_id);
             if ($lista) {
+                $datos['descripcion'] = $lista->descripcion;
                 $datos['diagnostico'] = $lista->diagnostico;
-                $datos['macroscopico'] = $lista->macroscopico;
-                $datos['microscopico'] = $lista->microscopico;
             }
         } else {
-            // Sin lista, usar campos manuales (si vienen)
+            $datos['descripcion'] = $request->descripcion;
             $datos['diagnostico'] = $request->diagnostico;
-            $datos['macroscopico'] = $request->macroscopico;
-            $datos['microscopico'] = $request->microscopico;
         }
 
         Citolgia::create($datos);
@@ -152,11 +149,12 @@ class CitolgiaPersonaController extends Controller
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'paciente_id' => 'required|exists:pacientes,id',
-            'tipo' => 'required|in:normal,liquida'
+            'tipo' => 'in:normal,liquida,especial'
+
         ];
 
         // Si es remitente especial, requiere remitente_especial en lugar de doctor_id
-        if ($request->doctor_id === 'especial') {
+        if ($request->tipo === 'especial') {
             $rules['remitente_especial'] = 'required|string|max:255';
             $rules['celular_remitente_especial'] = 'required|digits:8';
         } else {
@@ -170,7 +168,7 @@ class CitolgiaPersonaController extends Controller
             'paciente_id.required' => 'Debe seleccionar un paciente',
             'tipo.required' => 'Debe seleccionar el tipo de citología',
             'remitente_especial.required' => 'Debe ingresar el nombre del remitente especial',
-            'celular_remitente_especial.required' => 'Debe ingresar el celular del remitente especial',
+            'celular_remitente_especial' => 'Debe ingresar el celular del remitente especial',
             'celular_remitente_especial.digits' => 'El celular debe tener exactamente 8 dígitos'
         ]);
 
@@ -182,13 +180,11 @@ class CitolgiaPersonaController extends Controller
             'tipo' => $request->tipo,
             'lista_id' => $request->lista_id ?? null,
             'diagnostico' => $request->diagnostico,
-            'macroscopico' => $request->macroscopico,
-            'microscopico' => $request->microscopico,
             'mascota_id' => null,
         ];
 
         // Manejar doctor_id y remitente_especial según el caso
-        if ($request->doctor_id === 'especial') {
+        if ($request->tipo === 'especial') {
             $updateData['doctor_id'] = null;
             $updateData['remitente_especial'] = $request->remitente_especial;
             $updateData['celular_remitente_especial'] = $request->celular_remitente_especial;
@@ -312,16 +308,16 @@ class CitolgiaPersonaController extends Controller
 
         $pacientes = Paciente::where('nombre', 'like', "%{$term}%")
             ->orWhere('apellido', 'like', "%{$term}%")
-            ->orWhere('DUI', 'like', "%{$term}%")
-            ->select('id', 'nombre', 'apellido', 'DUI', 'edad', 'sexo')
+            ->orWhere('dui', 'like', "%{$term}%")
+            ->select('id', 'nombre', 'apellido', 'dui', 'edad', 'sexo')
             ->limit(10)
             ->get()
             ->map(function ($p) {
                 return [
                     'id' => $p->id,
-                    'text' => $p->nombre . ' ' . $p->apellido . ' - ' . $p->DUI . ' (' . $p->edad . ' años)',
+                    'text' => $p->nombre . ' ' . $p->apellido . ' - ' . $p->dui . ' (' . $p->edad . ' años)',
                     'nombre_completo' => $p->nombre . ' ' . $p->apellido,
-                    'dui' => $p->DUI,
+                    'dui' => $p->dui,
                     'edad' => $p->edad,
                     'sexo' => $p->sexo === 'M' ? 'Masculino' : 'Femenino'
                 ];
@@ -340,7 +336,7 @@ class CitolgiaPersonaController extends Controller
         return response()->json([
             'id' => $paciente->id,
             'nombre_completo' => $paciente->nombre . ' ' . $paciente->apellido,
-            'dui' => $paciente->DUI,
+            'dui' => $paciente->dui,
             'edad' => $paciente->edad,
             'sexo' => $paciente->sexo === 'M' ? 'Masculino' : 'Femenino',
             'correo' => $paciente->correo,
@@ -394,7 +390,7 @@ class CitolgiaPersonaController extends Controller
                 'Número Citología',
                 'Fecha Recibida',
                 'Paciente',
-                'DUI',
+                'dui',
                 'Edad',
                 'Sexo',
                 'Doctor',

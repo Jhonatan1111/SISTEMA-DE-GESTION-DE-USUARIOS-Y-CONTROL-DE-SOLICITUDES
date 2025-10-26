@@ -213,45 +213,19 @@
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+                </div>
 
-                    <!-- Macroscópico -->
-                    <div>
-                        <label for="macroscopico" class="block text-sm font-semibold text-gray-700 mb-1">
-                            Descripción Macroscópica <span class="text-red-500">*</span>
-                        </label>
-                        <textarea id="macroscopico" name="macroscopico" rows="4"
-                            class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
-                            placeholder="Describa las características macroscópicas de la muestra..." required>{{ old('macroscopico', $citologia->macroscopico) }}</textarea>
-                        @error('macroscopico')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Microscópico -->
-                    <div>
-                        <label for="microscopico" class="block text-sm font-semibold text-gray-700 mb-1">
-                            Descripción Microscópica <span class="text-red-500">*</span>
-                        </label>
-                        <textarea id="microscopico" name="microscopico" rows="4"
-                            class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
-                            placeholder="Describa las características microscópicas de la muestra..." required>{{ old('microscopico', $citologia->microscopico) }}</textarea>
-                        @error('microscopico')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-            </div>
-
-            <!-- Botones -->
-            <div class="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-end gap-3 shadow-lg">
-                <a href="{{ route('citologias.personas.index') }}"
-                    class="px-6 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-semibold transition-transform hover:scale-105">
-                    Cancelar
-                </a>
-                <button type="submit"
-                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105">
-                    Actualizar Citología
-                </button>
-            </div>
+                <!-- Botones -->
+                <div class="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-end gap-3 shadow-lg">
+                    <a href="{{ route('citologias.personas.index') }}"
+                        class="px-6 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-semibold transition-transform hover:scale-105">
+                        Cancelar
+                    </a>
+                    <button type="submit"
+                        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105">
+                        Actualizar Citología
+                    </button>
+                </div>
         </form>
     </div>
 
@@ -289,7 +263,7 @@
             // Función para manejar el cambio de tipo
             function manejarCambioTipo() {
                 const tipo = tipoSelect.value;
-                
+
                 if (tipo === 'especial') {
                     mostrarCampoRemitente();
                 } else {
@@ -316,21 +290,18 @@
                     .then(result => {
                         if (result.success) {
                             const data = result.data;
-                            
+
                             // Llenar todos los campos
                             document.getElementById('descripcion').value = data.descripcion || '';
                             document.getElementById('diagnostico_clinico').value = data.diagnostico || '';
-                            document.getElementById('macroscopico').value = data.macroscopico || '';
-                            document.getElementById('microscopico').value = data.microscopico || '';
+
                             document.getElementById('lista_id').value = data.id;
-                            
+
                             // Mostrar vista previa
                             document.getElementById('plantilla-descripcion').textContent = data.descripcion || 'N/A';
                             document.getElementById('plantilla-diagnostico').textContent = data.diagnostico || 'N/A';
-                            document.getElementById('plantilla-macroscopico').textContent = data.macroscopico || 'N/A';
-                            document.getElementById('plantilla-microscopico').textContent = data.microscopico || 'N/A';
                             document.getElementById('plantilla-datos').classList.remove('hidden');
-                            
+
                             alert('Plantilla cargada exitosamente');
                         } else {
                             alert(`Código "${codigo}" no encontrado`);
@@ -346,7 +317,7 @@
             document.getElementById('lista_id').addEventListener('change', function() {
                 const listaId = this.value;
                 const plantillaDatos = document.getElementById('plantilla-datos');
-                
+
                 if (!listaId) {
                     plantillaDatos.classList.add('hidden');
                     return;
@@ -357,7 +328,7 @@
                     .then(result => {
                         if (result.success) {
                             const data = result.data;
-                            
+
                             // Llenar los campos
                             if (data.descripcion) {
                                 document.getElementById('descripcion').value = data.descripcion;
@@ -365,19 +336,12 @@
                             if (data.diagnostico) {
                                 document.getElementById('diagnostico_clinico').value = data.diagnostico;
                             }
-                            if (data.macroscopico) {
-                                document.getElementById('macroscopico').value = data.macroscopico;
-                            }
-                            if (data.microscopico) {
-                                document.getElementById('microscopico').value = data.microscopico;
-                            }
-                            
+                          
+
                             // Mostrar vista previa
                             document.getElementById('plantilla-descripcion').textContent = data.descripcion || 'N/A';
                             document.getElementById('plantilla-diagnostico').textContent = data.diagnostico || 'N/A';
-                            document.getElementById('plantilla-macroscopico').textContent = data.macroscopico || 'N/A';
-                            document.getElementById('plantilla-microscopico').textContent = data.microscopico || 'N/A';
-                            plantillaDatos.classList.remove('hidden');
+                           plantillaDatos.classList.remove('hidden');
                         }
                     })
                     .catch(error => {

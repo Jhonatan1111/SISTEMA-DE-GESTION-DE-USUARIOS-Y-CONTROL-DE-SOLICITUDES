@@ -218,20 +218,9 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN NUEVA: Descripción Macroscópica y Microscópica -->
                 <div class="bg-gradient-to-r from-green-50 via-white to-green-50 p-6 rounded-2xl shadow-xl border border-green-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
                     <h2 class="text-xl font-bold text-green-700 mb-4 border-b-2 border-green-200 pb-2">Descripción de la Muestra</h2>
                     <div class="space-y-4">
-                        <!-- Descripción General -->
-                        <div>
-                            <label for="descripcion" class="block text-sm font-semibold text-gray-700 mb-1">
-                                Descripción General <span class="text-red-500">*</span>
-                            </label>
-                            <textarea id="descripcion" name="descripcion" rows="3"
-                                class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
-                                placeholder="Descripción general de la muestra..." required>{{ old('descripcion') }}</textarea>
-                        </div>
-
                         <!-- Diagnóstico Clínico -->
                         <div>
                             <label for="diagnostico_clinico" class="block text-sm font-semibold text-gray-700 mb-1">
@@ -241,26 +230,25 @@
                                 class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
                                 placeholder="Diagnóstico clínico de la muestra..." required>{{ old('diagnostico_clinico') }}</textarea>
                         </div>
-
-                        <!-- Macroscópico -->
+                        <!-- Descripción General -->
                         <div>
-                            <label for="macroscopico" class="block text-sm font-semibold text-gray-700 mb-1">
-                                Descripción Macroscópica <span class="text-red-500">*</span>
+                            <label for="descripcion" class="block text-sm font-semibold text-gray-700 mb-1">
+                                Descripción <span class="text-red-500">*</span>
                             </label>
-                            <textarea id="macroscopico" name="macroscopico" rows="4"
+                            <textarea id="descripcion" name="descripcion" rows="3"
                                 class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
-                                placeholder="Describa las características macroscópicas de la muestra..." required>{{ old('macroscopico') }}</textarea>
+                                placeholder="Descripción general de la muestra..." required>{{ old('descripcion') }}</textarea>
+                        </div>
+                        <div>
+                            <label for="diagnostico" class="block text-sm font-semibold text-gray-700 mb-1">
+                                Diagnóstico <span class="text-red-500">*</span>
+                            </label>
+                            <textarea id="diagnostico" name="diagnostico" rows="3"
+                                class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
+                                placeholder="Diagnóstico de la muestra..." required>{{ old('diagnostico') }}</textarea>
                         </div>
 
-                        <!-- Microscópico -->
-                        <div>
-                            <label for="microscopico" class="block text-sm font-semibold text-gray-700 mb-1">
-                                Descripción Microscópica <span class="text-red-500">*</span>
-                            </label>
-                            <textarea id="microscopico" name="microscopico" rows="4"
-                                class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
-                                placeholder="Describa las características microscópicas de la muestra..." required>{{ old('microscopico') }}</textarea>
-                        </div>
+
                     </div>
                 </div>
 
@@ -333,7 +321,7 @@
             document.getElementById('campo-remitente').style.display = 'block';
             document.getElementById('doctor_id').required = false;
             document.getElementById('remitente_especial').required = true;
-            document.getElementById('celular_remitente_especial').required = true;
+            document.getElementById('celular_remitente_especial').required = false;
         }
 
         // Función para cambiar tipo
@@ -371,24 +359,22 @@
                     // - macroscopico con plantilla.macroscopico
                     // - microscopico con plantilla.microscopico
 
-                    document.getElementById('descripcion').value = plantilla.descripcion || '';
                     document.getElementById('diagnostico_clinico').value = plantilla.diagnostico || '';
-                    document.getElementById('macroscopico').value = plantilla.macroscopico || '';
-                    document.getElementById('microscopico').value = plantilla.microscopico || '';
+                    document.getElementById('descripcion').value = plantilla.descripcion || '';
+                    document.getElementById('diagnostico').value = plantilla.diagnostico || '';
+
 
                     // Mostrar vista previa
                     document.getElementById('plantilla-descripcion').textContent = plantilla.descripcion || 'N/A';
                     document.getElementById('plantilla-diagnostico').textContent = plantilla.diagnostico || 'N/A';
-                    document.getElementById('plantilla-macroscopico').textContent = plantilla.macroscopico || 'N/A';
-                    document.getElementById('plantilla-microscopico').textContent = plantilla.microscopico || 'N/A';
+
                     plantillaDatos.classList.remove('hidden');
                 }
             } else {
                 // Si no seleccionó ninguna plantilla, limpiar
                 document.getElementById('descripcion').value = '';
                 document.getElementById('diagnostico_clinico').value = '';
-                document.getElementById('macroscopico').value = '';
-                document.getElementById('microscopico').value = '';
+
                 plantillaDatos.classList.add('hidden');
             }
         });

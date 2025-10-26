@@ -14,7 +14,7 @@
                 <a href="{{ route('citologias.personas.imprimir', $citologia->ncitologia) }}"
                     class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-5 rounded-lg transition-transform hover:scale-105 shadow-lg"
                     target="_blank">
-                     Imprimir
+                    Imprimir
                 </a>
                 <a href="{{ route('citologias.personas.index') }}"
                     class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-5 rounded-lg transition-transform hover:scale-105 shadow-lg">
@@ -137,9 +137,9 @@
                     <label class="block text-sm font-semibold text-gray-600 mb-1">Celular</label>
                     <p class="text-lg font-semibold text-gray-900">
                         📱 @if ($citologia->remitente_especial)
-                            {{ $citologia->celular_remitente_especial }}
+                        {{ $citologia->celular_remitente_especial }}
                         @else
-                            {{ $citologia->doctor->celular }}
+                        {{ $citologia->doctor->celular }}
                         @endif
                     </p>
                 </div>
@@ -151,6 +151,12 @@
             <h2 class="text-xl font-bold text-yellow-700 mb-4 border-b-2 border-yellow-200 pb-2">
                 📝 Descripción de la Muestra
             </h2>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-600 mb-2">Diagnóstico Clínico</label>
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-1 ">
+                    <p class="text-gray-900 whitespace-pre-wrap leading-relaxed">{{ $citologia->diagnostico_clinico }}</p>
+                </div>
+            </div>
 
             @if($citologia->descripcion)
             <div class="mb-4">
@@ -161,30 +167,9 @@
             </div>
             @endif
 
-            <div class="mb-4">
-                <label class="block text-sm font-semibold text-gray-600 mb-2">Diagnóstico Clínico</label>
-                <div class="bg-white p-4 rounded-lg shadow-md border-l-1 ">
-                    <p class="text-gray-900 whitespace-pre-wrap leading-relaxed">{{ $citologia->diagnostico_clinico }}</p>
-                </div>
-            </div>
 
-            @if($citologia->macroscopico)
-            <div class="mb-4">
-                <label class="block text-sm font-semibold text-gray-600 mb-2">Análisis Macroscópico</label>
-                <div class="bg-white p-4 rounded-lg shadow-md border-l-1 ">
-                    <p class="text-gray-900 whitespace-pre-wrap leading-relaxed">{{ $citologia->macroscopico }}</p>
-                </div>
-            </div>
-            @endif
 
-            @if($citologia->microscopico)
-            <div class="mb-4">
-                <label class="block text-sm font-semibold text-gray-600 mb-2">Análisis Microscópico</label>
-                <div class="bg-white p-4 rounded-lg shadow-md border-l-1 ">
-                    <p class="text-gray-900 whitespace-pre-wrap leading-relaxed">{{ $citologia->microscopico }}</p>
-                </div>
-            </div>
-            @endif
+
 
             @if($citologia->diagnostico)
             <div>
