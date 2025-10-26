@@ -213,6 +213,32 @@
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
+
+                    <!-- Macroscópico -->
+                    <div>
+                        <label for="macroscopico" class="block text-sm font-semibold text-gray-700 mb-1">
+                            Descripción Macroscópica <span class="text-red-500">*</span>
+                        </label>
+                        <textarea id="macroscopico" name="macroscopico" rows="4"
+                            class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
+                            placeholder="Describa las características macroscópicas de la muestra..." required>{{ old('macroscopico', $citologia->macroscopico) }}</textarea>
+                        @error('macroscopico')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Microscópico -->
+                    <div>
+                        <label for="microscopico" class="block text-sm font-semibold text-gray-700 mb-1">
+                            Descripción Microscópica <span class="text-red-500">*</span>
+                        </label>
+                        <textarea id="microscopico" name="microscopico" rows="4"
+                            class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
+                            placeholder="Describa las características microscópicas de la muestra..." required>{{ old('microscopico', $citologia->microscopico) }}</textarea>
+                        @error('microscopico')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
                 <!-- Botones -->
@@ -294,12 +320,15 @@
                             // Llenar todos los campos
                             document.getElementById('descripcion').value = data.descripcion || '';
                             document.getElementById('diagnostico_clinico').value = data.diagnostico || '';
-
+                            document.getElementById('macroscopico').value = data.macroscopico || '';
+                            document.getElementById('microscopico').value = data.microscopico || '';
                             document.getElementById('lista_id').value = data.id;
 
                             // Mostrar vista previa
                             document.getElementById('plantilla-descripcion').textContent = data.descripcion || 'N/A';
                             document.getElementById('plantilla-diagnostico').textContent = data.diagnostico || 'N/A';
+                            document.getElementById('plantilla-macroscopico').textContent = data.macroscopico || 'N/A';
+                            document.getElementById('plantilla-microscopico').textContent = data.microscopico || 'N/A';
                             document.getElementById('plantilla-datos').classList.remove('hidden');
 
                             alert('Plantilla cargada exitosamente');
@@ -336,12 +365,19 @@
                             if (data.diagnostico) {
                                 document.getElementById('diagnostico_clinico').value = data.diagnostico;
                             }
-                          
+                            if (data.macroscopico) {
+                                document.getElementById('macroscopico').value = data.macroscopico;
+                            }
+                            if (data.microscopico) {
+                                document.getElementById('microscopico').value = data.microscopico;
+                            }
 
                             // Mostrar vista previa
                             document.getElementById('plantilla-descripcion').textContent = data.descripcion || 'N/A';
                             document.getElementById('plantilla-diagnostico').textContent = data.diagnostico || 'N/A';
-                           plantillaDatos.classList.remove('hidden');
+                            document.getElementById('plantilla-macroscopico').textContent = data.macroscopico || 'N/A';
+                            document.getElementById('plantilla-microscopico').textContent = data.microscopico || 'N/A';
+                            plantillaDatos.classList.remove('hidden');
                         }
                     })
                     .catch(error => {
