@@ -442,7 +442,15 @@ class CitolgiaPersonaController extends Controller
             ->where('ncitologia', $ncitologia)
             ->firstOrFail();
 
-        return view('citologias.personas.imprimir', compact('citologia'));
+        // Seleccionar la vista según el tipo de citología
+        $vista = match ($citologia->tipo) {
+            'normal' => 'citologias.personas.print.imprimir-normal',
+            'liquida' => 'citologias.personas.print.imprimir-liquida',
+            'especial' => 'citologias.personas.print.imprimir-especial',
+            default => 'citologias.personas.print.imprimir-normal'
+        };
+
+        return view($vista, compact('citologia'));
     }
 
     // Descargar PDF (versión simple sin librería)
