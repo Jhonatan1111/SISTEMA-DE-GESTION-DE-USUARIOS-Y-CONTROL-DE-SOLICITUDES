@@ -13,6 +13,7 @@ use App\Http\Controllers\MascotaController;
 use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserAdminController;
+use App\Models\Biopsia;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -51,7 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::get('biopsias', [BiopsiaController::class, 'index'])->name('biopsias.index');
     Route::get('/api/biopsias/obtener-numero/{tipo}', function ($tipo) {
         try {
-            $numero = \App\Models\Biopsia::generarNumeroBiopsia($tipo);
+            $numero = Biopsia::generarNumeroBiopsia($tipo);
             return response()->json([
                 'success' => true,
                 'numero' => $numero
@@ -114,6 +115,7 @@ Route::middleware('auth')->group(function () {
     Route::get('listas/biopsias/create', [ListaBiopsiaController::class, 'create'])->name('listas.biopsias.create');
     Route::post('listas/biopsias', [ListaBiopsiaController::class, 'store'])->name('listas.biopsias.store');
 
+
     // BUSCADOR DE LISTAS PARA PACIENTE
     Route::get('/biopsias-personas/buscar-lista/{id}', [BiopsiaPacienteController::class, 'buscarLista'])
         ->name('biopsias.personas.buscar-lista');
@@ -167,6 +169,7 @@ Route::middleware('auth')->group(function () {
         Route::get('listas/biopsias/{listaBiopsia}/edit', [ListaBiopsiaController::class, 'edit'])->name('listas.biopsias.edit');
         Route::put('listas/biopsias/{listaBiopsia}', [ListaBiopsiaController::class, 'update'])->name('listas.biopsias.update');
         Route::delete('listas/biopsias/{listaBiopsia}', [ListaBiopsiaController::class, 'destroy'])->name('listas.biopsias.destroy');
+
 
         // LISTA DE CITOLOGIAS
         Route::get('listas/citologias/{listaCitologia}/edit', [ListaCitologiaController::class, 'edit'])->name('listas.citologias.edit');

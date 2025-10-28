@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('lista_citologias', function (Blueprint $table) {
             $table->id();
-            $table->string('codigo')->nullable()->unique()->comment('Código único de la citología');
+            $table->string('codigo')->unique()->comment('Código único de la citología');
             $table->string('descripcion')->nullable()->comment('Descripción de la citología');
             $table->text('diagnostico')->nullable()->comment('Diagnóstico de la citología');
             $table->timestamps();

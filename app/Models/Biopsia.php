@@ -56,10 +56,7 @@ class Biopsia extends Model
         return $this->belongsTo(Mascota::class, 'mascota_id');
     }
 
-    public function lista_biopsia()
-    {
-        return $this->belongsTo(ListaBiopsia::class, 'lista_id');
-    }
+
     // Métodos estáticos
 
 
