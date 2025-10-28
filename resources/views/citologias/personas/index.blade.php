@@ -110,9 +110,9 @@
             <select id="doctor" name="doctor"
                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
                 <option value="">Todos los doctores</option>
-                @foreach(\App\Models\Doctor::where('estado_servicio', true)->orderBy('nombre')->get() as $doc)
-                    <option value="{{ $doc->id }}" {{ request('doctor') == $doc->id ? 'selected' : '' }}>
-                        {{ $doc->nombre }} {{ $doc->apellido }}
+                @foreach(\App\Models\Doctor::where('estado_servicio', true)->orderBy('nombre')->get() as $doctor)
+                    <option value="{{ $doctor->id }}" {{ request('doctor') == $doctor->id ? 'selected' : '' }}>
+                        {{ $doctor->nombre }} {{ $doctor->apellido }}
                     </option>
                 @endforeach
             </select>

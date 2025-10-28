@@ -13,44 +13,41 @@ class CitolgiaPersonaController extends Controller
 {
     // MOSTRAR CITOLOGÍAS DE PERSONAS
     public function index(Request $request)
-{
-    $query = Citolgia::with(['paciente', 'doctor', 'lista_citologia'])
-        ->personas();
+    {
+        $query = Citolgia::with(['paciente', 'doctor', 'lista_citologia']);
 
-    // Filtro de búsqueda por paciente o doctor
-    if ($request->filled('buscar')) {
-        $buscar = $request->buscar;
-        $query->where(function($q) use ($buscar) {
-            $q->whereHas('doctor', function($q) use ($buscar) {
-                $q->where('nombre', 'like', "%{$buscar}%")
-                    ->orWhere('apellido', 'like', "%{$buscar}%");
-            })
-            ->orWhereHas('paciente', function($q) use ($buscar) {
-                $q->where('nombre', 'like', "%{$buscar}%")
-                    ->orWhere('apellido', 'like', "%{$buscar}%")
-                    ->orWhere('DUI', 'like', "%{$buscar}%");
-            })
-            // También buscar en remitente especial
-            ->orWhere('remitente_especial', 'like', "%{$buscar}%");
-        });
+        //Filtro por búsqueda (nombre paciente o doctor)
+        if ($request->filled('buscar')) {
+            $search = $request->buscar;
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('paciente', function ($p) use ($search) {
+                    $p->where('nombre', 'like', "%{$search}%")
+                    ->orWhere('apellido', 'like', "%{$search}%");
+                })->orWhereHas('doctor', function ($d) use ($search) {
+                    $d->where('nombre', 'like', "%{$search}%")
+                    ->orWhere('apellido', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        //Filtro por doctor
+        if ($request->filled('doctor')) {
+            $query->where('doctor_id', $request->doctor);
+        }
+
+        //Filtro por estado
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        // Orden y paginación
+        $citologias = $query->orderBy('fecha_recibida', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('citologias.personas.index', compact('citologias'));
     }
 
-    // Filtro por estado - CAMBIO AQUÍ: usar has() en lugar de filled()
-    if ($request->has('estado') && $request->estado !== '') {
-        $query->where('estado', $request->estado);
-    }
-
-    // Filtro por doctor específico
-    if ($request->filled('doctor')) {
-        $query->where('doctor_id', $request->doctor);
-    }
-
-    $citologias = $query->orderBy('fecha_recibida', 'asc')
-        ->paginate(10)
-        ->withQueryString(); // Mantiene los parámetros en la paginación
-
-    return view('citologias.personas.index', compact('citologias'));
-}
     // Mostrar formulario para crear citología de paciente humano
     public function create()
     {
