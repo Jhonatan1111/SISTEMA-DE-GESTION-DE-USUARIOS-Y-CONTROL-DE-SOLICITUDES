@@ -163,8 +163,10 @@ class BiopsiaPacienteController extends Controller
         $doctores = Doctor::where('estado_servicio', true)
             ->orderBy('nombre')
             ->get();
+        $listas = ListaBiopsia::orderBy('codigo')
+            ->get();
 
-        return view('biopsias.personas.edit', compact('biopsia', 'doctores', 'pacientes'));
+        return view('biopsias.personas.edit', compact('biopsia', 'doctores', 'pacientes', 'listas'));
     }
     // Actualizar biopsia de paciente
     public function update(Request $request, $nbiopsia)
@@ -183,14 +185,41 @@ class BiopsiaPacienteController extends Controller
             'paciente_id.required' => 'Debe seleccionar un paciente',
         ]);
 
-        $biopsia->update([
+        $datos = [
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
             'paciente_id' => $request->paciente_id,
             'doctor_id' => $request->doctor_id,
             'diagnostico' => $request->diagnostico,
+            'microscopico' => $request->microscopico,
             'mascota_id' => null,
-        ]);
+        ];
+
+        // Manejar el campo macroscópico igual que en store()
+        if ($request->lista_id) {
+            $lista = ListaBiopsia::find($request->lista_id);
+            if ($lista) {
+                // Si hay contenido adicional en el campo, combinarlo con la plantilla
+                $contenidoPlantilla = $lista->macroscopico;
+                $contenidoAdicional = $request->macroscopico;
+                
+                if (!empty($contenidoAdicional) && $contenidoAdicional !== $contenidoPlantilla) {
+                    // Si el contenido adicional ya incluye la plantilla, usar solo el contenido adicional
+                    if (strpos($contenidoAdicional, $contenidoPlantilla) !== false) {
+                        $datos['macroscopico'] = $contenidoAdicional;
+                    } else {
+                        // Combinar plantilla con contenido adicional
+                        $datos['macroscopico'] = $contenidoPlantilla . "\n\n" . $contenidoAdicional;
+                    }
+                } else {
+                    $datos['macroscopico'] = $contenidoPlantilla;
+                }
+            }
+        } else {
+            $datos['macroscopico'] = $request->macroscopico;
+        }
+
+        $biopsia->update($datos);
 
         return redirect()->route('biopsias.personas.index')
             ->with('success', 'Biopsia de persona actualizada exitosamente.');

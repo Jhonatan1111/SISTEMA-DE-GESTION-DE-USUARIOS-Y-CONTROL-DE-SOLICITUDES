@@ -227,7 +227,7 @@
                 PDF
             </a>
             <a href="{{ route('biopsias.personas.edit', $biopsia) }}"
-                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105" target="_blank">
+                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105">
                 Editar Biopsia
             </a>
         </div>
