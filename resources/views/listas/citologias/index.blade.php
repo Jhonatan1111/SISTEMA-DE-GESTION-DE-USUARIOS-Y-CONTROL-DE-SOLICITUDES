@@ -169,13 +169,6 @@
             </div>
             @endif
         </div>
-
-        {{-- Paginación --}}
-        @if ($listaCitologia->hasPages())
-        <div class="mt-8">
-            {{ $listaCitologia->links() }}
-        </div>
-        @endif
     </div>
 
     <script>

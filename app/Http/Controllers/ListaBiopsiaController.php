@@ -40,12 +40,15 @@ class ListaBiopsiaController extends Controller
 
         // capturado de errores para no crashear la aplicacion
         try {
-            // Crear la lista de biopsia en insertarla en la base de datos usando eloquent
-            ListaBiopsia::create([
-                'codigo' => $codigoGenerado,
-                'descripcion' => $validated['descripcion'] ?? null,
-                'macroscopico' => $validated['macroscopico'] ?? null,
-            ]);
+            // Usar updateOrCreate para mantener la secuencia de códigos LB001, LB002, etc.
+            // aunque el ID no sea secuencial
+            ListaBiopsia::updateOrCreate(
+                ['codigo' => $codigoGenerado], // Buscar por código
+                [
+                    'descripcion' => $validated['descripcion'] ?? null,
+                    'macroscopico' => $validated['macroscopico'] ?? null,
+                ]
+            );
         }
         // capturador de errores para no crashear la aplicacion y lanzar mensaje de error para conocer su causa
         catch (\Exception $e) {
