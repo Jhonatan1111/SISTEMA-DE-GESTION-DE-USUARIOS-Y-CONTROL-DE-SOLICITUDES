@@ -1,217 +1,235 @@
 <x-app-layout>
-    <div class="container-fluid">
-        <!-- Navegación -->
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('biopsias.personas.index') }}">Biopsias - Personas</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Detalles de Biopsia</li>
-            </ol>
-        </nav>
-
+    <div class="max-w-6xl mx-auto px-4 py-6">
         <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0 text-gray-800">
-                <i class="fas fa-microscope me-2"></i>Detalles de Biopsia - {{ $biopsia->nbiopsia }}
-            </h1>
+        <div class="flex justify-between items-center mb-6">
             <div>
-                <a href="{{ route('biopsias.personas.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-2"></i>Volver
-                </a>
-                @if(auth()->user()->role === 'admin')
-                <a href="{{ route('biopsias.personas.edit', $biopsia->nbiopsia) }}" class="btn btn-warning">
-                    <i class="fas fa-edit me-2"></i>Editar
-                </a>
+                <h1 class="text-2xl font-extrabold text-blue-700">Detalle de Biopsia Persona</h1>
+            </div>
+            <a href="{{ route('biopsias.personas.index') }}" class="text-gray-600 hover:text-gray-900">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </a>
+        </div>
+
+        <!-- Información Básica -->
+        <div class="bg-gradient-to-r from-blue-50 via-white to-blue-50 rounded-2xl shadow-xl p-6 mb-6 border border-blue-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
+            <h2 class="text-xl font-bold text-blue-700 mb-4 border-b-2 border-blue-200 pb-2">
+                Información Básica
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-1">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Número de Biopsia</label>
+                    <p class="text-lg font-bold text-blue-700">{{ $biopsia->nbiopsia }}</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-1">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Fecha Recibida</label>
+                    <p class="text-lg font-semibold text-gray-900">{{ \Carbon\Carbon::parse($biopsia->fecha_recibida)->format('d/m/Y') }}</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-1">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Estado</label>
+                    <p class="text-lg">
+                        @if($biopsia->estado)
+                        <span class="inline-flex items-center bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
+                            ✓ Activa
+                        </span>
+                        @else
+                        <span class="inline-flex items-center bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-semibold">
+                            Archivada
+                        </span>
+                        @endif
+                    </p>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-1">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Fecha de Registro</label>
+                    <p class="text-lg font-semibold text-gray-900">{{ $biopsia->created_at->format('d/m/Y') }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del Paciente -->
+        <div class="bg-gradient-to-r from-green-50 via-white to-green-50 rounded-2xl shadow-xl p-6 mb-6 border border-green-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
+            <h2 class="text-xl font-bold text-green-700 mb-4 border-b-2 border-green-200 pb-2">
+                Información del Paciente
+            </h2>
+            @if($biopsia->paciente)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Nombre Completo</label>
+                    <p class="text-lg font-bold text-gray-900">
+                        {{ $biopsia->paciente->nombre }} {{ $biopsia->paciente->apellido }}
+                    </p>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">DUI</label>
+                    <p class="text-lg font-semibold text-gray-900">{{ $biopsia->paciente->dui }}</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Edad</label>
+                    <p class="text-lg font-semibold text-gray-900">{{ $biopsia->paciente->edad }} años</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Sexo</label>
+                    <p class="text-lg font-semibold text-gray-900">
+                        @if($biopsia->paciente->sexo === 'M' || strtolower($biopsia->paciente->sexo) == 'masculino')
+                        <span class="text-blue-600">Masculino</span>
+                        @elseif($biopsia->paciente->sexo === 'F' || strtolower($biopsia->paciente->sexo) == 'femenino')
+                        <span class="text-pink-600">Femenino</span>
+                        @else
+                        <span class="text-gray-600">{{ $biopsia->paciente->sexo }}</span>
+                        @endif
+                    </p>
+                </div>
+
+                @if($biopsia->paciente->correo)
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Correo</label>
+                    <p class="text-lg font-semibold text-blue-600">{{ $biopsia->paciente->correo }}</p>
+                </div>
+                @endif
+
+                @if($biopsia->paciente->celular)
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Teléfono</label>
+                    <p class="text-lg font-semibold text-gray-900">{{ substr($biopsia->paciente->celular, 0, 4) . '-' . substr($biopsia->paciente->celular, 4, 4) }}</p>
+                </div>
                 @endif
             </div>
+            @else
+            <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                <p class="text-gray-500">Sin paciente asignado</p>
+            </div>
+            @endif
         </div>
 
-        <!-- Información de la Biopsia -->
-        <div class="row">
-            <!-- Información Principal -->
-            <div class="col-lg-8">
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Información de la Biopsia</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label font-weight-bold">Número de Biopsia:</label>
-                                    <p class="form-control-plaintext">{{ $biopsia->nbiopsia }}</p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label font-weight-bold">Fecha Recibida:</label>
-                                    <p class="form-control-plaintext">
-                                        {{ \Carbon\Carbon::parse($biopsia->fecha_recibida)->format('d/m/Y') }}
-                                    </p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label font-weight-bold">Estado:</label>
-                                    <p class="form-control-plaintext">
-                                        @if($biopsia->estado)
-                                        <span class="badge badge-success">Activa</span>
-                                        @else
-                                        <span class="badge badge-warning">Inactiva</span>
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label font-weight-bold">Fecha de Registro:</label>
-                                    <p class="form-control-plaintext">
-                                        {{ $biopsia->created_at->format('d/m/Y H:i') }}
-                                    </p>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label font-weight-bold">Última Actualización:</label>
-                                    <p class="form-control-plaintext">
-                                        {{ $biopsia->updated_at->format('d/m/Y H:i') }}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label font-weight-bold">Diagnóstico Clínico:</label>
-                            <div class="border rounded p-3 bg-light">
-                                {{ $biopsia->diagnostico_clinico ?? 'Sin diagnóstico registrado' }}
-                            </div>
-                        </div>
-                    </div>
+        <!-- Información del Doctor -->
+        <div class="bg-gradient-to-r from-indigo-50 via-white to-indigo-50 rounded-2xl shadow-xl p-6 mb-6 border border-indigo-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
+            <h2 class="text-xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-200 pb-2">
+                Información del Doctor
+            </h2>
+
+            @if($biopsia->doctor)
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Nombre del Doctor</label>
+                    <p class="text-lg font-bold text-gray-900">
+                        Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}
+                    </p>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Especialidad</label>
+                    <p class="text-lg font-semibold text-gray-900">{{ $biopsia->doctor->especialidad }}</p>
+                </div>
+
+                @if($biopsia->doctor->correo)
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Correo</label>
+                    <p class="text-lg font-semibold text-gray-900">
+                        <a href="mailto:{{ $biopsia->doctor->correo }}" class="text-blue-600 hover:text-blue-800">{{ $biopsia->doctor->correo }}</a>
+                    </p>
+                </div>
+                @endif
+
+                @if($biopsia->doctor->celular)
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Celular</label>
+                    <p class="text-lg font-semibold text-gray-900">{{ substr($biopsia->doctor->celular, 0, 4) . '-' . substr($biopsia->doctor->celular, 4, 4) }}</p>
+                </div>
+                @endif
+            </div>
+            @else
+            <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                <p class="text-gray-500">Sin doctor asignado</p>
+            </div>
+            @endif
+        </div>
+
+        <!-- Descripción de la Muestra -->
+        <div class="bg-gradient-to-r from-yellow-50 via-white to-yellow-50 rounded-2xl shadow-xl p-6 mb-6 border border-yellow-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
+            <h2 class="text-xl font-bold text-yellow-700 mb-4 border-b-2 border-yellow-200 pb-2">
+                Descripción de la Muestra
+            </h2>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-600 mb-2">Diagnóstico Clínico</label>
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-1">
+                    <p class="text-gray-900 whitespace-pre-wrap leading-relaxed">{{ $biopsia->diagnostico_clinico ?? 'Sin diagnóstico registrado' }}</p>
                 </div>
             </div>
+            @if ($biopsia->macroscopico)
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-600 mb-2">Descripción Macroscópica</label>
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-1">
+                    <p class="text-gray-900 whitespace-pre-wrap leading-relaxed">{{ $biopsia->macroscopico ?? 'Sin descripción macroscópica registrada' }}</p>
+                </div>
+            </div>
+            @endif
+            @if ($biopsia->microscopico)
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-600 mb-2">Descripción Microscópica</label>
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-1">
+                    <p class="text-gray-900 whitespace-pre-wrap leading-relaxed">{{ $biopsia->microscopico ?? 'Sin descripción microscópica registrada' }}</p>
+                </div>
+            </div>
+            @endif
+            @if ($biopsia->diagnostico)
+            <div class="mb-4">
+                <label class="block text-sm font-semibold text-gray-600 mb-2">Diagnóstico</label>
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-1">
+                    <p class="text-gray-900 whitespace-pre-wrap leading-relaxed">{{ $biopsia->diagnostico ?? 'Sin diagnóstico registrado' }}</p>
+                </div>
+            </div>
+            @endif
+        </div>
 
-            <!-- Información del Paciente y Doctor -->
-            <div class="col-lg-4">
-                <!-- Información del Paciente -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-success">Información del Paciente</h6>
-                    </div>
-                    <div class="card-body">
-                        @if($biopsia->paciente)
-                        <div class="text-center mb-3">
-                            <i class="fas fa-user-circle fa-3x text-gray-300"></i>
-                        </div>
-                        <div class="mb-2">
-                            <strong>Nombre:</strong><br>
-                            {{ $biopsia->paciente->nombre }} {{ $biopsia->paciente->apellido }}
-                        </div>
-                        <div class="mb-2">
-                            <strong>RUT:</strong><br>
-                            {{ $biopsia->paciente->rut ?? $biopsia->paciente->dui }}
-                        </div>
-                        <div class="mb-2">
-                            <strong>Edad:</strong><br>
-                            {{ $biopsia->paciente->edad }} años
-                        </div>
-                        <div class="mb-2">
-                            <strong>Sexo:</strong><br>
-                            {{ $biopsia->paciente->sexo === 'M' ? 'Masculino' : 'Femenino' }}
-                        </div>
-                        @if($biopsia->paciente->correo)
-                        <div class="mb-2">
-                            <strong>Correo:</strong><br>
-                            <a href="mailto:{{ $biopsia->paciente->correo }}">{{ $biopsia->paciente->correo }}</a>
-                        </div>
-                        @endif
-                        @if($biopsia->paciente->celular)
-                        <div class="mb-2">
-                            <strong>Teléfono:</strong><br>
-                            {{ $biopsia->paciente->celular }}
-                        </div>
-                        @endif
-                        @else
-                        <p class="text-muted text-center">Sin paciente asignado</p>
-                        @endif
-                    </div>
+        <!-- Detalles de la Biopsia fechas-->
+        <div class="bg-gradient-to-r from-gray-50 via-white to-gray-50 rounded-2xl shadow-xl p-6 mb-8 border border-gray-200">
+            <h2 class="text-xl font-bold text-gray-700 mb-4 border-b-2 border-gray-200 pb-2">
+                Información del Sistema
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Fecha de Registro</label>
+                    <p class="text-lg text-gray-900">
+                        {{ $biopsia->created_at->format('d/m/Y H:i:s') }}
+                    </p>
                 </div>
 
-                <!-- Información del Doctor -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-info">Información del Doctor</h6>
-                    </div>
-                    <div class="card-body">
-                        @if($biopsia->doctor)
-                        <div class="text-center mb-3">
-                            <i class="fas fa-user-md fa-3x text-gray-300"></i>
-                        </div>
-                        <div class="mb-2">
-                            <strong>Nombre:</strong><br>
-                            Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}
-                        </div>
-                        <div class="mb-2">
-                            <strong>Especialidad:</strong><br>
-                            {{ $biopsia->doctor->especialidad }}
-                        </div>
-                        @if($biopsia->doctor->correo)
-                        <div class="mb-2">
-                            <strong>Correo:</strong><br>
-                            <a href="mailto:{{ $biopsia->doctor->correo }}">{{ $biopsia->doctor->correo }}</a>
-                        </div>
-                        @endif
-                        @if($biopsia->doctor->celular)
-                        <div class="mb-2">
-                            <strong>Teléfono:</strong><br>
-                            {{ $biopsia->doctor->celular }}
-                        </div>
-                        @endif
-                        @else
-                        <p class="text-muted text-center">Sin doctor asignado</p>
-                        @endif
-                    </div>
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Última Actualización</label>
+                    <p class="text-lg text-gray-900">
+                        {{ $biopsia->updated_at->format('d/m/Y H:i:s') }}
+                    </p>
                 </div>
             </div>
         </div>
 
-        <!-- Acciones Adicionales -->
-        @if(auth()->user()->role === 'admin')
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Acciones</h6>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <form action="{{ route('biopsias.personas.toggle-estado', $biopsia->nbiopsia) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit" class="btn btn-{{ $biopsia->estado ? 'secondary' : 'success' }} btn-block"
-                                onclick="return confirm('¿Está seguro de cambiar el estado de esta biopsia?')">
-                                <i class="fas fa-{{ $biopsia->estado ? 'pause' : 'play' }} me-2"></i>
-                                {{ $biopsia->estado ? 'Desactivar' : 'Activar' }} Biopsia
-                            </button>
-                        </form>
-                    </div>
-                    <div class="col-md-6">
-                        <a href="{{ route('biopsias.personas.edit', $biopsia->nbiopsia) }}" class="btn btn-warning btn-block">
-                            <i class="fas fa-edit me-2"></i>Editar Biopsia
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <!-- Botones -->
+        <div class="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-end gap-3 shadow-lg rounded-lg mt-8">
+            <a href="{{ route('biopsias.personas.index') }}"
+                class="px-6 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-semibold transition-transform hover:scale-105">
+                Volver
+            </a>
+            <a href="{{ route('biopsias.personas.imprimir', $biopsia) }}"
+                class="px-6 py-2 bg-orange-700 hover:bg-orange-800 text-white rounded-lg font-semibold transition-transform hover:scale-105" target="_blank">
+                Imprimir
+            </a>
+            <a href="{{ route('biopsias.personas.imprimir', $biopsia) }}"
+                class="px-6 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg font-semibold transition-transform hover:scale-105" target="_blank">
+                PDF
+            </a>
+            <a href="{{ route('biopsias.personas.edit', $biopsia) }}"
+                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105" target="_blank">
+                Editar Biopsia
+            </a>
         </div>
-        @endif
     </div>
-
-    @push('styles')
-    <style>
-        .card {
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
-        }
-        
-        .form-control-plaintext {
-            padding-left: 0;
-            margin-bottom: 0;
-        }
-        
-        .badge {
-            font-size: 0.875rem;
-        }
-    </style>
-    @endpush
 </x-app-layout>

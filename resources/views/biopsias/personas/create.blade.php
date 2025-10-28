@@ -52,7 +52,7 @@
             <!-- Header -->
             <div class="flex justify-between items-center mb-6">
                 <div>
-                    <h1 class="text-3xl font-extrabold text-blue-700">Nueva Biopsia - Persona</h1>
+                    <h1 class="text-2xl font-extrabold text-blue-700">Nueva Biopsia - Persona</h1>
                     <p class="text-sm text-gray-500 mt-1">Número: <span class="font-semibold text-green-600" id="numero_display_header"></span></p>
                 </div>
                 <a href="{{ route('biopsias.personas.index') }}" class="text-gray-600 hover:text-gray-900">
@@ -197,15 +197,7 @@
                 <div class="bg-gradient-to-r from-green-50 via-white to-green-50 p-6 rounded-2xl shadow-xl border border-green-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
                     <h2 class="text-xl font-bold text-green-700 mb-4 border-b-2 border-green-200 pb-2">Análisis Detallado</h2>
                     <div class="space-y-4">
-                        <!-- Diagnóstico Clínico -->
-                        <div>
-                            <label for="diagnostico" class="block text-sm font-semibold text-gray-700 mb-1">
-                                Diagnóstico
-                            </label>
-                            <textarea id="diagnostico" name="diagnostico" rows="3"
-                                class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
-                                placeholder="Diagnóstico de la muestra...">{{ old('diagnostico') }}</textarea>
-                        </div>
+
 
                         <!-- Macroscópico -->
                         <div>
@@ -225,6 +217,15 @@
                             <textarea id="microscopico" name="microscopico" rows="4"
                                 class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
                                 placeholder="Describa las características microscópicas de la muestra...">{{ old('microscopico') }}</textarea>
+                        </div>
+                        <!-- Diagnóstico Clínico -->
+                        <div>
+                            <label for="diagnostico" class="block text-sm font-semibold text-gray-700 mb-1">
+                                Diagnóstico
+                            </label>
+                            <textarea id="diagnostico" name="diagnostico" rows="3"
+                                class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
+                                placeholder="Diagnóstico de la muestra...">{{ old('diagnostico') }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -348,7 +349,7 @@
             const macroscopicoField = document.getElementById('macroscopico');
             const currentContent = macroscopicoField.value.trim();
             const templateContent = macroscopico || '';
-            
+
             // Si ya hay contenido, agregar la plantilla al final con separación
             if (currentContent && templateContent) {
                 macroscopicoField.value = currentContent + '\n\n' + templateContent;
@@ -357,7 +358,7 @@
                 macroscopicoField.value = templateContent;
             }
             // Si no hay plantilla pero hay contenido, mantener el contenido existente
-            
+
             closeTemplateModal();
             if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
         }

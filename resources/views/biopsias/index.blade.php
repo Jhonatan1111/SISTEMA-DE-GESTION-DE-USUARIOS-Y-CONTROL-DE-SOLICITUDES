@@ -132,7 +132,7 @@
                                 Doctor
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                Diagnóstico
+                                Diagnóstico Clinico
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 Estado

@@ -69,6 +69,7 @@ Route::middleware('auth')->group(function () {
     Route::get('biopsias/personas', [BiopsiaPacienteController::class, 'index'])->name('biopsias.personas.index');
     Route::get('biopsias/personas/create', [BiopsiaPacienteController::class, 'create'])->name('biopsias.personas.create');
     Route::post('biopsias/personas', [BiopsiaPacienteController::class, 'store'])->name('biopsias.personas.store');
+    Route::get('biopsias/personas/{nbiopsia}', [BiopsiaPacienteController::class, 'show'])->name('biopsias.personas.show');
     Route::get('biopsias/personas/{nbiopsia}/imprimir', [BiopsiaPacienteController::class, 'imprimir'])->name('biopsias.personas.imprimir'); // ← MOVER AQUÍ (fuera de admin)
 
     //BIOPSIAS MASCOTAS
