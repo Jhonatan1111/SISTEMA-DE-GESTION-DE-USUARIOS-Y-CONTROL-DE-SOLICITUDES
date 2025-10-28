@@ -172,16 +172,16 @@
                                 <label for="lista_id" class="block text-sm font-semibold text-gray-700 mb-1">O selecciona plantilla</label>
                                 <input type="hidden" id="lista_id" name="lista_id" value="{{ old('lista_id') }}">
                                 <div class="flex gap-2">
-                                    <input type="text" id="selected_template" readonly 
+                                    <input type="text" id="selected_template" readonly
                                         class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg bg-gray-50 text-gray-700"
                                         placeholder="-- Sin plantilla seleccionada --">
-                                    <button type="button" onclick="openTemplateModal()" 
+                                    <button type="button" onclick="openTemplateModal()"
                                         class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                         </svg>
                                     </button>
-                                    <button type="button" onclick="clearTemplate()" 
+                                    <button type="button" onclick="clearTemplate()"
                                         class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -194,38 +194,37 @@
                 </div>
 
                 <!-- Análisis Detallado -->
-                <div class="bg-gradient-to-r from-blue-50 via-white to-blue-50 border border-blue-200 rounded-2xl shadow-lg overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-2xl">
-                    <button type="button" onclick="toggleAnalisis()" class="w-full px-6 py-4 flex justify-between items-center hover:bg-blue-100 transition-colors">
-                        <span class="font-medium text-blue-700">
-                            Análisis Detallado (Opcional)
-                        </span>
-                        <svg id="icon-analisis" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
+                <div class="bg-gradient-to-r from-green-50 via-white to-green-50 p-6 rounded-2xl shadow-xl border border-green-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
+                    <h2 class="text-xl font-bold text-green-700 mb-4 border-b-2 border-green-200 pb-2">Análisis Detallado</h2>
+                    <div class="space-y-4">
+                        <!-- Diagnóstico Clínico -->
+                        <div>
+                            <label for="diagnostico" class="block text-sm font-semibold text-gray-700 mb-1">
+                                Diagnóstico
+                            </label>
+                            <textarea id="diagnostico" name="diagnostico" rows="3"
+                                class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
+                                placeholder="Diagnóstico de la muestra...">{{ old('diagnostico') }}</textarea>
+                        </div>
 
-                    <div id="analisis-content" class="hidden px-6 pb-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                            <div>
-                                <label for="diagnostico" class="block text-sm font-semibold text-gray-700 mb-1">Diagnóstico Final</label>
-                                <textarea id="diagnostico" name="diagnostico" rows="3"
-                                    class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all">{{ old('diagnostico') }}</textarea>
-                            </div>
-                            <div>
-                                <label for="descripcion" class="block text-sm font-semibold text-gray-700 mb-1">Descripción General</label>
-                                <textarea id="descripcion" name="descripcion" rows="3"
-                                    class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all">{{ old('descripcion') }}</textarea>
-                            </div>
-                            <div>
-                                <label for="macroscopico" class="block text-sm font-semibold text-gray-700 mb-1">Análisis Macroscópico</label>
-                                <textarea id="macroscopico" name="macroscopico" rows="3"
-                                    class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all">{{ old('macroscopico') }}</textarea>
-                            </div>
-                            <div>
-                                <label for="microscopico" class="block text-sm font-semibold text-gray-700 mb-1">Análisis Microscópico</label>
-                                <textarea id="microscopico" name="microscopico" rows="3"
-                                    class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all">{{ old('microscopico') }}</textarea>
-                            </div>
+                        <!-- Macroscópico -->
+                        <div>
+                            <label for="macroscopico" class="block text-sm font-semibold text-gray-700 mb-1">
+                                Descripción Macroscópica
+                            </label>
+                            <textarea id="macroscopico" name="macroscopico" rows="4"
+                                class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
+                                placeholder="Describa las características macroscópicas de la muestra...">{{ old('macroscopico') }}</textarea>
+                        </div>
+
+                        <!-- Microscópico -->
+                        <div>
+                            <label for="microscopico" class="block text-sm font-semibold text-gray-700 mb-1">
+                                Descripción Microscópica
+                            </label>
+                            <textarea id="microscopico" name="microscopico" rows="4"
+                                class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
+                                placeholder="Describa las características microscópicas de la muestra...">{{ old('microscopico') }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -336,12 +335,25 @@
 
         function selectTemplate(id, codigo, descripcion, macroscopico) {
             document.getElementById('lista_id').value = id;
-            
+
             // Manejar casos donde descripcion puede ser undefined o vacío
             const descripcionText = descripcion && descripcion !== 'undefined' ? descripcion : 'Sin descripción';
             document.getElementById('selected_template').value = `${codigo} - ${descripcionText}`;
+
+            // Preservar contenido existente y agregar plantilla
+            const macroscopicoField = document.getElementById('macroscopico');
+            const currentContent = macroscopicoField.value.trim();
+            const templateContent = macroscopico || '';
             
-            document.getElementById('macroscopico').value = macroscopico || '';
+            // Si ya hay contenido, agregar la plantilla al final con separación
+            if (currentContent && templateContent) {
+                macroscopicoField.value = currentContent + '\n\n' + templateContent;
+            } else if (templateContent) {
+                // Si no hay contenido previo, solo usar la plantilla
+                macroscopicoField.value = templateContent;
+            }
+            // Si no hay plantilla pero hay contenido, mantener el contenido existente
+            
             closeTemplateModal();
             if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
         }
@@ -350,27 +362,27 @@
             const searchTerm = document.getElementById('template-search').value.toLowerCase().trim();
             const templateItems = document.querySelectorAll('.template-item');
             let visibleCount = 0;
-            
+
             templateItems.forEach(item => {
                 const codigo = item.dataset.codigo.toLowerCase();
                 const descripcion = item.dataset.diagnostico.toLowerCase(); // Nota: el data-attribute se llama diagnostico pero contiene descripcion
                 const macroscopico = item.dataset.macroscopico.toLowerCase();
-                
+
                 // Solo mostrar resultados si hay texto de búsqueda
                 let matches = false;
-                
+
                 if (searchTerm !== '') {
                     // Búsqueda más intuitiva - busca palabras individuales
                     const searchWords = searchTerm.split(' ').filter(word => word.length > 0);
-                    
+
                     // Buscar cada palabra en cualquier campo
-                    matches = searchWords.every(word => 
-                        codigo.includes(word) || 
-                        descripcion.includes(word) || 
+                    matches = searchWords.every(word =>
+                        codigo.includes(word) ||
+                        descripcion.includes(word) ||
                         macroscopico.includes(word)
                     );
                 }
-                
+
                 if (matches) {
                     item.style.display = 'block';
                     visibleCount++;
@@ -378,7 +390,7 @@
                     item.style.display = 'none';
                 }
             });
-            
+
             // Mostrar mensaje apropiado
             const noResultsMsg = document.getElementById('no-results-message');
             if (searchTerm === '') {
@@ -413,7 +425,7 @@
             <!-- Header del Modal -->
             <div class="flex justify-between items-center p-4 border-b bg-gradient-to-r from-yellow-50 to-orange-50">
                 <div>
-                    <h3 class="text-lg font-bold text-gray-900">🔍 Buscar y Seleccionar Plantilla</h3>
+                    <h3 class="text-lg font-bold text-gray-900">Buscar y Seleccionar Plantilla</h3>
                     <p class="text-xs text-gray-600 mt-1">Usa el buscador o navega por las plantillas disponibles</p>
                 </div>
                 <button type="button" onclick="closeTemplateModal()" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-all">
@@ -422,36 +434,28 @@
                     </svg>
                 </button>
             </div>
-            
+
             <div class="p-4 flex-1 overflow-y-auto">
-                <!-- Mini Buscador -->
+                <!-- Buscador -->
                 <div class="mb-4 bg-gradient-to-r from-blue-50 to-indigo-50 p-3 rounded-lg border border-blue-200">
                     <div class="flex items-center mb-2">
-                        <svg class="w-4 h-4 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <h4 class="font-semibold text-blue-800 text-sm">Mini Buscador</h4>
+                        <h4 class="font-semibold text-blue-800 text-sm">Buscador</h4>
                     </div>
-                    <input type="text" id="template-search" placeholder="🔍 Buscar por código, descripción o macro..." 
+                    <input type="text" id="template-search" placeholder="Buscar por código, descripción o macro..."
                         class="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 text-base shadow-sm"
                         oninput="filterTemplates()">
-                    <div class="flex flex-wrap gap-1 mt-2">
-                        <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">💡 Ejemplos:</span>
-                        <span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full cursor-pointer hover:bg-yellow-200" onclick="document.getElementById('template-search').value='anatomía'; filterTemplates();">anatomía</span>
-                        <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full cursor-pointer hover:bg-green-200" onclick="document.getElementById('template-search').value='huesos'; filterTemplates();">huesos</span>
-                        <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full cursor-pointer hover:bg-purple-200" onclick="document.getElementById('template-search').value='páncreas'; filterTemplates();">páncreas</span>
-                    </div>
+
                 </div>
-                
+
                 <!-- Separador -->
                 <div class="flex items-center mb-3">
                     <div class="flex-1 border-t border-gray-300"></div>
                     <span class="px-3 text-xs text-gray-500 bg-white">Plantillas Disponibles</span>
                     <div class="flex-1 border-t border-gray-300"></div>
                 </div>
-                
+
                 <!-- Lista de Plantillas -->
-                <div id="template-list" class="space-y-2 max-h-64 overflow-y-auto border border-gray-200 rounded-lg bg-gray-50 p-2" style="min-height: 200px;">
+                <div id="template-list" class="space-y-2 max-h-96 overflow-y-auto border border-gray-200 rounded-lg bg-gray-50 p-2" style="min-height: 350;">
                     <!-- Mensaje cuando no hay resultados -->
                     <div id="no-results-message" class="text-center py-8 text-gray-500" style="display: none;">
                         <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -460,23 +464,16 @@
                         <p class="text-lg font-medium">No se encontraron plantillas</p>
                         <p class="text-sm">Intenta con otras palabras como 'anatomía', 'huesos', 'carne'</p>
                     </div>
-                    
+
                     @foreach($listas as $lista)
                     <div class="template-item bg-white border border-gray-200 rounded-lg p-2 mb-2 hover:bg-yellow-50 hover:border-yellow-300 hover:shadow-md cursor-pointer transition-all duration-200"
                         data-codigo="{{ $lista->codigo }}"
                         data-diagnostico="{{ $lista->descripcion }}"
                         data-macroscopico="{{ $lista->macroscopico }}"
                         onclick="selectTemplate('{{ $lista->id }}', '{{ $lista->codigo }}', '{{ addslashes($lista->descripcion) }}', '{{ addslashes($lista->macroscopico) }}')">
-                        
-                        <div class="flex justify-between items-start mb-1">
-                            <span class="font-bold text-blue-600 text-sm bg-blue-50 px-2 py-1 rounded-full">{{ $lista->codigo }}</span>
-                            <button type="button" class="text-xs bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-2 py-1 rounded-full font-semibold transition-all transform hover:scale-105 shadow-sm">
-                                ✓ Seleccionar
-                            </button>
-                        </div>
-                        
+
                         <h4 class="font-semibold text-gray-900 mb-1 text-xs">{{ $lista->descripcion }}</h4>
-                        
+
                         <div class="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
                             <strong class="text-gray-700 flex items-center">
                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -497,11 +494,11 @@
         // Función para validar que la fecha no sea futura
         function validarFecha(input) {
             if (!input.value) return true;
-            
+
             const fechaSeleccionada = new Date(input.value + 'T00:00:00');
             const fechaHoy = new Date();
             fechaHoy.setHours(0, 0, 0, 0);
-            
+
             if (fechaSeleccionada > fechaHoy) {
                 // Mostrar alerta pero NO resetear automáticamente
                 alert('⚠️ La fecha de recepción no puede ser futura.\n\nPor favor selecciona una fecha válida (hoy o anterior).');
@@ -510,7 +507,7 @@
                 input.select(); // Seleccionar el texto para facilitar el cambio
                 return false;
             }
-            
+
             input.style.borderColor = '';
             return true;
         }
@@ -519,7 +516,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const fechaInput = document.getElementById('fecha_recibida');
-            
+
             if (form && fechaInput) {
                 // Validación al enviar formulario
                 form.addEventListener('submit', function(e) {
@@ -529,7 +526,7 @@
                         return false;
                     }
                 });
-                
+
                 // Validación solo al cambiar la fecha (no en tiempo real)
                 fechaInput.addEventListener('change', function() {
                     validarFecha(this);

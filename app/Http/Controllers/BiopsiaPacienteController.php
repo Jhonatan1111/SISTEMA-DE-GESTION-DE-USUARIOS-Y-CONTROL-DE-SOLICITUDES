@@ -108,11 +108,25 @@ class BiopsiaPacienteController extends Controller
             'mascota_id' => null,
         ];
 
-        // Si seleccionó una lista, copiar los datos
+        // Manejar el campo macroscópico
         if ($request->lista_id) {
             $lista = ListaBiopsia::find($request->lista_id);
             if ($lista) {
-                $datos['macroscopico'] = $lista->macroscopico;
+                // Si hay contenido adicional en el campo, combinarlo con la plantilla
+                $contenidoPlantilla = $lista->macroscopico;
+                $contenidoAdicional = $request->macroscopico;
+                
+                if (!empty($contenidoAdicional) && $contenidoAdicional !== $contenidoPlantilla) {
+                    // Si el contenido adicional ya incluye la plantilla, usar solo el contenido adicional
+                    if (strpos($contenidoAdicional, $contenidoPlantilla) !== false) {
+                        $datos['macroscopico'] = $contenidoAdicional;
+                    } else {
+                        // Combinar plantilla con contenido adicional
+                        $datos['macroscopico'] = $contenidoPlantilla . "\n\n" . $contenidoAdicional;
+                    }
+                } else {
+                    $datos['macroscopico'] = $contenidoPlantilla;
+                }
             }
         } else {
             $datos['macroscopico'] = $request->macroscopico;
