@@ -112,17 +112,17 @@
                     <tbody class="bg-white divide-y divide-gray-200" id="biopsias-table-body">
                         @forelse($listaBiopsia as $lista)
                         <tr class="hover:bg-blue-50 table-row" data-searchable="{{ strtolower($lista->codigo . ' ' . $lista->descripcion . ' ' . ($lista->macroscopico ?? 'N/A')) }}">
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
                                 <span class="inline-flex items-center justify-center bg-gradient-to-r from-blue-100 to-blue-50 text-blue-800 px-3 py-1 rounded-full text-sm font-bold">
                                     {{ $lista->codigo }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 text-center">
                                 <div class="text-sm font-medium text-gray-900">{{ $lista->descripcion }}</div>
                             </td>
 
-                            <td class="px-6 py-4">
-                                <textarea class="text-sm text-gray-900 w-full resize-none border-none bg-transparent " rows="2" readonly>{{ $lista->macroscopico ?? 'N/A' }}</textarea>
+                            <td class="px-6 py-4 text-center">
+                                <textarea class="text-sm text-gray-900 w-full resize-none border-none bg-transparent text-center" rows="2" readonly>{{ $lista->macroscopico ?? 'N/A' }}</textarea>
                             </td>
 
                             @if (auth()->user()->role === 'admin')

@@ -65,26 +65,26 @@
                     <!-- Descripción -->
                     <div>
                         <label for="descripcion" class="block text-sm font-semibold text-gray-700 mb-1">
-                            Descripción
+                            Descripción <span class="text-red-500">*</span>
                         </label>
                         <textarea id="descripcion"
                             name="descripcion"
                             rows="4"
                             requied
                             class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all"
-                            placeholder="Ingrese la descripción...">{{ old('descripcion') }}</textarea>
+                            placeholder="Ingrese la descripción ...">{{ old('descripcion') }}</textarea>
                     </div>
 
                     <!-- Diagnóstico -->
                     <div>
                         <label for="macroscopico" class="block text-sm font-semibold text-gray-700 mb-1">
-                            Macroscópico
+                            Macroscópico <span class="text-red-500">*</span>
                         </label>
                         <textarea id="macroscopico"
                             name="macroscopico"
                             rows="4"
                             class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all"
-                            placeholder="Ingrese el macroscópico detallado...">{{ old('macroscopico') }}</textarea>
+                            placeholder="Ingrese el macroscópico ...">{{ old('macroscopico') }}</textarea>
                     </div>
                 </div>
             </div>

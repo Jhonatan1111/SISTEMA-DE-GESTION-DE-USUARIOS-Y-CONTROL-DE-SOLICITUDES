@@ -20,6 +20,9 @@
             <!-- Información Básica -->
             <div class="bg-gradient-to-r from-blue-50 via-white to-blue-50 p-6 rounded-2xl shadow-xl border border-blue-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
                 <h2 class="text-xl font-bold text-blue-700 mb-4 border-b-2 border-blue-200 pb-2">
+                    <svg class="w-5 h-5 inline mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    </svg>
                     Información Básica
                 </h2>
 
@@ -35,7 +38,7 @@
                             value="{{ old('codigo', $listaBiopsia->codigo) }}"
                             readonly
                             class="w-full px-4 py-2 bg-gray-100 border-2 border-gray-300 rounded-lg cursor-not-allowed text-gray-600 font-semibold">
-                        <p class="mt-1 text-xs text-gray-500">Código no editable</p>
+                        <p class="mt-1 text-xs text-gray-500">El código no se puede modificar</p>
                     </div>
 
                     <!-- Descripción -->
@@ -43,13 +46,12 @@
                         <label for="descripcion" class="block text-sm font-semibold text-gray-700 mb-1">
                             Descripción <span class="text-red-500">*</span>
                         </label>
-                        <input type="text"
-                            id="descripcion"
+                        <textarea id="descripcion"
                             name="descripcion"
-                            value="{{ old('descripcion', $listaBiopsia->descripcion) }}"
+                            rows="4"
                             required
                             class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all"
-                            placeholder="Nombre corto del tipo de biopsia">
+                            placeholder="Nombre corto del tipo de biopsia...">{{ old('descripcion', $listaBiopsia->descripcion) }}</textarea>
                     </div>
 
                     <!-- Macroscopico -->
