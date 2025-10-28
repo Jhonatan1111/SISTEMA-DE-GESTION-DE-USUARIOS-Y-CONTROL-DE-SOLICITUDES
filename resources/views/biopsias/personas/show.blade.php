@@ -116,17 +116,12 @@
             </h2>
 
             @if($biopsia->doctor)
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="bg-white p-4 rounded-lg shadow-md">
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Nombre del Doctor</label>
+                    <label class="block text-sm font-semibold text-gray-600 mb-">Nombre del Doctor</label>
                     <p class="text-lg font-bold text-gray-900">
                         Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}
                     </p>
-                </div>
-
-                <div class="bg-white p-4 rounded-lg shadow-md">
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Especialidad</label>
-                    <p class="text-lg font-semibold text-gray-900">{{ $biopsia->doctor->especialidad }}</p>
                 </div>
 
                 @if($biopsia->doctor->correo)

@@ -255,6 +255,78 @@
         </div>
     </div>
 
+    <!-- Modal de búsqueda de plantillas -->
+    <div id="template-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 h-[70vh] overflow-hidden flex flex-col">
+            <!-- Header del Modal -->
+            <div class="flex justify-between items-center p-4 border-b bg-gradient-to-r from-yellow-50 to-orange-50">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900">Buscar y Seleccionar Plantilla</h3>
+                    <p class="text-xs text-gray-600 mt-1">Usa el buscador o navega por las plantillas disponibles</p>
+                </div>
+                <button type="button" onclick="closeTemplateModal()" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="p-4 flex-1 overflow-y-auto">
+                <!-- Buscador -->
+                <div class="mb-4 bg-gradient-to-r from-blue-50 to-indigo-50 p-3 rounded-lg border border-blue-200">
+                    <div class="flex items-center mb-2">
+                        <h4 class="font-semibold text-blue-800 text-sm">Buscador</h4>
+                    </div>
+                    <input type="text" id="template-search" placeholder="Buscar por código, descripción o macro..."
+                        class="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 text-base shadow-sm"
+                        oninput="filterTemplates()">
+
+                </div>
+
+                <!-- Separador -->
+                <div class="flex items-center mb-3">
+                    <div class="flex-1 border-t border-gray-300"></div>
+                    <span class="px-3 text-xs text-gray-500 bg-white">Plantillas Disponibles</span>
+                    <div class="flex-1 border-t border-gray-300"></div>
+                </div>
+
+                <!-- Lista de Plantillas -->
+                <div id="template-list" class="space-y-2 max-h-96 overflow-y-auto border border-gray-200 rounded-lg bg-gray-50 p-2" style="min-height: 350;">
+                    <!-- Mensaje cuando no hay resultados -->
+                    <div id="no-results-message" class="text-center py-8 text-gray-500" style="display: none;">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.009-5.824-2.562M15 6.75A3.75 3.75 0 0011.25 3a3.75 3.75 0 00-3.75 3.75 0 003.75 3.75A3.75 3.75 0 0015 6.75z"></path>
+                        </svg>
+                        <p class="text-lg font-medium">No se encontraron plantillas</p>
+                        <p class="text-sm">Intenta con otras palabras como 'anatomía', 'huesos', 'carne'</p>
+                    </div>
+
+                    @foreach($listas as $lista)
+                    <div class="template-item bg-white border border-gray-200 rounded-lg p-2 mb-2 hover:bg-yellow-50 hover:border-yellow-300 hover:shadow-md cursor-pointer transition-all duration-200"
+                        data-codigo="{{ $lista->codigo }}"
+                        data-diagnostico="{{ $lista->descripcion }}"
+                        data-macroscopico="{{ $lista->macroscopico }}"
+                        onclick="selectTemplate('{{ $lista->id }}', '{{ $lista->codigo }}', '{{ addslashes($lista->descripcion) }}', '{{ addslashes($lista->macroscopico) }}')">
+
+                        <h4 class="font-semibold text-gray-900 mb-1 text-xs">{{ $lista->descripcion }}</h4>
+
+                        <div class="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
+                            <strong class="text-gray-700 flex items-center">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Descripción Macroscópica:
+                            </strong>
+                            <p class="mt-1 leading-relaxed">{{ Str::limit($lista->macroscopico, 100) }}</p>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         // Función para seleccionar tipo y obtener número
         async function seleccionarTipo(tipo) {
@@ -319,6 +391,10 @@
                         } else {
                             alert(`Código "${codigo}" no encontrado`);
                         }
+                    })
+                    .catch(err => {
+                        console.error('Error:', err);
+                        alert('Error al buscar el código');
                     });
             });
 
@@ -330,12 +406,47 @@
         function openTemplateModal() {
             document.getElementById('template-modal').style.display = 'flex';
             document.getElementById('template-search').focus();
+            // Inicializar el mensaje de búsqueda al abrir el modal
+            initializeModalMessage();
         }
 
         function closeTemplateModal() {
             document.getElementById('template-modal').style.display = 'none';
             document.getElementById('template-search').value = '';
             filterTemplates();
+        }
+
+        // Función para inicializar el mensaje del modal
+        function initializeModalMessage() {
+            const items = document.querySelectorAll('.template-item');
+            const noResultsMsg = document.getElementById('no-results-message');
+
+            if (items.length === 0) {
+                // Si no hay plantillas disponibles
+                noResultsMsg.innerHTML = `
+                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                    <p class="text-lg font-medium">No hay plantillas disponibles</p>
+                    <p class="text-sm">Contacta al administrador para agregar plantillas de biopsia</p>
+                `;
+                noResultsMsg.style.display = 'block';
+            } else {
+                // Si hay plantillas, mostrar mensaje de búsqueda y ocultar todas las plantillas inicialmente
+                noResultsMsg.innerHTML = `
+                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <p class="text-lg font-medium">Escribe para buscar plantillas</p>
+                    <p class="text-sm">Usa el buscador arriba para encontrar plantillas por código, diagnóstico o descripción</p>
+                `;
+                noResultsMsg.style.display = 'block';
+
+                // Ocultar todas las plantillas inicialmente
+                items.forEach(item => {
+                    item.style.display = 'none';
+                });
+            }
         }
 
         function clearTemplate() {

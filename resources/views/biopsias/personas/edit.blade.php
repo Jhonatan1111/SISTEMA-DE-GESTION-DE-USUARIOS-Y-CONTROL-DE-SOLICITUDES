@@ -320,6 +320,8 @@
         function openTemplateModal() {
             document.getElementById('template-modal').style.display = 'flex';
             document.getElementById('template-search').focus();
+            // Inicializar el mensaje de búsqueda al abrir el modal
+            initializeModalMessage();
         }
 
         // Función para cerrar el modal
@@ -327,6 +329,39 @@
             document.getElementById('template-modal').style.display = 'none';
             document.getElementById('template-search').value = '';
             filterTemplates();
+        }
+
+        // Función para inicializar el mensaje del modal
+        function initializeModalMessage() {
+            const items = document.querySelectorAll('.template-item');
+            const noResultsMsg = document.getElementById('no-results-message');
+            
+            if (items.length === 0) {
+                // Si no hay plantillas disponibles
+                noResultsMsg.innerHTML = `
+                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                    <p class="text-lg font-medium">No hay plantillas disponibles</p>
+                    <p class="text-sm">Contacta al administrador para agregar plantillas de biopsia</p>
+                `;
+                noResultsMsg.style.display = 'block';
+            } else {
+                // Si hay plantillas, mostrar mensaje de búsqueda y ocultar todas las plantillas inicialmente
+                noResultsMsg.innerHTML = `
+                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <p class="text-lg font-medium">Escribe para buscar plantillas</p>
+                    <p class="text-sm">Usa el buscador arriba para encontrar plantillas por código, diagnóstico o descripción</p>
+                `;
+                noResultsMsg.style.display = 'block';
+                
+                // Ocultar todas las plantillas inicialmente
+                items.forEach(item => {
+                    item.style.display = 'none';
+                });
+            }
         }
 
         // Función para seleccionar una plantilla
@@ -376,7 +411,18 @@
 
             // Mostrar mensaje apropiado
             const noResultsMsg = document.getElementById('no-results-message');
-            if (searchTerm === '') {
+            
+            if (items.length === 0) {
+                // Si no hay plantillas en absoluto
+                noResultsMsg.innerHTML = `
+                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                    <p class="text-lg font-medium">No hay plantillas disponibles</p>
+                    <p class="text-sm">Contacta al administrador para agregar plantillas de biopsia</p>
+                `;
+                noResultsMsg.style.display = 'block';
+            } else if (searchTerm === '') {
                 // Si no hay búsqueda, mostrar mensaje de instrucción
                 noResultsMsg.innerHTML = `
                     <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
