@@ -462,19 +462,17 @@
             const descripcionText = descripcion && descripcion !== 'undefined' ? descripcion : 'Sin descripción';
             document.getElementById('selected_template').value = `${codigo} - ${descripcionText}`;
 
-            // Preservar contenido existente y agregar plantilla
+            // Agregar la plantilla al contenido existente
             const macroscopicoField = document.getElementById('macroscopico');
-            const currentContent = macroscopicoField.value.trim();
-            const templateContent = macroscopico || '';
+            const contenidoActual = macroscopicoField.value.trim();
 
-            // Si ya hay contenido, agregar la plantilla al final con separación
-            if (currentContent && templateContent) {
-                macroscopicoField.value = currentContent + '\n\n' + templateContent;
-            } else if (templateContent) {
-                // Si no hay contenido previo, solo usar la plantilla
-                macroscopicoField.value = templateContent;
+            if (contenidoActual === '') {
+                // Si está vacío, usar solo la plantilla
+                macroscopicoField.value = macroscopico || '';
+            } else {
+                // Si ya tiene contenido, agregar la plantilla al final con separación visible
+                macroscopicoField.value = contenidoActual + ' ' + (macroscopico || '');
             }
-            // Si no hay plantilla pero hay contenido, mantener el contenido existente
 
             closeTemplateModal();
             if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();

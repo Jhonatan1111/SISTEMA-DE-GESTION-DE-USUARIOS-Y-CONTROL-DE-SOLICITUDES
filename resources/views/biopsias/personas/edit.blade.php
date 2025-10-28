@@ -335,7 +335,7 @@
         function initializeModalMessage() {
             const items = document.querySelectorAll('.template-item');
             const noResultsMsg = document.getElementById('no-results-message');
-            
+
             if (items.length === 0) {
                 // Si no hay plantillas disponibles
                 noResultsMsg.innerHTML = `
@@ -356,7 +356,7 @@
                     <p class="text-sm">Usa el buscador arriba para encontrar plantillas por código, diagnóstico o descripción</p>
                 `;
                 noResultsMsg.style.display = 'block';
-                
+
                 // Ocultar todas las plantillas inicialmente
                 items.forEach(item => {
                     item.style.display = 'none';
@@ -369,16 +369,16 @@
             document.getElementById('lista_id').value = id;
             document.getElementById('selected_template').value = codigo + ' - ' + descripcion;
 
-            // Actualizar el campo macroscópico con el contenido de la plantilla
+            // Agregar la plantilla al contenido existente
             const macroscopicoTextarea = document.getElementById('macroscopico');
             const contenidoActual = macroscopicoTextarea.value.trim();
 
             if (contenidoActual === '') {
-                // Si está vacío, usar solo el contenido de la plantilla
-                macroscopicoTextarea.value = macroscopico;
+                // Si está vacío, usar solo la plantilla
+                macroscopicoTextarea.value = macroscopico || '';
             } else {
-                // Si ya tiene contenido, agregar el de la plantilla al final
-                macroscopicoTextarea.value = contenidoActual + '\n\n' + macroscopico;
+                // Si ya tiene contenido, agregar la plantilla al final con separación visible
+                macroscopicoTextarea.value = contenidoActual + ' ' + (macroscopico || '');
             }
 
             closeTemplateModal();
@@ -411,7 +411,7 @@
 
             // Mostrar mensaje apropiado
             const noResultsMsg = document.getElementById('no-results-message');
-            
+
             if (items.length === 0) {
                 // Si no hay plantillas en absoluto
                 noResultsMsg.innerHTML = `
