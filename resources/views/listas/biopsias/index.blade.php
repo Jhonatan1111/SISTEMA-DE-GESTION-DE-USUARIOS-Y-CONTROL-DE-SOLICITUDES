@@ -28,6 +28,8 @@
                 </svg>
                 Nueva Lista
             </a>
+
+            
             @endif
         </div>
 
@@ -54,6 +56,37 @@
         </div>
         @endif
 
+        <!-- Filtro de búsqueda -->
+        <div class="bg-white shadow-md rounded-lg p-4 mb-4">
+            <div class="flex items-center space-x-4">
+                <div class="flex-1">
+                    <label for="search" class="block text-sm font-medium text-gray-700 mb-2">
+                        Buscar en listas de biopsias
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text" 
+                               id="search" 
+                               name="search" 
+                               class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+                               placeholder="Buscar por código, descripción o macroscópico..."
+                               onkeyup="filterTable()">
+                    </div>
+                </div>
+                <div class="flex-shrink-0 mt-6">
+                    <button type="button" 
+                            onclick="clearSearch()" 
+                            class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+                        Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Tabla de listas de biopsias -->
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
             <div class="overflow-x-auto">
@@ -76,9 +109,9 @@
                             @endif
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="bg-white divide-y divide-gray-200" id="biopsias-table-body">
                         @forelse($listaBiopsia as $lista)
-                        <tr class="hover:bg-blue-50">
+                        <tr class="hover:bg-blue-50 table-row" data-searchable="{{ strtolower($lista->codigo . ' ' . $lista->descripcion . ' ' . ($lista->macroscopico ?? 'N/A')) }}">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">{{ $lista->codigo }}</div>
                             </td>
@@ -87,12 +120,12 @@
                             </td>
 
                             <td class="px-6 py-4">
-                                <textarea class="text-sm text-gray-900 w-full resize-none border-none bg-transparent">{{ $lista->macroscopico ?? 'N/A' }}</textarea>
+                                <textarea class="text-sm text-gray-900 w-full resize-none border-none bg-transparent " rows="4" readonly>{{ $lista->macroscopico ?? 'N/A' }}</textarea>
                             </td>
 
                             @if (auth()->user()->role === 'admin')
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <div class="flex space-x-2">
+                                <div class="flex space-x-2 justify-center">
                                     <a href="{{ route('listas.biopsias.edit', $lista->id) }}"
                                         class="text-indigo-600 hover:text-indigo-900">
                                         Editar
@@ -139,4 +172,67 @@
             @endif
         </div>
     </div>
+
+    <script>
+        function filterTable() {
+            const searchInput = document.getElementById('search');
+            const searchTerm = searchInput.value.toLowerCase();
+            const tableRows = document.querySelectorAll('.table-row');
+            const emptyRow = document.querySelector('tbody tr:last-child');
+            let visibleRows = 0;
+
+            tableRows.forEach(row => {
+                const searchableText = row.getAttribute('data-searchable');
+                if (searchableText && searchableText.includes(searchTerm)) {
+                    row.style.display = '';
+                    visibleRows++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Mostrar/ocultar mensaje de "no hay registros"
+            if (emptyRow) {
+                if (visibleRows === 0 && searchTerm !== '') {
+                    // Crear mensaje de "no se encontraron resultados" si no existe
+                    let noResultsRow = document.getElementById('no-results-row');
+                    if (!noResultsRow) {
+                        noResultsRow = document.createElement('tr');
+                        noResultsRow.id = 'no-results-row';
+                        noResultsRow.innerHTML = `
+                            <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                                <div class="py-8">
+                                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <h3 class="mt-2 text-sm font-medium text-gray-900">No se encontraron resultados</h3>
+                                    <p class="mt-1 text-sm text-gray-500">Intenta con otros términos de búsqueda.</p>
+                                </div>
+                            </td>
+                        `;
+                        document.getElementById('biopsias-table-body').appendChild(noResultsRow);
+                    }
+                    noResultsRow.style.display = '';
+                } else {
+                    const noResultsRow = document.getElementById('no-results-row');
+                    if (noResultsRow) {
+                        noResultsRow.style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        function clearSearch() {
+            const searchInput = document.getElementById('search');
+            searchInput.value = '';
+            filterTable();
+        }
+
+        // Agregar evento para limpiar búsqueda con Escape
+        document.getElementById('search').addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                clearSearch();
+            }
+        });
+    </script>
 </x-app-layout>
