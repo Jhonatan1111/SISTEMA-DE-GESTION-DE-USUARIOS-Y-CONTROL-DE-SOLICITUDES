@@ -13,11 +13,9 @@ return new class extends Migration
     {
         Schema::create('lista_biopsias', function (Blueprint $table) {
             $table->id();
-            $table->string('codigo')->nullable()->unique();
-            $table->text('diagnostico')->nullable();
-            $table->text('macroscopico')->nullable();
-            $table->text('microscopico')->nullable();
+            $table->string('codigo')->unique();
             $table->text('descripcion')->nullable();
+            $table->text('macroscopico')->nullable();
             $table->timestamps();
         });
     }

@@ -9,21 +9,10 @@ class ListaBiopsia extends Model
     protected $table = "lista_biopsias";
     protected $fillable = [
         'codigo',
-        'diagnostico',
-        'macroscopico',
-        'microscopico',
-        'descripcion'
-    ];
-    protected $casts = [
-        // 'codigo' => 'string',
-        // 'diagnostico' => 'string',
+        'descripcion',
+        'macroscopico'
     ];
 
-    // RELACIONES
-    public function biopsias()
-    {
-        return $this->hasMany(Biopsia::class, 'lista_id');
-    }
     public static function generarCodigoLista()
     {
         // Buscar el último código que empiece con 'L'
@@ -31,6 +20,7 @@ class ListaBiopsia extends Model
             ->orderBy('codigo', 'desc')
             ->first();
 
+        // Si no hay registros, empezar con L001
         if ($ultimo) {
             // Extraer el número del código (ej: L003 -> 3)
             $ultimoNumero = (int)substr($ultimo->codigo, 1);
@@ -39,7 +29,7 @@ class ListaBiopsia extends Model
             $nuevoNumero = 1;
         }
 
-        // Formato: L001, L002, L003...
+        // Formato: L001, L002, L003
         return sprintf("L%03d", $nuevoNumero);
     }
     //
