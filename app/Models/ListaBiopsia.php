@@ -16,7 +16,7 @@ class ListaBiopsia extends Model
     public static function generarCodigoLista()
     {
         // Buscar el último código que empiece con 'L'
-        $ultimo = static::where('codigo', 'like', 'L%')
+        $ultimo = static::where('codigo', 'like', 'B%')
             ->orderBy('codigo', 'desc')
             ->first();
 
@@ -30,7 +30,7 @@ class ListaBiopsia extends Model
         }
 
         // Formato: L001, L002, L003
-        return sprintf("L%03d", $nuevoNumero);
+        return sprintf("B%03d", $nuevoNumero);
     }
     //
 }

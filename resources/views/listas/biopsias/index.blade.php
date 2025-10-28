@@ -29,7 +29,7 @@
                 Nueva Lista
             </a>
 
-            
+
             @endif
         </div>
 
@@ -69,18 +69,18 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </div>
-                        <input type="text" 
-                               id="search" 
-                               name="search" 
-                               class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
-                               placeholder="Buscar por código, descripción o macroscópico..."
-                               onkeyup="filterTable()">
+                        <input type="text"
+                            id="search"
+                            name="search"
+                            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            placeholder="Buscar por código, descripción o macroscópico..."
+                            onkeyup="filterTable()">
                     </div>
                 </div>
                 <div class="flex-shrink-0 mt-6">
-                    <button type="button" 
-                            onclick="clearSearch()" 
-                            class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+                    <button type="button"
+                        onclick="clearSearch()"
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
                         Limpiar
                     </button>
                 </div>
@@ -93,17 +93,17 @@
                 <table class="min-w-full divide-y divide-violet-200">
                     <thead class="bg-blue-400">
                         <tr>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-900 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-900 uppercase tracking-wider font-bold">
                                 Código
                             </th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-900 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-900 uppercase tracking-wider font-bold">
                                 Descripción
                             </th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-900 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-900 uppercase tracking-wider font-bold">
                                 Macroscópico
                             </th>
                             @if (auth()->user()->role === 'admin')
-                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-900 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-900 uppercase tracking-wider font-bold">
                                 Acciones
                             </th>
                             @endif
@@ -113,14 +113,16 @@
                         @forelse($listaBiopsia as $lista)
                         <tr class="hover:bg-blue-50 table-row" data-searchable="{{ strtolower($lista->codigo . ' ' . $lista->descripcion . ' ' . ($lista->macroscopico ?? 'N/A')) }}">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">{{ $lista->codigo }}</div>
+                                <span class="inline-flex items-center justify-center bg-gradient-to-r from-blue-100 to-blue-50 text-blue-800 px-3 py-1 rounded-full text-sm font-bold">
+                                    {{ $lista->codigo }}
+                                </span>
                             </td>
                             <td class="px-6 py-4">
                                 <div class="text-sm font-medium text-gray-900">{{ $lista->descripcion }}</div>
                             </td>
 
                             <td class="px-6 py-4">
-                                <textarea class="text-sm text-gray-900 w-full resize-none border-none bg-transparent " rows="4" readonly>{{ $lista->macroscopico ?? 'N/A' }}</textarea>
+                                <textarea class="text-sm text-gray-900 w-full resize-none border-none bg-transparent " rows="2" readonly>{{ $lista->macroscopico ?? 'N/A' }}</textarea>
                             </td>
 
                             @if (auth()->user()->role === 'admin')

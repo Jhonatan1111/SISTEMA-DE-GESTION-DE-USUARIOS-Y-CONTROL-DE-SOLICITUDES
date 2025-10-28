@@ -62,7 +62,7 @@
                 <table class="w-full table-fixed">
                     <thead>
                         <tr class="bg-gradient-to-r from-blue-300 to-blue-400 text-grey-900">
-                            <th class="px-6 py-4 text-left text-sm font-bold w-24">Código</th>
+                            <th class="px-6 py-4 text-left text-sm ">Código</th>
                             <th class="px-6 py-4 text-left text-sm font-bold w-48">Descripción</th>
                             <th class="px-6 py-4 text-left text-sm font-bold">Diagnóstico</th>
                             @if (auth()->user()->role === 'admin')
