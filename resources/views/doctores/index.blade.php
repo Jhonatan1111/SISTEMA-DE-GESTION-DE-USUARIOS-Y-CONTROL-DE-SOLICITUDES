@@ -62,43 +62,73 @@
             @endif
 
             {{-- Tabla de doctores --}}
-            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="bg-gradient-to-r from-blue-300 to-blue-400 text-grey-900">
-                                <th class="px-6 py-4 text-left text-sm font-bold">JVPM</th>
-                                <th class="px-6 py-4 text-left text-sm font-bold">Nombre Completo</th>
-                                <th class="px-6 py-4 text-left text-sm font-bold">Dirección</th>
-                                <th class="px-6 py-4 text-left text-sm font-bold">Celular</th>
-                                <th class="px-6 py-4 text-left text-sm font-bold">Fax</th>
-                                <th class="px-6 py-4 text-left text-sm font-bold">Correo</th>
-                                <th class="px-6 py-4 text-left text-sm font-bold">Estado</th>
+                    <table class="min-w-full divide-y divide-violet-200">
+                        <thead class="bg-blue-400">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                    Doctor
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                    Contactos
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                    Fax</th>
+                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                    Dirección
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                    Estado
+                                </th>
                                 @if (auth()->user()->role === 'admin')
-                                    <th class="px-6 py-4 text-center text-sm font-bold">Acciones</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                        Acciones
+                                    </th>
                                 @endif
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
+                        <tbody class="bg-white divide-y divide-gray-200">
                             @forelse($doctores as $doctor)
-                                <tr class="hover:bg-blue-50 transition-colors duration-200 group">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="text-gray-900 font-semibold">{{ $doctor->jvpm }}</span>
+                                <tr class="hover:bg-blue-50">
+                                    <!-- <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="text-sm font-medium text-gray-900">{{ $doctor->jvpm }}</span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="text-gray-900 font-semibold">{{ $doctor->nombre . ' ' . $doctor->apellido }}</span>
-                                    </td>
-                                    <td class="px-6 py-4 max-w-xs truncate" title="{{ $doctor->direccion }}">
-                                        <span class="text-gray-600">{{ $doctor->direccion ?? 'Sin dirección' }}</span>
-                                    </td>
+                                        <span class="text-sm font-medium text-gray-900">{{ $doctor->nombre . ' ' . $doctor->apellido }}</span>
+                                    </td> -->
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="text-gray-600">{{ $doctor->celular }}</span>
+                                        <div class="text-sm font-medium text-gray-900">
+                                            {{ $doctor->nombre }} {{ $doctor->apellido }}
+                                        </div>
+                                        <div class="text-gray-500 text-xs">
+                                            JVPM: {{ $doctor->jvpm }}
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 mr-1 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                                            </svg>
+                                            {{ $doctor->celular }}
+                                        </div>
+                                        @if($doctor->correo)
+                                        <div class="flex items-center text-blue-600 text-xs mt-1">
+                                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                                            </svg>
+                                            {{ $doctor->correo }}
+                                        </div>
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="text-gray-600">{{ $doctor->fax ?? 'Sin fax' }}</span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="text-blue-600 text-sm">{{ $doctor->correo ?? 'Sin correo' }}</span>
+                                    <td class="px-6 py-4 text-sm text-gray-900">
+                                        <div class="max-w-[150px] truncate" title="{{ $doctor->direccion }}">
+                                            {{ $doctor->direccion ?? 'Sin dirección' }}
+                                        </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if($doctor->estado_servicio)
@@ -118,7 +148,6 @@
                                                 class="text-indigo-600 hover:text-indigo-900">
                                                 Editar
                                             </a>
-
                                             <!-- Botón Activar / Desactivar -->
                                             <form action="{{ route('doctores.toggle-estado', $doctor) }}" method="POST"
                                                 onsubmit="return confirm('¿Está seguro de cambiar el estado de este doctor?')" class="inline">
@@ -129,10 +158,8 @@
                                                     {{ $doctor->estado_servicio ? 'Desactivar' : 'Activar' }}
                                                 </button>
                                             </form>
-
                                         </div>
                                     </td>
-
                                 </tr>
                             @empty
                                 <tr>
@@ -153,14 +180,12 @@
                     </table>
                 </div>
             </div>
-
             {{-- Paginación --}}
             @if ($doctores->hasPages())
                 <div class="mt-8">
                     {{ $doctores->links() }}
                 </div>
             @endif
-
         </div>
     </div>
 </x-app-layout>
