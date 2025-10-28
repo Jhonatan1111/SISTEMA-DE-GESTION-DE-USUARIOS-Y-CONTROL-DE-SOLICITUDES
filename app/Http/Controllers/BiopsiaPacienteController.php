@@ -14,33 +14,33 @@ class BiopsiaPacienteController extends Controller
     // MOSTRAR BIOPSIAS DE PERSONAS
     public function index(Request $request)
     {
-        $query = Biopsia::with(['paciente', 'doctor', 'lista_biopsia'])
+        $query = Biopsia::with(['paciente', 'doctor'])
             ->whereNotNull('paciente_id')
             ->whereNull('mascota_id');
 
         // Filtro de búsqueda
         if ($request->filled('buscar')) {
             $buscar = $request->buscar;
-            $query->where(function($q) use ($buscar) {
+            $query->where(function ($q) use ($buscar) {
                 $q->where('nbiopsia', 'like', "%{$buscar}%")
-                ->orWhere('diagnostico_clinico', 'like', "%{$buscar}%")
-                ->orWhereHas('doctor', function($q) use ($buscar) {
-                    $q->where('nombre', 'like', "%{$buscar}%")
-                        ->orWhere('apellido', 'like', "%{$buscar}%")
-                        ->orWhere('jvpm', 'like', "%{$buscar}%");
-                })
-                ->orWhereHas('paciente', function($q) use ($buscar) {
-                    $q->where('nombre', 'like', "%{$buscar}%")
-                        ->orWhere('apellido', 'like', "%{$buscar}%")
-                        ->orWhere('DUI', 'like', "%{$buscar}%");
-                })
-                ->orWhereHas('lista_biopsia', function($q) use ($buscar) {
-                    $q->where('codigo', 'like', "%{$buscar}%")
-                        ->orWhere('diagnostico', 'like', "%{$buscar}%");
-                });
+                    ->orWhere('diagnostico_clinico', 'like', "%{$buscar}%")
+                    ->orWhereHas('doctor', function ($q) use ($buscar) {
+                        $q->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('apellido', 'like', "%{$buscar}%")
+                            ->orWhere('jvpm', 'like', "%{$buscar}%");
+                    })
+                    ->orWhereHas('paciente', function ($q) use ($buscar) {
+                        $q->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('apellido', 'like', "%{$buscar}%")
+                            ->orWhere('dui', 'like', "%{$buscar}%");
+                    })
+                    ->orWhereHas('doctor', function ($q) use ($buscar) {
+                        $q->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('apellido', 'like', "%{$buscar}%")
+                            ->orWhere('jvpm', 'like', "%{$buscar}%");
+                    });
             });
         }
-
         // Filtro de estado
         if ($request->filled('estado')) {
             $query->where('estado', $request->estado);
@@ -58,7 +58,6 @@ class BiopsiaPacienteController extends Controller
         return view('biopsias.personas.index', compact('biopsias'));
     }
 
-
     // Mostrar formulario para crear biopsia de paciente humano
     public function create()
     {
@@ -75,17 +74,21 @@ class BiopsiaPacienteController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'tipo' => 'required|in:normal,liquida',
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
+            'microscopico' => 'nullable|string',
+            'diagnostico' => 'nullable|string',
             'doctor_id' => 'required|exists:doctores,id',
             'paciente_id' => 'required|exists:pacientes,id',
-            'tipo' => 'required|in:normal,liquida'
         ], [
             'fecha_recibida.before_or_equal' => 'La fecha no puede ser futura',
             'diagnostico_clinico.required' => 'El diagnóstico clínico es obligatorio',
             'doctor_id.required' => 'Debe seleccionar un doctor',
             'paciente_id.required' => 'Debe seleccionar un paciente',
-            'tipo.required' => 'Debe seleccionar el tipo de biopsia'
+            'tipo.required' => 'Debe seleccionar el tipo de biopsia',
+            'diagnostico.nullable' => 'El diagnóstico es opcional',
+            'microscopico.nullable' => 'El microscopio es opcional',
         ]);
 
         // Generar número correlativo según el tipo
@@ -94,30 +97,24 @@ class BiopsiaPacienteController extends Controller
 
         $datos = [
             'nbiopsia' => $numeroGenerado,
+            'tipo' => $request->tipo,
+            'estado' => true,
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
-            'tipo' => $request->tipo,
+            'microscopico' => $request->microscopico,
+            'diagnostico' => $request->diagnostico,
             'doctor_id' => $request->doctor_id,
             'paciente_id' => $request->paciente_id,
-            'estado' => true,
             'mascota_id' => null,
-            'lista_id' => $request->lista_id ?? null,
         ];
 
         // Si seleccionó una lista, copiar los datos
         if ($request->lista_id) {
             $lista = ListaBiopsia::find($request->lista_id);
             if ($lista) {
-                $datos['diagnostico'] = $lista->diagnostico;
-                $datos['descripcion'] = $lista->descripcion;
-                $datos['microscopico'] = $lista->microscopico;
                 $datos['macroscopico'] = $lista->macroscopico;
             }
         } else {
-            // Sin lista, usar campos manuales (si vienen)
-            $datos['diagnostico'] = $request->diagnostico;
-            $datos['descripcion'] = $request->descripcion;
-            $datos['microscopico'] = $request->microscopico;
             $datos['macroscopico'] = $request->macroscopico;
         }
 
@@ -152,9 +149,8 @@ class BiopsiaPacienteController extends Controller
         $doctores = Doctor::where('estado_servicio', true)
             ->orderBy('nombre')
             ->get();
-        $listas = ListaBiopsia::orderBy('codigo')->get();
 
-        return view('biopsias.personas.edit', compact('biopsia', 'doctores', 'pacientes', 'listas'));
+        return view('biopsias.personas.edit', compact('biopsia', 'doctores', 'pacientes'));
     }
     // Actualizar biopsia de paciente
     public function update(Request $request, $nbiopsia)
@@ -166,26 +162,19 @@ class BiopsiaPacienteController extends Controller
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'paciente_id' => 'required|exists:pacientes,id',
             'doctor_id' => 'required|exists:doctores,id',
-            // 'tipo' => 'required|in:normal,liquida'
         ], [
             'fecha_recibida.before_or_equal' => 'La fecha no puede ser futura',
             'diagnostico_clinico.required' => 'El diagnóstico clínico es obligatorio',
             'doctor_id.required' => 'Debe seleccionar un doctor',
             'paciente_id.required' => 'Debe seleccionar un paciente',
-            // 'tipo.required' => 'Debe seleccionar el tipo de biopsia'
         ]);
 
         $biopsia->update([
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
-            // 'tipo' => $request->tipo,
             'paciente_id' => $request->paciente_id,
             'doctor_id' => $request->doctor_id,
-            'lista_id' => $request->lista_id ?? null,
             'diagnostico' => $request->diagnostico,
-            'descripcion' => $request->descripcion,
-            'microscopico' => $request->microscopico,
-            'macroscopico' => $request->macroscopico,
             'mascota_id' => null,
         ]);
 
@@ -294,16 +283,16 @@ class BiopsiaPacienteController extends Controller
 
         $pacientes = Paciente::where('nombre', 'like', "%{$term}%")
             ->orWhere('apellido', 'like', "%{$term}%")
-            ->orWhere('DUI', 'like', "%{$term}%")
-            ->select('id', 'nombre', 'apellido', 'DUI', 'edad', 'sexo')
+            ->orWhere('dui', 'like', "%{$term}%")
+            ->select('id', 'nombre', 'apellido', 'dui', 'edad', 'sexo')
             ->limit(10)
             ->get()
             ->map(function ($p) {
                 return [
                     'id' => $p->id,
-                    'text' => $p->nombre . ' ' . $p->apellido . ' - ' . $p->DUI . ' (' . $p->edad . ' años)',
+                    'text' => $p->nombre . ' ' . $p->apellido . ' - ' . $p->dui . ' (' . $p->edad . ' años)',
                     'nombre_completo' => $p->nombre . ' ' . $p->apellido,
-                    'dui' => $p->DUI,
+                    'dui' => $p->dui,
                     'edad' => $p->edad,
                     'sexo' => $p->sexo === 'M' ? 'Masculino' : 'Femenino'
                 ];
@@ -322,7 +311,7 @@ class BiopsiaPacienteController extends Controller
         return response()->json([
             'id' => $paciente->id,
             'nombre_completo' => $paciente->nombre . ' ' . $paciente->apellido,
-            'dui' => $paciente->DUI,
+            'dui' => $paciente->dui,
             'edad' => $paciente->edad,
             'sexo' => $paciente->sexo === 'M' ? 'Masculino' : 'Femenino',
             'correo' => $paciente->correo,
@@ -391,7 +380,7 @@ class BiopsiaPacienteController extends Controller
                     $biopsia->nbiopsia,
                     $biopsia->fecha_recibida->format('d/m/Y'),
                     $biopsia->paciente->nombre . ' ' . $biopsia->paciente->apellido,
-                    $biopsia->paciente->DUI,
+                    $biopsia->paciente->dui,
                     $biopsia->paciente->edad,
                     $biopsia->paciente->sexo === 'M' ? 'Masculino' : 'Femenino',
                     $biopsia->doctor->nombre . ' ' . $biopsia->doctor->apellido,

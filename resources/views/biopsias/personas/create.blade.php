@@ -291,11 +291,10 @@
                     .then(result => {
                         if (result.success) {
                             const data = result.data;
-                            document.getElementById('diagnostico').value = data.diagnostico || '';
-                            document.getElementById('descripcion').value = data.descripcion || '';
-                            document.getElementById('microscopico').value = data.microscopico || '';
+                            // Solo extraer macroscopico de las listas
                             document.getElementById('macroscopico').value = data.macroscopico || '';
                             document.getElementById('lista_id').value = data.id;
+                            // Los campos diagnostico y microscopico se escriben manualmente
                             if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
                         } else {
                             alert(`Código "${codigo}" no encontrado`);

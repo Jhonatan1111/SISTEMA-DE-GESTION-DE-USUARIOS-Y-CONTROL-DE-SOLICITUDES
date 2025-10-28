@@ -15,14 +15,14 @@ return new class extends Migration
     {
         Schema::create('biopsias', function (Blueprint $table) {
             $table->string('nbiopsia', 15)->primary()->comment('Número de biopsia siendo llave primaria');
-            $table->text('diagnostico_clinico')->comment('Diagnóstico por parte del laboratorio');
             $table->enum('tipo', ['normal', 'liquida'])->comment('Tipo de biopsia');
-            $table->date('fecha_recibida')->comment('Fecha de recepción de la biopsia');
             $table->boolean('estado')->default(true)->comment(' Estado de la biopsia');
-            $table->text('diagnostico')->nullable()->comment('Diagnóstico final');
+            $table->text('diagnostico_clinico')->comment('Diagnóstico por parte del laboratorio');
+            $table->date('fecha_recibida')->comment('Fecha de recepción de la biopsia');
             $table->text('macroscopico')->nullable()->comment('Análisis macroscópico');
             $table->text('microscopico')->nullable()->comment('Análisis microscópico');
-            $table->text('descripcion')->nullable()->comment('Descripción de la biopsia');
+            $table->text('diagnostico')->nullable()->comment('Diagnóstico final');
+            
 
 
             //RELACIONES 
