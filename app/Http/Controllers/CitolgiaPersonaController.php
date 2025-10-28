@@ -12,16 +12,45 @@ use Illuminate\Http\Request;
 class CitolgiaPersonaController extends Controller
 {
     // MOSTRAR CITOLOGÍAS DE PERSONAS
-    public function index()
-    {
-        $citologias = Citolgia::with(['paciente', 'doctor', 'lista_citologia'])
-            ->personas()
-            ->orderBy('fecha_recibida',  'asc')
-            ->paginate(10);
+    public function index(Request $request)
+{
+    $query = Citolgia::with(['paciente', 'doctor', 'lista_citologia'])
+        ->personas();
 
-        return view('citologias.personas.index', compact('citologias'));
+    // Filtro de búsqueda por paciente o doctor
+    if ($request->filled('buscar')) {
+        $buscar = $request->buscar;
+        $query->where(function($q) use ($buscar) {
+            $q->whereHas('doctor', function($q) use ($buscar) {
+                $q->where('nombre', 'like', "%{$buscar}%")
+                    ->orWhere('apellido', 'like', "%{$buscar}%");
+            })
+            ->orWhereHas('paciente', function($q) use ($buscar) {
+                $q->where('nombre', 'like', "%{$buscar}%")
+                    ->orWhere('apellido', 'like', "%{$buscar}%")
+                    ->orWhere('DUI', 'like', "%{$buscar}%");
+            })
+            // También buscar en remitente especial
+            ->orWhere('remitente_especial', 'like', "%{$buscar}%");
+        });
     }
 
+    // Filtro por estado - CAMBIO AQUÍ: usar has() en lugar de filled()
+    if ($request->has('estado') && $request->estado !== '') {
+        $query->where('estado', $request->estado);
+    }
+
+    // Filtro por doctor específico
+    if ($request->filled('doctor')) {
+        $query->where('doctor_id', $request->doctor);
+    }
+
+    $citologias = $query->orderBy('fecha_recibida', 'asc')
+        ->paginate(10)
+        ->withQueryString(); // Mantiene los parámetros en la paginación
+
+    return view('citologias.personas.index', compact('citologias'));
+}
     // Mostrar formulario para crear citología de paciente humano
     public function create()
     {
