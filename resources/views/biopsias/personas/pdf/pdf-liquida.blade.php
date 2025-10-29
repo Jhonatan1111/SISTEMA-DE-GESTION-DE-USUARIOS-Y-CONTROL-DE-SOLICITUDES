@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Biopsia Líquida - Reporte PDF</title>
+    <title>Biopsia - Reporte</title>
     <style>
         * {
             margin: 0;
@@ -13,10 +13,9 @@
 
         body {
             font-family: Arial, sans-serif;
-            padding: 30px 40px;
+            padding: 40px 50px;
             font-size: 11pt;
             line-height: 1.4;
-            color: #000;
         }
 
         /* Header con logo y título */
@@ -143,7 +142,6 @@
             justify-content: space-between;
             align-items: flex-end;
             page-break-inside: avoid;
-            min-height: 80px;
             position: relative;
         }
 
@@ -224,6 +222,7 @@
         }
 
         .seal-box {
+            /* border: 2px solid #3FA9F5; */
             padding: 10px 30px;
             margin-top: -10px;
             text-align: center;
@@ -257,18 +256,15 @@
             size: A4;
         }
 
-        /* Evitar saltos de página en elementos críticos */
-        .info-line,
-        .content-section,
-        .dx-section {
-            page-break-inside: avoid;
+        /* Ocultar elementos no necesarios en PDF */
+        .no-print {
+            display: none;
         }
 
-        /* Asegurar que las imágenes se rendericen correctamente en PDF */
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
+        /* Evitar saltos de página en elementos críticos */
+        .signature-container,
+        .footer-seal {
+            page-break-inside: avoid;
         }
     </style>
 </head>
@@ -383,7 +379,7 @@
             <span class="fecha-value">{{ \Carbon\Carbon::parse($biopsia->created_at)->format('d/m/Y') }}</span>
         </div>
         <div class="signature-area">
-            <img src="{{ public_path('image/firma-doctora.png') }}" alt="Firma de la doctora" style="height: 60px; width: auto; margin-bottom: 5px;">
+            <img src="{{ asset('image/firma-doctora.png') }}" alt="Firma de la doctora" style="height: 60px; width: auto; margin-bottom: 5px;">
             <div class="signature-line"></div>
             <div class="firma-nombre">Dra. Marta Evelyn Echeverría Martínez</div>
             <div class="firma-subtitle">DOCTORA EN MEDICINA</div>
@@ -395,8 +391,12 @@
     <!-- Sello de la doctora -->
     <div class="footer-seal">
         <div class="seal-box">
-            <img src="{{ public_path('image/sello-doctora.png') }}" alt="Sello Dra. Marta Evelyn Echeverría Martínez" style="max-width: 200px; height: 100px; width: auto;">
+            <img src="{{ asset('image/sello-doctora.png') }}" alt="Sello Dra. Marta Evelyn Echeverría Martínez" style="max-width: 200px; height: 100px; width: auto;">
         </div>
+    </div>
+
+    <div style="margin-top: 20px; font-size: 8pt; color: #999; text-align: center;" class="no-print">
+        <p>Impreso el: {{ now()->format('d/m/Y H:i') }}</p>
     </div>
 </body>
 
