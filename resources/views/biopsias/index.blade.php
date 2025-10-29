@@ -60,7 +60,7 @@
             <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500">
                 <div class="flex items-center">
                     <div class="flex-1">
-                        <h3 class="text-sm font-medium text-gray-500 uppercase">Archivadas</h3>
+                        <h3 class="text-sm font-medium text-gray-500 uppercase">Inactivas</h3>
                         <p class="text-2xl font-bold text-gray-900">{{ $biopsias->where('estado', 0)->count() }}</p>
                     </div>
                     <div class="text-yellow-500">
@@ -188,7 +188,7 @@
                                 </span>
                                 @else
                                 <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                                    Archivada
+                                    Inactiva
                                 </span>
                                 @endif
                             </td>
@@ -216,15 +216,15 @@
 
                                         @csrf
                                         <button type="submit" class="text-yellow-600 hover:text-yellow-900"
-                                            onclick="return confirm('¿Está seguro de archivar esta biopsia?')">
-                                            Archivar
+                                            onclick="return confirm('¿Está seguro de Desactivar esta biopsia?')">
+                                            Desactivar
                                         </button>
                                     </form>
                                     @else
                                     <form action="{{ route('biopsias.restaurar', $biopsia->nbiopsia) }}" method="POST" class="inline">
                                         @csrf
                                         <button type="submit" class="text-green-600 hover:text-green-900">
-                                            Restaurar
+                                            Activar
                                         </button>
                                     </form>
                                     @endif

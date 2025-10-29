@@ -382,6 +382,7 @@
             }
 
             closeTemplateModal();
+            if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
         }
 
         // Función para limpiar la selección
