@@ -12,12 +12,38 @@ use Illuminate\Http\Request;
 class CitolgiaPersonaController extends Controller
 {
     // MOSTRAR CITOLOGÍAS DE PERSONAS
-    public function index()
+    public function index(Request $request)
     {
-        $citologias = Citolgia::with(['paciente', 'doctor', 'lista_citologia'])
-            ->personas()
-            ->orderBy('fecha_recibida',  'asc')
-            ->paginate(10);
+        $query = Citolgia::with(['paciente', 'doctor', 'lista_citologia']);
+
+        //Filtro por búsqueda (nombre paciente o doctor)
+        if ($request->filled('buscar')) {
+            $search = $request->buscar;
+            $query->where(function ($q) use ($search) {
+                $q->whereHas('paciente', function ($p) use ($search) {
+                    $p->where('nombre', 'like', "%{$search}%")
+                    ->orWhere('apellido', 'like', "%{$search}%");
+                })->orWhereHas('doctor', function ($d) use ($search) {
+                    $d->where('nombre', 'like', "%{$search}%")
+                    ->orWhere('apellido', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        //Filtro por doctor
+        if ($request->filled('doctor')) {
+            $query->where('doctor_id', $request->doctor);
+        }
+
+        //Filtro por estado
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        // Orden y paginación
+        $citologias = $query->orderBy('fecha_recibida', 'desc')
+            ->paginate(10)
+            ->withQueryString();
 
         return view('citologias.personas.index', compact('citologias'));
     }
