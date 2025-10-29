@@ -448,14 +448,20 @@ class BiopsiaPacienteController extends Controller
             ->with('success', "Biopsia {$estado} exitosamente.");
     }
     // Vista para imprimir biopsia
-    // Vista para imprimir biopsia
     public function imprimir($nbiopsia)
     {
         $biopsia = Biopsia::with(['paciente', 'doctor'])
             ->where('nbiopsia', $nbiopsia)
             ->firstOrFail();
 
-        return view('biopsias.personas.imprimir', compact('biopsia'));
+        // Seleccionar la vista según el tipo de biopsia
+        $vista = match ($biopsia->tipo) {
+            'normal' => 'biopsias.personas.print.imprimir-normal',
+            'liquida' => 'biopsias.personas.print.imprimir-liquida',
+            default => 'biopsias.personas.print.imprimir-normal'
+        };
+
+        return view($vista, compact('biopsia'));
     }
 
     // Descargar PDF (versión simple sin librería)

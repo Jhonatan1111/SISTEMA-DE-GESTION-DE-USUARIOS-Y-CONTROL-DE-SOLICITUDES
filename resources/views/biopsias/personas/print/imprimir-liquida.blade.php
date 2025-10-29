@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Citología - Reporte</title>
+    <title>Biopsia - Reporte</title>
     <style>
         * {
             margin: 0;
@@ -88,55 +88,70 @@
         .content-section {
             margin-top: 20px;
             margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
         }
 
         .section-title {
             color: #000;
             font-weight: bold;
             font-size: 11pt;
-            margin-bottom: 8px;
             text-transform: uppercase;
+            width: 150px;
+            flex-shrink: 0;
+            margin-right: 10px;
         }
 
         .content-text {
             color: #000;
             font-size: 11pt;
-            line-height: 1.5;
+            line-height: 1.3;
             text-align: justify;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
+            flex: 1;
         }
 
         /* Diagnóstico */
         .dx-section {
             margin-top: 25px;
             margin-bottom: 25px;
+            display: flex;
+            align-items: flex-start;
         }
 
         .dx-label {
             color: #000;
             font-weight: bold;
             font-size: 11pt;
-            margin-bottom: 8px;
+            width: 150px;
+            flex-shrink: 0;
+            margin-right: 10px;
         }
 
         .dx-item {
             color: #000;
             font-size: 11pt;
-            margin-left: 30px;
-            margin-bottom: 5px;
-            line-height: 1.4;
+            line-height: 1.3;
+            flex: 1;
         }
 
         /* Firma y fecha */
         .signature-container {
-            margin-top: 60px;
+            margin-top: 40px;
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            min-height: 80px; /* Altura mínima para mantener consistencia */
+            position: relative;
         }
 
         .fecha-reporte {
             flex: 0 0 auto;
+            position: absolute;
+            left: 0;
+            bottom: 0;
         }
 
         .fecha-label {
@@ -159,6 +174,9 @@
         .signature-area {
             flex: 0 0 auto;
             text-align: center;
+            position: absolute;
+            right: 0;
+            bottom: 0;
         }
 
         .firma-manuscrita {
@@ -193,6 +211,7 @@
             border-bottom: 2px solid #3FA9F5;
             margin-top: 20px;
             margin-bottom: 15px;
+            page-break-after: avoid;
         }
 
         /* Sello footer */
@@ -200,13 +219,19 @@
             display: flex;
             justify-content: flex-end;
             margin-top: 10px;
+            page-break-inside: avoid;
+            break-inside: avoid;
+            position: relative;
         }
 
         .seal-box {
-            border: 2px solid #3FA9F5;
-            padding: 10px 20px;
+            /* border: 2px solid #3FA9F5; */
+            padding: 10px 30px;
+            margin-top: -10px;
             text-align: center;
             display: inline-block;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
 
         .seal-name {
@@ -301,81 +326,81 @@
 
     <div class="blue-line"></div>
 
-    <!-- Información de la citología -->
+    <!-- Información de la biopsia -->
     <div class="info-line">
-        <span class="info-label">CITOLOGÍA N°:</span>
-        <span class="info-value">{{ $citologia->ncitologia }}</span>
+        <span class="info-label">BIOPSIA N°:</span>
+        <span class="info-value">{{ $biopsia->nbiopsia }}</span>
     </div>
 
     <div class="info-line">
         <span class="info-label">PACIENTE:</span>
-        <span class="info-value">{{ strtoupper($citologia->paciente->nombre . ' ' . $citologia->paciente->apellido) }}</span>
+        <span class="info-value">{{ strtoupper($biopsia->paciente->nombre . ' ' . $biopsia->paciente->apellido) }}</span>
         <span style="margin-left: 60px;"></span>
         <span class="info-label">EDAD:</span>
-        <span class="info-value">{{ $citologia->paciente->edad }} AÑOS</span>
+        <span class="info-value">{{ $biopsia->paciente->edad }} AÑOS</span>
         <span style="margin-left: 60px;"></span>
         <span class="info-label">SEXO:</span>
-        <span class="info-value">{{ strtoupper($citologia->paciente->sexo) }}</span>
+        <span class="info-value">{{ strtoupper($biopsia->paciente->sexo) }}</span>
     </div>
 
     <div class="info-line">
         <span class="info-label">REMITENTE:</span>
         <span class="info-value">
-            @if($citologia->remitente_especial)
-            {{ strtoupper($citologia->remitente_especial) }}
+            @if($biopsia->remitente_especial)
+            {{ strtoupper($biopsia->remitente_especial) }}
             @else
-            {{ strtoupper('DR. ' . $citologia->doctor->nombre . ' ' . $citologia->doctor->apellido) }}
+            {{ strtoupper('DR. ' . $biopsia->doctor->nombre . ' ' . $biopsia->doctor->apellido) }}
             @endif
         </span>
         <span style="margin-left: 60px;"></span>
         <span class="info-label">REGISTRO:</span>
-        <span class="info-value">{{ $citologia->doctor->jvpm ?? 'S/R' }}</span>
+        <span class="info-value">{{ $biopsia->doctor->jvpm ?? 'S/R' }}</span>
     </div>
 
     <div class="info-line">
         <span class="info-label">DIAGNOSTICO CLINICO:</span>
-        <span class="info-value">{{ strtoupper($citologia->diagnostico_clinico) }}</span>
+        <span class="info-value">{{ strtoupper($biopsia->diagnostico_clinico) }}</span>
     </div>
 
     <div class="info-line">
         <span class="info-label">FECHA DE RECIBIDA:</span>
-        <span class="info-value">{{ \Carbon\Carbon::parse($citologia->fecha_recibida)->format('d/m/Y') }}</span>
+        <span class="info-value">{{ \Carbon\Carbon::parse($biopsia->fecha_recibida)->format('d/m/Y') }}</span>
     </div>
 
     <!-- Contenido principal -->
-    @if($citologia->descripcion)
+    @if($biopsia->descripcion)
     <div class="content-section">
         <div class="content-text">
-            {{ $citologia->descripcion }}
+            {{ $biopsia->descripcion }}
         </div>
     </div>
     @endif
 
     <!-- Macroscópico -->
-    @if($citologia->macroscopico)
+    @if($biopsia->macroscopico)
     <div class="content-section">
         <div class="section-title">Macroscópico</div>
         <div class="content-text">
-            {{ $citologia->macroscopico }}
+            {{ $biopsia->macroscopico }}
         </div>
     </div>
     @endif
 
     <!-- Microscópico -->
-    @if($citologia->microscopico)
+    @if($biopsia->microscopico)
     <div class="content-section">
         <div class="section-title">Microscópico</div>
         <div class="content-text">
-            {{ $citologia->microscopico }}
+            {{ $biopsia->microscopico }}
         </div>
     </div>
     @endif
 
     <!-- Diagnóstico -->
-    @if($citologia->diagnostico)
+    @if($biopsia->diagnostico)
     <div class="dx-section">
         <div class="dx-label">DIAGNÓSTICO</div>
-        <div class="dx-item">- {{ $citologia->diagnostico }}</div>
+        <div class="dx-item">{{ $biopsia->diagnostico }}</div>
     </div>
     @endif
 
@@ -383,10 +408,10 @@
     <div class="signature-container">
         <div class="fecha-reporte">
             <span class="fecha-label">FECHA DE REPORTE:</span>
-            <span class="fecha-value">{{ \Carbon\Carbon::parse($citologia->created_at)->format('d/m/Y') }}</span>
+            <span class="fecha-value">{{ \Carbon\Carbon::parse($biopsia->created_at)->format('d/m/Y') }}</span>
         </div>
         <div class="signature-area">
-            <div class="firma-manuscrita">M. E. Martínez</div>
+            <img src="{{ asset('image/firma-doctora.png') }}" alt="Firma de la doctora" style="height: 60px; width: auto; margin-bottom: 5px;">
             <div class="signature-line"></div>
             <div class="firma-nombre">Dra. Marta Evelyn Echeverría Martínez</div>
             <div class="firma-subtitle">DOCTORA EN MEDICINA</div>
@@ -398,9 +423,7 @@
     <!-- Sello de la doctora -->
     <div class="footer-seal">
         <div class="seal-box">
-            <div class="seal-name">Dra. Marta Evelyn Echeverría Martínez</div>
-            <div class="seal-info">DOCTORA EN MEDICINA</div>
-            <div class="seal-id">J.V.P.M. No. 4448</div>
+            <img src="{{ asset('image/sello-doctora.png') }}" alt="Sello Dra. Marta Evelyn Echeverría Martínez" style="max-width: 200px; height: 100px; width: auto;">
         </div>
     </div>
 
