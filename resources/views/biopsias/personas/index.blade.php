@@ -283,11 +283,6 @@
                         class="text-purple-600 hover:text-purple-900">
                         Ver
                     </a>
-                    <a href="{{ route('biopsias.personas.imprimir', $biopsia->nbiopsia) }}"
-                        class="text-purple-600 hover:text-purple-900"
-                        target="_blank">
-                        Imprimir
-                    </a>
 
                     <!-- Toggle Estado -->
                     @if (auth()->user()->role === 'admin')

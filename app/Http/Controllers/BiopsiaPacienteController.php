@@ -6,6 +6,7 @@ use App\Models\Biopsia;
 use App\Models\Paciente;
 use App\Models\Doctor;
 use App\Models\ListaBiopsia;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 use Illuminate\Http\Request;
 
@@ -467,8 +468,20 @@ class BiopsiaPacienteController extends Controller
     // Descargar PDF (versión simple sin librería)
     public function descargarPdf($nbiopsia)
     {
-        // Redirigir a imprimir y el usuario usa Ctrl+P para PDF
-        return redirect()->route('biopsias.personas.imprimir', $nbiopsia);
+        $biopsia = Biopsia::with(['paciente', 'doctor'])
+            ->where('nbiopsia', $nbiopsia)
+            ->firstOrFail();
+
+        // Seleccionar la vista según el tipo de biopsia
+        $vista = match ($biopsia->tipo) {
+            'normal' => 'biopsias.personas.pdf.pdf-normal',
+            'liquida' => 'biopsias.personas.pdf.pdf-liquida',
+            default => 'biopsias.personas.pdf.pdf-normal'
+        };
+
+        $pdf = Pdf::loadView($vista, compact('biopsia'));
+        
+        return $pdf->download('biopsia_' . $nbiopsia . '.pdf');
     }
     public function buscarLista($id)
     {

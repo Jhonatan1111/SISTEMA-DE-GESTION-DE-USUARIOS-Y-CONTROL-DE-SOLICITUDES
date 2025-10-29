@@ -217,7 +217,7 @@
                 class="px-6 py-2 bg-orange-700 hover:bg-orange-800 text-white rounded-lg font-semibold transition-transform hover:scale-105" target="_blank">
                 Imprimir
             </a>
-            <a href="{{ route('biopsias.personas.imprimir', $biopsia) }}"
+            <a href="{{ route('biopsias.personas.pdf', $biopsia) }}"
                 class="px-6 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg font-semibold transition-transform hover:scale-105" target="_blank">
                 PDF
             </a>

@@ -71,6 +71,7 @@ Route::middleware('auth')->group(function () {
     Route::post('biopsias/personas', [BiopsiaPacienteController::class, 'store'])->name('biopsias.personas.store');
     Route::get('biopsias/personas/{nbiopsia}', [BiopsiaPacienteController::class, 'show'])->name('biopsias.personas.show');
     Route::get('biopsias/personas/{nbiopsia}/imprimir', [BiopsiaPacienteController::class, 'imprimir'])->name('biopsias.personas.imprimir'); // ← MOVER AQUÍ (fuera de admin)
+    Route::get('biopsias/personas/{nbiopsia}/pdf', [BiopsiaPacienteController::class, 'descargarPdf'])->name('biopsias.personas.pdf');
 
     //BIOPSIAS MASCOTAS
     Route::get('biopsias/mascotas', [BiopsiaMascotaController::class, 'index'])->name('biopsias.mascotas.index');
