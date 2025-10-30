@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Biopsia - Reporte</title>
+    <title>Biopsia Mascota Lavado - Reporte</title>
     <style>
         * {
             margin: 0;
@@ -144,7 +144,6 @@
             page-break-inside: avoid;
             break-inside: avoid;
             min-height: 80px;
-            /* Altura mínima para mantener consistencia */
             position: relative;
         }
 
@@ -178,13 +177,6 @@
             position: absolute;
             right: 0;
             bottom: 0;
-        }
-
-        .firma-manuscrita {
-            font-family: 'Brush Script MT', cursive, Arial;
-            font-size: 32pt;
-            color: #000;
-            margin-bottom: -5px;
         }
 
         .signature-line {
@@ -226,33 +218,12 @@
         }
 
         .seal-box {
-            /* border: 2px solid #3FA9F5; */
             padding: 10px 30px;
             margin-top: -10px;
             text-align: center;
             display: inline-block;
             page-break-inside: avoid;
             break-inside: avoid;
-        }
-
-        .seal-name {
-            color: #3FA9F5;
-            font-size: 10pt;
-            font-weight: bold;
-            margin-bottom: 2px;
-        }
-
-        .seal-info {
-            color: #000;
-            font-size: 8pt;
-            margin: 1px 0;
-        }
-
-        .seal-id {
-            color: #3FA9F5;
-            font-size: 9pt;
-            font-weight: bold;
-            margin-top: 3px;
         }
 
         /* Botón de imprimir */
@@ -283,7 +254,6 @@
                 padding: 20px;
             }
 
-            /* Ocultar encabezados y pies de página del navegador */
             @page {
                 margin: 0;
                 size: auto;
@@ -329,30 +299,39 @@
 
     <!-- Información de la biopsia -->
     <div class="info-line">
-        <span class="info-label">BIOPSIA N°:</span>
+        <span class="info-label">BIOPSIA LAVADO N°:</span>
         <span class="info-value">{{ $biopsia->nbiopsia }}</span>
     </div>
 
     <div class="info-line">
         <span class="info-label">PACIENTE:</span>
-        <span class="info-value">{{ strtoupper($biopsia->paciente->nombre . ' ' . $biopsia->paciente->apellido) }}</span>
+        <span class="info-value">{{ strtoupper($biopsia->mascota->nombre) }}</span>
         <span style="margin-left: 60px;"></span>
-        <span class="info-label">EDAD:</span>
-        <span class="info-value">{{ $biopsia->paciente->edad }} AÑOS</span>
-        <span style="margin-left: 60px;"></span>
-        <span class="info-label">SEXO:</span>
-        <span class="info-value">{{ strtoupper($biopsia->paciente->sexo) }}</span>
+        <span class="info-label">ESPECIE:</span>
+        <span class="info-value">{{ strtoupper($biopsia->mascota->especie) }}</span>
     </div>
 
     <div class="info-line">
+        <span class="info-label">RAZA:</span>
+        <span class="info-value">{{ strtoupper($biopsia->mascota->raza) }}</span>
+        <span style="margin-left: 60px;"></span>
+        <span class="info-label">EDAD:</span>
+        <span class="info-value">{{ $biopsia->mascota->edad }} AÑOS</span>
+        <span style="margin-left: 60px;"></span>
+        <span class="info-label">SEXO:</span>
+        <span class="info-value">{{ strtoupper($biopsia->mascota->sexo) }}</span>
+    </div>
+
+    @if($biopsia->mascota->propietario)
+    <div class="info-line">
+        <span class="info-label">PROPIETARIO:</span>
+        <span class="info-value">{{ strtoupper($biopsia->mascota->propietario) }}</span>
+    </div>
+    @endif
+
+    <div class="info-line">
         <span class="info-label">REMITENTE:</span>
-        <span class="info-value">
-            @if($biopsia->remitente_especial)
-            {{ strtoupper($biopsia->remitente_especial) }}
-            @else
-            {{ strtoupper('DR. ' . $biopsia->doctor->nombre . ' ' . $biopsia->doctor->apellido) }}
-            @endif
-        </span>
+        <span class="info-value">{{ strtoupper('DR. ' . $biopsia->doctor->nombre . ' ' . $biopsia->doctor->apellido) }}</span>
         <span style="margin-left: 60px;"></span>
         <span class="info-label">REGISTRO:</span>
         <span class="info-value">{{ $biopsia->doctor->jvpm ?? 'S/R' }}</span>
@@ -367,15 +346,6 @@
         <span class="info-label">FECHA DE RECIBIDA:</span>
         <span class="info-value">{{ \Carbon\Carbon::parse($biopsia->fecha_recibida)->format('d/m/Y') }}</span>
     </div>
-
-    <!-- Contenido principal -->
-    @if($biopsia->descripcion)
-    <div class="content-section">
-        <div class="content-text">
-            {{ $biopsia->descripcion }}
-        </div>
-    </div>
-    @endif
 
     <!-- Macroscópico -->
     @if($biopsia->macroscopico)

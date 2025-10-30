@@ -3,87 +3,86 @@
 namespace App\Http\Controllers;
 
 use App\Models\Biopsia;
+use App\Models\Mascota;
 use App\Models\Doctor;
 use App\Models\ListaBiopsia;
-use App\Models\Mascota;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 use Illuminate\Http\Request;
 
 class BiopsiaMascotaController extends Controller
 {
+    // MOSTRAR BIOPSIAS DE MASCOTAS
     public function index(Request $request)
-{
-    $query = Biopsia::with('mascota', 'doctor', 'lista_biopsia')
-        ->whereNotNull('mascota_id')
-        ->whereNull('paciente_id');
+    {
+        $query = Biopsia::with(['mascota', 'doctor'])
+            ->whereNotNull('mascota_id')
+            ->whereNull('paciente_id');
 
-    // Filtro de búsqueda
-    if ($request->filled('buscar')) {
-        $buscar = $request->buscar;
-        $query->where(function($q) use ($buscar) {
-            $q->where('nbiopsia', 'like', "%{$buscar}%")
-              ->orWhere('diagnostico_clinico', 'like', "%{$buscar}%")
-              ->orWhereHas('doctor', function($q) use ($buscar) {
-                  $q->where('nombre', 'like', "%{$buscar}%")
-                    ->orWhere('apellido', 'like', "%{$buscar}%")
-                    ->orWhere('jvpm', 'like', "%{$buscar}%");
-              })
-              ->orWhereHas('mascota', function($q) use ($buscar) {
-                  $q->where('nombre', 'like', "%{$buscar}%")
-                    ->orWhere('propietario', 'like', "%{$buscar}%")
-                    ->orWhere('raza', 'like', "%{$buscar}%");
-              })
-              ->orWhereHas('lista_biopsia', function($q) use ($buscar) {
-                  $q->where('codigo', 'like', "%{$buscar}%")
-                    ->orWhere('diagnostico', 'like', "%{$buscar}%");
-              });
-        });
+        // Filtro de búsqueda
+        if ($request->filled('buscar')) {
+            $buscar = $request->buscar;
+            $query->where(function ($q) use ($buscar) {
+                $q->where('nbiopsia', 'like', "%{$buscar}%")
+                    ->orWhere('diagnostico_clinico', 'like', "%{$buscar}%")
+                    ->orWhereHas('mascota', function ($q) use ($buscar) {
+                        $q->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('especie', 'like', "%{$buscar}%")
+                            ->orWhere('raza', 'like', "%{$buscar}%")
+                            ->orWhere('dueno', 'like', "%{$buscar}%");
+                    })
+                    ->orWhereHas('doctor', function ($q) use ($buscar) {
+                        $q->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('apellido', 'like', "%{$buscar}%")
+                            ->orWhere('jvpm', 'like', "%{$buscar}%");
+                    });
+            });
+        }
+
+        // Filtro de estado
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        // Filtro de doctor
+        if ($request->filled('doctor')) {
+            $query->where('doctor_id', $request->doctor);
+        }
+
+        $biopsias = $query->orderBy('fecha_recibida', 'asc')
+            ->paginate(10)
+            ->appends($request->all());
+
+        return view('biopsias.mascotas.index', compact('biopsias'));
     }
 
-    // Filtro de estado
-    if ($request->filled('estado')) {
-        $query->where('estado', $request->estado);
-    }
-
-    // Filtro de doctor
-    if ($request->filled('doctor')) {
-        $query->where('doctor_id', $request->doctor);
-    }
-
-    $biopsias = $query->orderBy('fecha_recibida', 'asc')
-        ->paginate(10)
-        ->appends($request->all());
-
-    return view('biopsias.mascotas.index', compact('biopsias'));
-}
-
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Formulario para crear biopsia de mascota
     public function create()
     {
         $mascotas = Mascota::orderBy('nombre')->get();
         $doctores = Doctor::where('estado_servicio', true)->get();
         $listas = ListaBiopsia::orderBy('codigo')->get();
-        return view('biopsias.mascotas.create', compact('mascotas', 'doctores', 'listas'));
+
+        return view('biopsias.mascotas.create', compact('doctores', 'mascotas', 'listas'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Guardar nueva biopsia de mascota
     public function store(Request $request)
     {
         $request->validate([
+            'tipo' => 'required|in:normal,liquida',
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
+            'microscopico' => 'nullable|string',
+            'diagnostico' => 'nullable|string',
             'doctor_id' => 'required|exists:doctores,id',
             'mascota_id' => 'required|exists:mascotas,id',
-            'tipo' => 'required|in:normal,liquida'
         ], [
             'fecha_recibida.before_or_equal' => 'La fecha no puede ser futura',
             'diagnostico_clinico.required' => 'El diagnóstico clínico es obligatorio',
             'doctor_id.required' => 'Debe seleccionar un doctor',
             'mascota_id.required' => 'Debe seleccionar una mascota',
-            'tipo.required' => 'Debe seleccionar el tipo de biopsia'
+            'tipo.required' => 'Debe seleccionar el tipo de biopsia',
         ]);
 
         // Generar número correlativo según el tipo
@@ -92,30 +91,35 @@ class BiopsiaMascotaController extends Controller
 
         $datos = [
             'nbiopsia' => $numeroGenerado,
+            'tipo' => $request->tipo,
+            'estado' => true,
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
-            'tipo' => $request->tipo,
+            'microscopico' => $request->microscopico,
+            'diagnostico' => $request->diagnostico,
             'doctor_id' => $request->doctor_id,
             'mascota_id' => $request->mascota_id,
-            'estado' => true,
             'paciente_id' => null,
-            'lista_id' => $request->lista_id ?? null,
         ];
 
-        // Si seleccionó una lista, copiar los datos
+        // Manejar el campo macroscópico
         if ($request->lista_id) {
             $lista = ListaBiopsia::find($request->lista_id);
             if ($lista) {
-                $datos['diagnostico'] = $lista->diagnostico;
-                $datos['descripcion'] = $lista->descripcion;
-                $datos['microscopico'] = $lista->microscopico;
-                $datos['macroscopico'] = $lista->macroscopico;
+                $contenidoPlantilla = $lista->macroscopico;
+                $contenidoAdicional = $request->macroscopico;
+
+                if (!empty($contenidoAdicional) && $contenidoAdicional !== $contenidoPlantilla) {
+                    if (strpos($contenidoAdicional, $contenidoPlantilla) !== false) {
+                        $datos['macroscopico'] = $contenidoAdicional;
+                    } else {
+                        $datos['macroscopico'] = $contenidoPlantilla . "\n\n" . $contenidoAdicional;
+                    }
+                } else {
+                    $datos['macroscopico'] = $contenidoPlantilla;
+                }
             }
         } else {
-            // Sin lista, usar campos manuales (si vienen)
-            $datos['diagnostico'] = $request->diagnostico;
-            $datos['descripcion'] = $request->descripcion;
-            $datos['microscopico'] = $request->microscopico;
             $datos['macroscopico'] = $request->macroscopico;
         }
 
@@ -127,9 +131,7 @@ class BiopsiaMascotaController extends Controller
             ->with('success', "Biopsia {$tipoTexto} creada exitosamente con número {$numeroGenerado}");
     }
 
-    /**
-     * Display the specified resource.
-     */
+    // Ver detalles de biopsia de mascota
     public function show($nbiopsia)
     {
         $biopsia = Biopsia::with(['mascota', 'doctor'])
@@ -140,15 +142,11 @@ class BiopsiaMascotaController extends Controller
         return view('biopsias.mascotas.show', compact('biopsia'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    // Formulario para editar biopsia de mascota
     public function edit($nbiopsia)
     {
-        // CORREGIR: Buscar por nbiopsia correctamente
         $biopsia = Biopsia::with(['mascota', 'doctor'])
-            ->mascotas()
-            ->where('nbiopsia', $nbiopsia)  // Buscar por el campo nbiopsia
+            ->where('nbiopsia', $nbiopsia)
             ->firstOrFail();
 
         $mascotas = Mascota::orderBy('nombre')->get();
@@ -160,9 +158,7 @@ class BiopsiaMascotaController extends Controller
         return view('biopsias.mascotas.edit', compact('biopsia', 'doctores', 'mascotas', 'listas'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // Actualizar biopsia de mascota
     public function update(Request $request, $nbiopsia)
     {
         $biopsia = Biopsia::where('nbiopsia', $nbiopsia)->firstOrFail();
@@ -179,22 +175,44 @@ class BiopsiaMascotaController extends Controller
             'mascota_id.required' => 'Debe seleccionar una mascota',
         ]);
 
-        $biopsia->update([
+        $datos = [
             'diagnostico_clinico' => $request->diagnostico_clinico,
             'fecha_recibida' => $request->fecha_recibida,
             'mascota_id' => $request->mascota_id,
             'doctor_id' => $request->doctor_id,
-            'lista_id' => $request->lista_id ?? null,
             'diagnostico' => $request->diagnostico,
-            'descripcion' => $request->descripcion,
             'microscopico' => $request->microscopico,
-            'macroscopico' => $request->macroscopico,
             'paciente_id' => null,
-        ]);
+        ];
+
+        // Manejar el campo macroscópico
+        if ($request->lista_id) {
+            $lista = ListaBiopsia::find($request->lista_id);
+            if ($lista) {
+                $contenidoPlantilla = $lista->macroscopico;
+                $contenidoAdicional = $request->macroscopico;
+
+                if (!empty($contenidoAdicional) && $contenidoAdicional !== $contenidoPlantilla) {
+                    if (strpos($contenidoAdicional, $contenidoPlantilla) !== false) {
+                        $datos['macroscopico'] = $contenidoAdicional;
+                    } else {
+                        $datos['macroscopico'] = $contenidoPlantilla . "\n\n" . $contenidoAdicional;
+                    }
+                } else {
+                    $datos['macroscopico'] = $contenidoPlantilla;
+                }
+            }
+        } else {
+            $datos['macroscopico'] = $request->macroscopico;
+        }
+
+        $biopsia->update($datos);
 
         return redirect()->route('biopsias.mascotas.index')
-            ->with('success', 'Biopsia de mascota actualizada exitosamente.');
+            ->with('success', 'Biopsia actualizada exitosamente');
     }
+
+    // Cambiar estado de la biopsia
     public function toggleEstado(Request $request, $nbiopsia)
     {
         $biopsia = Biopsia::where('nbiopsia', $nbiopsia)->firstOrFail();
@@ -204,111 +222,65 @@ class BiopsiaMascotaController extends Controller
         return redirect()->route('biopsias.mascotas.index')
             ->with('success', "Biopsia {$estado} exitosamente.");
     }
+
+    // Vista para imprimir biopsia
     public function imprimir($nbiopsia)
     {
         $biopsia = Biopsia::with(['mascota', 'doctor'])
             ->where('nbiopsia', $nbiopsia)
             ->firstOrFail();
 
-        return view('biopsias.mascotas.imprimir', compact('biopsia'));
+        // Seleccionar la vista según el tipo de biopsia
+        $vista = match ($biopsia->tipo) {
+            'normal' => 'biopsias.mascotas.print.imprimir-normal',
+            'liquida' => 'biopsias.mascotas.print.imprimir-liquida',
+            default => 'biopsias.mascotas.print.imprimir-normal'
+        };
+
+        return view($vista, compact('biopsia'));
     }
-    public function estadisticas(Request $request)
+
+    // Descargar PDF
+    public function descargarPdf($nbiopsia)
     {
-        $fechaInicio = $request->fecha_inicio ?? now()->startOfMonth();
-        $fechaFin = $request->fecha_fin ?? now()->endOfMonth();
+        $biopsia = Biopsia::with(['mascota', 'doctor'])
+            ->where('nbiopsia', $nbiopsia)
+            ->firstOrFail();
 
-        $estadisticas = [
-            'total_biopsias' => Biopsia::mascotas()
-                ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
-                ->count(),
-            'pendientes' => Biopsia::mascotas()
-                ->pendientes()
-                ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
-                ->count(),
-            'completadas' => Biopsia::mascotas()
-                ->completadas()
-                ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
-                ->count(),
-            'mascotas_unicas' => Biopsia::mascotas()
-                ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
-                ->distinct('mascota_id')
-                ->count('mascota_id')
-        ];
+        // Seleccionar la vista según el tipo de biopsia
+        $vista = match ($biopsia->tipo) {
+            'normal' => 'biopsias.mascotas.pdf.pdf-normal',
+            'liquida' => 'biopsias.mascotas.pdf.pdf-liquida',
+            default => 'biopsias.mascotas.pdf.pdf-normal'
+        };
 
-        // Biopsias por doctor
-        $biopsiasPorDoctor = Biopsia::with('doctor')
-            ->mascotas()
-            ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
-            ->get()
-            ->groupBy('doctor_id')
-            ->map(function ($biopsias) {
-                return [
-                    'doctor' => $biopsias->first()->doctor->nombre . ' ' . $biopsias->first()->doctor->apellido,
-                    'cantidad' => $biopsias->count()
-                ];
-            })
-            ->sortByDesc('cantidad');
+        $pdf = Pdf::loadView($vista, compact('biopsia'));
 
-        // Biopsias por rango de edad de la mascota
-        $biopsiasPorEdad = [
-            '0-17' => Biopsia::mascotas()
-                ->whereHas('mascota', function ($q) {
-                    $q->where('edad', '<', 18);
-                })
-                ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
-                ->count(),
-            '18-30' => Biopsia::mascotas()
-                ->whereHas('mascota', function ($q) {
-                    $q->whereBetween('edad', [18, 30]);
-                })
-                ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
-                ->count(),
-            '31-50' => Biopsia::mascotas()
-                ->whereHas('mascota', function ($q) {
-                    $q->whereBetween('edad', [31, 50]);
-                })
-                ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
-                ->count(),
-            '51-70' => Biopsia::mascotas()
-                ->whereHas('mascota', function ($q) {
-                    $q->whereBetween('edad', [51, 70]);
-                })
-                ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
-                ->count(),
-            '70+' => Biopsia::mascotas()
-                ->whereHas('mascota', function ($q) {
-                    $q->where('edad', '>', 70);
-                })
-                ->whereBetween('fecha_recibida', [$fechaInicio, $fechaFin])
-                ->count()
-        ];
-
-        return view('biopsias.mascotas.estadisticas', compact(
-            'estadisticas',
-            'biopsiasPorDoctor',
-            'biopsiasPorEdad',
-            'fechaInicio',
-            'fechaFin'
-        ));
+        return $pdf->download('biopsia_mascota_' . $nbiopsia . '.pdf');
     }
+
+    // API: Buscar mascotas para AJAX
     public function buscarMascotas(Request $request)
     {
         $term = $request->get('q') ?? $request->get('term');
 
         $mascotas = Mascota::where('nombre', 'like', "%{$term}%")
+            ->orWhere('especie', 'like', "%{$term}%")
             ->orWhere('raza', 'like', "%{$term}%")
-            ->orWhere('propietario', 'like', "%{$term}%")
-            ->select('id', 'nombre', 'raza', 'propietario', 'edad', 'sexo')
+            ->orWhere('dueno', 'like', "%{$term}%")
+            ->select('id', 'nombre', 'especie', 'raza', 'dueno', 'edad', 'sexo')
             ->limit(10)
             ->get()
             ->map(function ($m) {
                 return [
                     'id' => $m->id,
-                    'text' => $m->nombre . ' - ' . $m->raza . ' - ' . $m->propietario . ' (' . $m->edad . ' años)',
-                    'nombre_completo' => $m->nombre,
-                    'propietario' => $m->propietario,
+                    'text' => $m->nombre . ' - ' . $m->especie . ' (' . $m->dueno . ')',
+                    'nombre' => $m->nombre,
+                    'especie' => $m->especie,
+                    'raza' => $m->raza,
+                    'dueno' => $m->dueno,
                     'edad' => $m->edad,
-                    'sexo' => $m->sexo === 'M' ? 'Masculino' : 'Femenino'
+                    'sexo' => $m->sexo === 'M' ? 'Macho' : 'Hembra'
                 ];
             });
 
@@ -316,42 +288,32 @@ class BiopsiaMascotaController extends Controller
             'results' => $mascotas
         ]);
     }
+
+    // API: Obtener información de una mascota específica
     public function obtenerMascota($id)
     {
         $mascota = Mascota::findOrFail($id);
 
         return response()->json([
             'id' => $mascota->id,
-            'nombre_completo' => $mascota->nombre,
-            'edad' => $mascota->edad,
-            'sexo' => $mascota->sexo === 'M' ? 'Masculino' : 'Femenino',
-            'especie' => $mascota->especie === 'M' ? 'Mascota' : 'Perro',
+            'nombre' => $mascota->nombre,
+            'especie' => $mascota->especie,
             'raza' => $mascota->raza,
-            'propietario' => $mascota->propietario,
-            'correo' => $mascota->correo,
-            'celular' => $mascota->celular,
-            'total_biopsias' => $mascota->biopsias()->count(),
-            'biopsias_pendientes' => $mascota->biopsias()->pendientes()->count(),
-            'biopsias_completadas' => $mascota->biopsias()->completadas()->count()
+            'dueno' => $mascota->dueno,
+            'edad' => $mascota->edad,
+            'sexo' => $mascota->sexo === 'M' ? 'Macho' : 'Hembra',
+            'total_biopsias' => $mascota->biopsias()->count()
         ]);
     }
 
-    public function reporteMascota($mascotaId)
-    {
-        $mascota = Mascota::findOrFail($mascotaId);
-        $biopsias = $mascota->biopsias()
-            ->with('doctor')
-            ->orderBy('fecha_recibida', 'desc')
-            ->get();
-
-        return view('biopsias.mascotas.reporte-pdf', compact('mascota', 'biopsias'));
-    }
+    // Buscar lista de biopsia por ID
     public function buscarLista($id)
     {
         $lista = ListaBiopsia::find($id);
         return response()->json($lista);
     }
-    // Método AJAX para buscar por código
+
+    // Buscar lista por código
     public function buscarListaPorCodigo($codigo)
     {
         $lista = ListaBiopsia::where('codigo', $codigo)->first();
@@ -367,5 +329,19 @@ class BiopsiaMascotaController extends Controller
             'success' => false,
             'message' => 'Código no encontrado'
         ], 404);
+    }
+
+    // Obtener número correlativo
+    public function obtenerNumeroCorrelativo(Request $request)
+    {
+        $tipo = $request->tipo ?? 'normal';
+        $tipoBiopsia = 'mascota-' . $tipo;
+        $numero = Biopsia::generarNumeroBiopsia($tipoBiopsia);
+
+        return response()->json([
+            'success' => true,
+            'numero' => $numero,
+            'tipo' => $tipo
+        ]);
     }
 }

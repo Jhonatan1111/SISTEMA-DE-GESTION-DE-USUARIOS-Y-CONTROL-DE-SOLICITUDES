@@ -135,16 +135,13 @@
             flex: 1;
         }
 
-        /* Firma y fecha */
+        /* Firma y fecha - Optimizado para PDF */
         .signature-container {
             margin-top: 40px;
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
             page-break-inside: avoid;
-            break-inside: avoid;
-            min-height: 80px;
-            /* Altura mínima para mantener consistencia */
             position: relative;
         }
 
@@ -215,13 +212,12 @@
             page-break-after: avoid;
         }
 
-        /* Sello footer */
+        /* Sello footer - Optimizado para PDF */
         .footer-seal {
             display: flex;
             justify-content: flex-end;
             margin-top: 10px;
             page-break-inside: avoid;
-            break-inside: avoid;
             position: relative;
         }
 
@@ -232,7 +228,6 @@
             text-align: center;
             display: inline-block;
             page-break-inside: avoid;
-            break-inside: avoid;
         }
 
         .seal-name {
@@ -255,54 +250,26 @@
             margin-top: 3px;
         }
 
-        /* Botón de imprimir */
-        .btn-print {
-            background: #3FA9F5;
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            cursor: pointer;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            font-size: 12pt;
-            font-weight: bold;
+        /* Estilos específicos para PDF */
+        @page {
+            margin: 1cm;
+            size: A4;
         }
 
-        .btn-print:hover {
-            background: #2E8FD5;
+        /* Ocultar elementos no necesarios en PDF */
+        .no-print {
+            display: none;
         }
 
-        @media print {
-
-            .btn-print,
-            .no-print {
-                display: none;
-            }
-
-            body {
-                padding: 20px;
-            }
-
-            /* Ocultar encabezados y pies de página del navegador */
-            @page {
-                margin: 0;
-                size: auto;
-            }
-
-            html {
-                margin: 0;
-            }
-
-            body {
-                margin: 1cm;
-            }
+        /* Evitar saltos de página en elementos críticos */
+        .signature-container,
+        .footer-seal {
+            page-break-inside: avoid;
         }
     </style>
 </head>
 
 <body>
-    <button class="btn-print no-print" onclick="window.print()">🖨️ Imprimir</button>
-
     <!-- Header con logo -->
     <div class="header-container">
         <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
