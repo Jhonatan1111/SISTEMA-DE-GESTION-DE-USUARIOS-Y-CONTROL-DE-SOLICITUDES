@@ -13,34 +13,49 @@ class BiopsiaController extends Controller
         $query = Biopsia::with(['paciente', 'mascota', 'doctor'])
             ->orderBy('fecha_recibida', 'desc');
 
-        // Filtro por tipo si se especifica
-        if ($request->has('tipo') && $request->tipo !== '') {
-            if ($request->tipo === 'personas') {
-                $query->personas();
-            } elseif ($request->tipo === 'mascotas') {
-                $query->mascotas();
+        // Búsqueda general
+        if ($request->filled('buscar')) {
+            $buscar = $request->buscar;
+            $query->where(function ($q) use ($buscar) {
+                $q->where('diagnostico_clinico', 'like', "%{$buscar}%")
+                    ->orWhereHas('paciente', function ($q) use ($buscar) {
+                        $q->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('apellido', 'like', "%{$buscar}%")
+                            ->orWhere('dui', 'like', "%{$buscar}%");
+                    })
+                    ->orWhereHas('mascota', function ($q) use ($buscar) {
+                        $q->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('dueno', 'like', "%{$buscar}%");
+                    })
+                    ->orWhereHas('doctor', function ($q) use ($buscar) {
+                        $q->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('apellido', 'like', "%{$buscar}%");
+                    });
+            });
+        }
+
+        // Filtro por categoría (persona/mascota)
+        if ($request->filled('categoria')) {
+            if ($request->categoria === 'persona') {
+                $query->whereNotNull('paciente_id');
+            } elseif ($request->categoria === 'mascota') {
+                $query->whereNotNull('mascota_id');
             }
         }
 
-        // Filtro por búsqueda
-        if ($request->has('buscar') && $request->buscar !== '') {
-            $buscar = $request->buscar;
-            $query->where(function ($q) use ($buscar) {
-                $q->where('nbiopsia', 'like', "%{$buscar}%")
-                    ->orWhere('diagnostico_clinico', 'like', "%{$buscar}%")
-                    ->orWhereHas('doctor', function ($subq) use ($buscar) {
-                        $subq->where('nombre, apellido', 'like', "%{$buscar}%")
-                            ->orWhere('jvpm', 'like', "%{$buscar}%");
-                    })
-                    ->orWhereHas('paciente', function ($subq) use ($buscar) {
-                        $subq->where('nombre', 'like', "%{$buscar}%")
-                            ->orWhere('apellido', 'like', "%{$buscar}%");
-                    })
-                    ->orWhereHas('mascota', function ($subq) use ($buscar) {
-                        $subq->where('nombre', 'like', "%{$buscar}%")
-                            ->orWhere('propietario', 'like', "%{$buscar}%");
-                    });
-            });
+        // Filtro por tipo
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
+        }
+
+        // Filtro por estado
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        // Filtro por doctor
+        if ($request->filled('doctor')) {
+            $query->where('doctor_id', $request->doctor);
         }
         $biopsias = $query->paginate(10);
 

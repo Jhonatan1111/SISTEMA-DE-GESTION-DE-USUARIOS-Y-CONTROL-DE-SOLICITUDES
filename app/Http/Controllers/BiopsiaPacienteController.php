@@ -42,6 +42,10 @@ class BiopsiaPacienteController extends Controller
                     });
             });
         }
+        // Filtro por tipo (NUEVO)
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
+        }
         // Filtro de estado
         if ($request->filled('estado')) {
             $query->where('estado', $request->estado);
@@ -52,7 +56,7 @@ class BiopsiaPacienteController extends Controller
             $query->where('doctor_id', $request->doctor);
         }
 
-        $biopsias = $query->orderBy('fecha_recibida', 'asc')
+        $biopsias = $query->orderBy('fecha_recibida', 'desc')
             ->paginate(10)
             ->appends($request->all());
 
@@ -116,7 +120,7 @@ class BiopsiaPacienteController extends Controller
                 // Si hay contenido adicional en el campo, combinarlo con la plantilla
                 $contenidoPlantilla = $lista->macroscopico;
                 $contenidoAdicional = $request->macroscopico;
-                
+
                 if (!empty($contenidoAdicional) && $contenidoAdicional !== $contenidoPlantilla) {
                     // Si el contenido adicional ya incluye la plantilla, usar solo el contenido adicional
                     if (strpos($contenidoAdicional, $contenidoPlantilla) !== false) {
@@ -203,7 +207,7 @@ class BiopsiaPacienteController extends Controller
                 // Si hay contenido adicional en el campo, combinarlo con la plantilla
                 $contenidoPlantilla = $lista->macroscopico;
                 $contenidoAdicional = $request->macroscopico;
-                
+
                 if (!empty($contenidoAdicional) && $contenidoAdicional !== $contenidoPlantilla) {
                     // Si el contenido adicional ya incluye la plantilla, usar solo el contenido adicional
                     if (strpos($contenidoAdicional, $contenidoPlantilla) !== false) {
@@ -480,7 +484,7 @@ class BiopsiaPacienteController extends Controller
         };
 
         $pdf = Pdf::loadView($vista, compact('biopsia'));
-        
+
         return $pdf->download('biopsia_' . $nbiopsia . '.pdf');
     }
     public function buscarLista($id)

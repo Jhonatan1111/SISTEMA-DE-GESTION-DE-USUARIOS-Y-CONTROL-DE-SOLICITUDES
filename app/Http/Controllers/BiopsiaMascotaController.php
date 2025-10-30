@@ -39,6 +39,10 @@ class BiopsiaMascotaController extends Controller
             });
         }
 
+        // Filtro por tipo (NUEVO)
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
+        }
         // Filtro de estado
         if ($request->filled('estado')) {
             $query->where('estado', $request->estado);
@@ -49,7 +53,7 @@ class BiopsiaMascotaController extends Controller
             $query->where('doctor_id', $request->doctor);
         }
 
-        $biopsias = $query->orderBy('fecha_recibida', 'asc')
+        $biopsias = $query->orderBy('fecha_recibida', 'desc')
             ->paginate(10)
             ->appends($request->all());
 

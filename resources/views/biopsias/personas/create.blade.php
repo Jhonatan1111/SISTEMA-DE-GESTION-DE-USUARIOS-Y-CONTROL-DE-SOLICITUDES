@@ -16,7 +16,7 @@
                     class="p-6 bg-gradient-to-br from-blue-100 to-blue-50 hover:from-blue-200 hover:to-blue-100 border-2 border-blue-300 hover:border-blue-400 rounded-lg transition-all transform hover:scale-105">
                     <div class="text-center">
                         <span class="text-5xl mb-3 block">
-                            <img src="/image/bnormal.png" alt="Bnormal" class="mx-auto w-12 h-12">
+                            <img src="/image/normal.png" alt="Bnormal" class="mx-auto w-12 h-12">
                         </span>
                         <h3 class="text-lg font-bold text-blue-900 mb-1">Normal</h3>
                         <p class="text-sm text-blue-600">BPN2025XXXX</p>
