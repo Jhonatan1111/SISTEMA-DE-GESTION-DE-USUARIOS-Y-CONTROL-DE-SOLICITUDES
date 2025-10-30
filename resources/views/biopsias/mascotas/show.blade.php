@@ -97,7 +97,7 @@
 
                 <div class="bg-white p-4 rounded-lg shadow-md">
                     <label class="block text-sm font-semibold text-gray-600 mb-1">Dueño</label>
-                    <p class="text-lg font-semibold text-gray-900">{{ $biopsia->mascota->dueno }}</p>
+                    <p class="text-lg font-semibold text-gray-900">{{ $biopsia->mascota->propietario }}</p>
                 </div>
 
                 @if($biopsia->mascota->celular)

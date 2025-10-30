@@ -189,6 +189,17 @@
             width: auto;
         }
 
+        /* Estilos específicos para PDF */
+        @page {
+            margin: 1cm;
+            size: A4;
+        }
+
+        /* Ocultar elementos no necesarios en PDF */
+        .no-print {
+            display: none;
+        }
+
         @page {
             margin: 1.5cm;
             size: A4 portrait;
@@ -227,14 +238,25 @@
     </div>
 
     <div class="info-line">
-        <span class="info-label">PACIENTE:</span>
-        <span class="info-value">{{ strtoupper($biopsia->paciente->nombre . ' ' . $biopsia->paciente->apellido) }}</span>
+        <span class="info-label">MASCOTA:</span>
+        <span class="info-value">{{ strtoupper($biopsia->mascota->nombre) }}</span>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <span class="info-label">EDAD:</span>
-        <span class="info-value">{{ $biopsia->paciente->edad }} AÑOS</span>
+        <span class="info-label">ESPECIE:</span>
+        <span class="info-value">{{ strtoupper($biopsia->mascota->especie) }}</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="info-label">RAZA:</span>
+        <span class="info-value">{{ strtoupper($biopsia->mascota->raza) }}</span>
+    </div>
+
+    <div class="info-line">
+        <span class="info-label">DUEÑO:</span>
+        <span class="info-value">{{ strtoupper($biopsia->mascota->propietario) }}</span>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <span class="info-label">SEXO:</span>
-        <span class="info-value">{{ strtoupper($biopsia->paciente->sexo) }}</span>
+        <span class="info-value">{{ strtoupper($biopsia->mascota->sexo) }}</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="info-label">EDAD:</span>
+        <span class="info-value">{{ $biopsia->mascota->edad }} AÑOS</span>
     </div>
 
     <div class="info-line">
