@@ -47,40 +47,37 @@ Route::middleware('auth')->group(function () {
     Route::put('mascotas/{mascota}', [MascotaController::class, 'update'])->name('mascotas.update');
 
     // BIOPSIAS
-    Route::get('biopsias/personas/obtener-numero-correlativo', [BiopsiaPacienteController::class, 'obtenerNumeroCorrelativo'])->name('biopsias.personas.obtener-numero-correlativo');
-
     Route::get('biopsias', [BiopsiaController::class, 'index'])->name('biopsias.index');
-    Route::get('/api/biopsias/obtener-numero/{tipo}', function ($tipo) {
-        try {
-            $numero = Biopsia::generarNumeroBiopsia($tipo);
-            return response()->json([
-                'success' => true,
-                'numero' => $numero
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error al generar número: ' . $e->getMessage()
-            ], 500);
-        }
-    })->name('biopsias.obtener-numero');
 
     // BIOPSIAS PERSONAS
+    Route::get('biopsias/personas/obtener-numero-correlativo', [BiopsiaPacienteController::class, 'obtenerNumeroCorrelativo'])->name('biopsias.personas.obtener-numero-correlativo');
     Route::get('biopsias/personas', [BiopsiaPacienteController::class, 'index'])->name('biopsias.personas.index');
     Route::get('biopsias/personas/create', [BiopsiaPacienteController::class, 'create'])->name('biopsias.personas.create');
     Route::post('biopsias/personas', [BiopsiaPacienteController::class, 'store'])->name('biopsias.personas.store');
+    Route::get('biopsias/personas/{nbiopsia}', [BiopsiaPacienteController::class, 'show'])->name('biopsias.personas.show');
     Route::get('biopsias/personas/{nbiopsia}/imprimir', [BiopsiaPacienteController::class, 'imprimir'])->name('biopsias.personas.imprimir'); // ← MOVER AQUÍ (fuera de admin)
+    Route::get('biopsias/personas/{nbiopsia}/pdf', [BiopsiaPacienteController::class, 'descargarPdf'])->name('biopsias.personas.pdf');
 
-    //BIOPSIAS MASCOTAS
+    // MASCOTAS
+    Route::get('biopsias/mascotas/obtener-numero-correlativo', [BiopsiaMascotaController::class, 'obtenerNumeroCorrelativo'])->name('biopsias.mascotas.obtener-numero-correlativo');
     Route::get('biopsias/mascotas', [BiopsiaMascotaController::class, 'index'])->name('biopsias.mascotas.index');
     Route::get('biopsias/mascotas/create', [BiopsiaMascotaController::class, 'create'])->name('biopsias.mascotas.create');
     Route::post('biopsias/mascotas', [BiopsiaMascotaController::class, 'store'])->name('biopsias.mascotas.store');
+    Route::get('biopsias/mascotas/{nbiopsia}', [BiopsiaMascotaController::class, 'show'])->name('biopsias.mascotas.show');
+    Route::get('biopsias/mascotas/{nbiopsia}/imprimir', [BiopsiaMascotaController::class, 'imprimir'])->name('biopsias.mascotas.imprimir');
+    Route::get('biopsias/mascotas/{nbiopsia}/pdf', [BiopsiaMascotaController::class, 'descargarPdf'])->name('biopsias.mascotas.pdf');
 
-    // BUSCADOR DE LISTAS PARA MASCOTAS
+    // BUSCADOR DE LISTAS PARA MASCOTAS (AJAX)
     Route::get('/biopsias-mascotas/buscar-lista/{id}', [BiopsiaMascotaController::class, 'buscarLista'])
         ->name('biopsias.mascotas.buscar-lista');
     Route::get('/biopsias-mascotas/buscar-lista-codigo/{codigo}', [BiopsiaMascotaController::class, 'buscarListaPorCodigo'])
         ->name('biopsias.mascotas.buscar-lista-codigo');
+
+    // BUSCAR MASCOTAS (AJAX)
+    Route::get('/biopsias-mascotas/buscar-mascotas', [BiopsiaMascotaController::class, 'buscarMascotas'])
+        ->name('biopsias.mascotas.buscar-mascotas');
+    Route::get('/biopsias-mascotas/obtener-mascota/{id}', [BiopsiaMascotaController::class, 'obtenerMascota'])
+        ->name('biopsias.mascotas.obtener-mascota');
 
     // Rutas para biopsias archivadas
     Route::get('biopsias/archivadas', [BiopsiaArchivarController::class, 'index'])->name('biopsias.archivadas.index');
@@ -116,12 +113,7 @@ Route::middleware('auth')->group(function () {
     Route::post('listas/biopsias', [ListaBiopsiaController::class, 'store'])->name('listas.biopsias.store');
 
 
-    // BUSCADOR DE LISTAS PARA PACIENTE
-    Route::get('/biopsias-personas/buscar-lista/{id}', [BiopsiaPacienteController::class, 'buscarLista'])
-        ->name('biopsias.personas.buscar-lista');
-    Route::get('/biopsias-personas/buscar-lista-codigo/{codigo}', [BiopsiaPacienteController::class, 'buscarListaPorCodigo'])
-        ->name('biopsias.personas.buscar-lista-codigo');
-    Route::get('biopsias/{nbiopsia}', [BiopsiaController::class, 'show'])->name('biopsias.show'); // ← AGREGAR ESTA LÍNEA
+
 
     // LISTAS DE CITOLOGÍAS
     Route::get('listas/citologias', [ListaCitologiaController::class, 'index'])->name('listas.citologias.index');

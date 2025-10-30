@@ -3,8 +3,7 @@
         <!-- Header -->
         <div class="flex justify-between items-center mb-6">
             <div>
-                <h1 class="text-3xl font-extrabold text-blue-700">Editar Biopsia - Mascota</h1>
-                <p class="text-sm text-gray-500 mt-1">Número: <span class="font-semibold text-green-600">{{ $biopsia->nbiopsia }}</span></p>
+                <h1 class="text-2xl font-extrabold text-blue-700">Editar Biopsia - Mascota</h1>
             </div>
             <a href="{{ route('biopsias.mascotas.index') }}" class="text-gray-600 hover:text-gray-900">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,6 +42,13 @@
                 <h2 class="text-xl font-bold text-blue-700 mb-4 border-b-2 border-blue-200 pb-2">Datos Básicos</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Número de Biopsia</label>
+                        <div class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg bg-blue-50 flex items-center">
+                            <span class="font-semibold text-green-600">{{ $biopsia->nbiopsia }}</span>
+                        </div>
+                    </div>
+
+                    <div>
                         <label for="fecha_recibida" class="block text-sm font-semibold text-gray-700 mb-1">Fecha de Recepción <span class="text-red-500">*</span></label>
                         <input type="date" id="fecha_recibida" name="fecha_recibida"
                             value="{{ old('fecha_recibida', $biopsia->fecha_recibida->format('Y-m-d')) }}"
@@ -59,7 +65,7 @@
                             <option value="">Seleccionar...</option>
                             @foreach($mascotas as $mascota)
                             <option value="{{ $mascota->id }}" {{ old('mascota_id', $biopsia->mascota_id) == $mascota->id ? 'selected' : '' }}>
-                                {{ $mascota->nombre }} - {{ $mascota->propietario }} ({{ $mascota->edad }} años)
+                                {{ $mascota->nombre }} - {{ $mascota->especie }} ({{ $mascota->dueno }})
                             </option>
                             @endforeach
                         </select>
@@ -118,83 +124,84 @@
                         </div>
 
                         <div>
-                            <label for="lista_id" class="block text-sm font-semibold text-gray-700 mb-1">O selecciona</label>
-                            <select id="lista_id" name="lista_id"
-                                class="w-full px-4 py-2 border-2 border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500 transition-all">
-                                <option value="">-- Sin plantilla --</option>
-                                @foreach($listas as $lista)
-                                <option value="{{ $lista->id }}" {{ old('lista_id', $biopsia->lista_id) == $lista->id ? 'selected' : '' }}>
-                                    {{ $lista->codigo }} - {{ $lista->diagnostico }}
-                                </option>
-                                @endforeach
-                            </select>
+                            <label for="lista_id" class="block text-sm font-semibold text-gray-700 mb-1">O selecciona plantilla</label>
+                            <input type="hidden" id="lista_id" name="lista_id" value="{{ old('lista_id') }}">
+                            <div class="flex gap-2">
+                                <input type="text" id="selected_template" readonly
+                                    class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg bg-gray-50 text-gray-700"
+                                    placeholder="-- Sin plantilla seleccionada --">
+                                <button type="button" onclick="openTemplateModal()"
+                                    class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                </button>
+                                <button type="button" onclick="clearTemplate()"
+                                    class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Análisis Detallado -->
-            <div class="bg-gradient-to-r from-blue-50 via-white to-blue-50 border border-blue-200 rounded-2xl shadow-lg overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-2xl">
-                <button type="button" onclick="toggleAnalisis()" class="w-full px-6 py-4 flex justify-between items-center hover:bg-blue-100 transition-colors">
-                    <span class="font-medium text-blue-700">
-                        <svg class="w-5 h-5 inline mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd" />
+            <!-- Análisis -->
+            <div class="bg-gradient-to-r from-green-50 via-white to-green-50 border border-green-200 rounded-2xl shadow-lg overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-2xl">
+                <button type="button" onclick="toggleAnalisis()" class="w-full px-6 py-4 flex justify-between items-center hover:bg-green-100 transition-colors">
+                    <span class="font-medium text-green-800">
+                        <svg class="w-5 h-5 inline mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
                         </svg>
-                        Análisis Detallado (Opcional)
+                        Análisis Detallado
                     </span>
                     <svg id="icon-analisis" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                 </button>
 
-                <div id="analisis-content" class="hidden px-6 pb-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <div>
-                            <label for="diagnostico" class="block text-sm font-semibold text-gray-700 mb-1">Diagnóstico Final</label>
-                            <textarea id="diagnostico" name="diagnostico" rows="3"
-                                class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all"
-                                placeholder="Diagnóstico detallado...">{{ old('diagnostico', $biopsia->diagnostico) }}</textarea>
-                        </div>
+                <div id="analisis-content" class="hidden px-6 pb-4 space-y-4">
+                    <div>
+                        <label for="macroscopico" class="block text-sm font-semibold text-gray-700 mb-1">Descripción Macroscópica</label>
+                        <textarea id="macroscopico" name="macroscopico" rows="4"
+                            class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
+                            placeholder="Descripción macroscópica...">{{ old('macroscopico', $biopsia->macroscopico) }}</textarea>
+                    </div>
 
-                        <div>
-                            <label for="descripcion" class="block text-sm font-semibold text-gray-700 mb-1">Descripción General</label>
-                            <textarea id="descripcion" name="descripcion" rows="3"
-                                class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all"
-                                placeholder="Descripción de la muestra...">{{ old('descripcion', $biopsia->descripcion) }}</textarea>
-                        </div>
+                    <div>
+                        <label for="microscopico" class="block text-sm font-semibold text-gray-700 mb-1">Descripción Microscópica</label>
+                        <textarea id="microscopico" name="microscopico" rows="4"
+                            class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
+                            placeholder="Descripción microscópica...">{{ old('microscopico', $biopsia->microscopico) }}</textarea>
+                    </div>
 
-                        <div>
-                            <label for="macroscopico" class="block text-sm font-semibold text-gray-700 mb-1">Análisis Macroscópico</label>
-                            <textarea id="macroscopico" name="macroscopico" rows="3"
-                                class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all"
-                                placeholder="Observación macroscópica...">{{ old('macroscopico', $biopsia->macroscopico) }}</textarea>
-                        </div>
-
-                        <div>
-                            <label for="microscopico" class="block text-sm font-semibold text-gray-700 mb-1">Análisis Microscópico</label>
-                            <textarea id="microscopico" name="microscopico" rows="3"
-                                class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all"
-                                placeholder="Observación microscópica...">{{ old('microscopico', $biopsia->microscopico) }}</textarea>
-                        </div>
+                    <div>
+                        <label for="diagnostico" class="block text-sm font-semibold text-gray-700 mb-1">Diagnóstico Final</label>
+                        <textarea id="diagnostico" name="diagnostico" rows="3"
+                            class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
+                            placeholder="Diagnóstico final...">{{ old('diagnostico', $biopsia->diagnostico) }}</textarea>
                     </div>
                 </div>
             </div>
 
             <!-- Botones -->
-            <div class="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-end gap-3 shadow-lg">
+            <div class="flex justify-end gap-4 sticky bottom-0 bg-white p-4 shadow-lg rounded-lg">
                 <a href="{{ route('biopsias.mascotas.index') }}"
-                    class="px-6 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-semibold transition-transform hover:scale-105">
+                    class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-semibold transition-transform hover:scale-105">
                     Cancelar
                 </a>
                 <button type="submit"
                     class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105">
-                    Guardar Cambios
+                    Actualizar Biopsia
                 </button>
             </div>
         </form>
     </div>
 
     <script>
+        // Toggle secciones
         function togglePlantilla() {
             const content = document.getElementById('plantilla-content');
             const icon = document.getElementById('icon-plantilla');
@@ -209,48 +216,181 @@
             icon.classList.toggle('rotate-180');
         }
 
-        document.getElementById('btn_buscar_codigo').addEventListener('click', function() {
+        // Buscar por código
+        document.getElementById('btn_buscar_codigo')?.addEventListener('click', function() {
             const codigo = document.getElementById('buscar_codigo').value.trim().toUpperCase();
-            if (!codigo) { alert('Ingresa un código'); return; }
+            if (!codigo) {
+                alert('Por favor ingrese un código');
+                return;
+            }
 
-            this.disabled = true;
-            this.textContent = 'Buscando...';
-
-            fetch(`/biopsias-mascotas/buscar-lista-codigo/${codigo}`)
-                .then(res => res.json())
-                .then(result => {
-                    if (result.success) {
-                        const data = result.data;
-                        document.getElementById('diagnostico').value = data.diagnostico || '';
-                        document.getElementById('descripcion').value = data.descripcion || '';
-                        document.getElementById('microscopico').value = data.microscopico || '';
-                        document.getElementById('macroscopico').value = data.macroscopico || '';
-                        document.getElementById('lista_id').value = data.id;
-                        if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
-                        alert(`Plantilla "${data.codigo}" cargada`);
-                    } else { alert(`Código "${codigo}" no encontrado`); }
-                })
-                .catch(() => alert('Error al buscar'))
-                .finally(() => { this.disabled = false; this.textContent = 'Buscar'; });
-        });
-
-        document.getElementById('buscar_codigo').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') { e.preventDefault(); document.getElementById('btn_buscar_codigo').click(); }
-        });
-
-        document.getElementById('lista_id').addEventListener('change', function() {
-            const listaId = this.value;
-            if (!listaId) return;
-            document.getElementById('buscar_codigo').value = '';
-            fetch(`/biopsias-mascotas/buscar-lista/${listaId}`)
-                .then(res => res.json())
+            fetch(`{{ url('/biopsias-mascotas/buscar-lista-codigo') }}/${codigo}`)
+                .then(response => response.json())
                 .then(data => {
-                    document.getElementById('diagnostico').value = data.diagnostico || '';
-                    document.getElementById('descripcion').value = data.descripcion || '';
-                    document.getElementById('microscopico').value = data.microscopico || '';
-                    document.getElementById('macroscopico').value = data.macroscopico || '';
-                    if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
+                    if (data.success) {
+                        document.getElementById('lista_id').value = data.data.id;
+                        document.getElementById('selected_template').value = data.data.codigo + ' - ' + data.data.descripcion;
+                        document.getElementById('macroscopico').value = data.data.macroscopico || '';
+
+                        if (document.getElementById('analisis-content').classList.contains('hidden')) {
+                            toggleAnalisis();
+                        }
+                    } else {
+                        alert('Código no encontrado');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al buscar la plantilla');
                 });
         });
+
+        // Modal de plantillas
+        function openTemplateModal() {
+            document.getElementById('template-modal').style.display = 'flex';
+        }
+
+        function closeTemplateModal() {
+            document.getElementById('template-modal').style.display = 'none';
+        }
+
+        function selectTemplate(id, codigo, descripcion, macroscopico) {
+            document.getElementById('lista_id').value = id;
+            document.getElementById('selected_template').value = codigo + ' - ' + descripcion;
+
+            const macroscopicoTextarea = document.getElementById('macroscopico');
+            const contenidoActual = macroscopicoTextarea.value.trim();
+
+            if (contenidoActual === '') {
+                macroscopicoTextarea.value = macroscopico || '';
+            } else {
+                macroscopicoTextarea.value = contenidoActual + ' ' + (macroscopico || '');
+            }
+
+            closeTemplateModal();
+            if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
+        }
+
+        function clearTemplate() {
+            document.getElementById('lista_id').value = '';
+            document.getElementById('selected_template').value = '';
+        }
+
+        function filterTemplates() {
+            const searchTerm = document.getElementById('template-search').value.toLowerCase();
+            const items = document.querySelectorAll('.template-item');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const codigo = item.getAttribute('data-codigo').toLowerCase();
+                const diagnostico = item.getAttribute('data-diagnostico').toLowerCase();
+                const macroscopico = item.getAttribute('data-macroscopico').toLowerCase();
+
+                if (codigo.includes(searchTerm) || diagnostico.includes(searchTerm) || macroscopico.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            const noResultsMsg = document.getElementById('no-results-message');
+            if (visibleCount === 0 && searchTerm !== '') {
+                noResultsMsg.style.display = 'block';
+            } else {
+                noResultsMsg.style.display = 'none';
+            }
+        }
+
+        // Validación de fecha
+        function validarFecha(input) {
+            if (!input.value) return true;
+
+            const fechaSeleccionada = new Date(input.value + 'T00:00:00');
+            const fechaHoy = new Date();
+            fechaHoy.setHours(0, 0, 0, 0);
+
+            if (fechaSeleccionada > fechaHoy) {
+                alert('⚠️ La fecha de recepción no puede ser futura.\n\nPor favor selecciona una fecha válida (hoy o anterior).');
+                input.style.borderColor = '#ef4444';
+                input.focus();
+                input.select();
+                return false;
+            }
+
+            input.style.borderColor = '';
+            return true;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const fechaInput = document.getElementById('fecha_recibida');
+
+            if (form && fechaInput) {
+                form.addEventListener('submit', function(e) {
+                    if (!validarFecha(fechaInput)) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                });
+
+                fechaInput.addEventListener('change', function() {
+                    validarFecha(this);
+                });
+            }
+        });
+
+        // Cerrar modal con Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeTemplateModal();
+            }
+        });
     </script>
+
+    <!-- Modal de búsqueda de plantillas -->
+    <div id="template-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 h-[70vh] overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center p-4 border-b bg-gradient-to-r from-yellow-50 to-orange-50">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900">Buscar y Seleccionar Plantilla</h3>
+                    <p class="text-xs text-gray-600 mt-1">Usa el buscador o navega por las plantillas disponibles</p>
+                </div>
+                <button type="button" onclick="closeTemplateModal()" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="p-4 flex-1 overflow-y-auto">
+                <div class="mb-4 bg-gradient-to-r from-blue-50 to-indigo-50 p-3 rounded-lg border border-blue-200">
+                    <input type="text" id="template-search" placeholder="Buscar por código, descripción o macro..."
+                        class="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 text-base shadow-sm"
+                        oninput="filterTemplates()">
+                </div>
+
+                <div id="template-list" class="space-y-2 max-h-96 overflow-y-auto border border-gray-200 rounded-lg bg-gray-50 p-2">
+                    <div id="no-results-message" class="text-center py-8 text-gray-500" style="display: none;">
+                        <p class="text-lg font-medium">No se encontraron plantillas</p>
+                    </div>
+
+                    @foreach($listas as $lista)
+                    <div class="template-item bg-white border border-gray-200 rounded-lg p-2 mb-2 hover:bg-yellow-50 hover:border-yellow-300 hover:shadow-md cursor-pointer transition-all duration-200"
+                        data-codigo="{{ $lista->codigo }}"
+                        data-diagnostico="{{ $lista->descripcion }}"
+                        data-macroscopico="{{ $lista->macroscopico }}"
+                        onclick="selectTemplate('{{ $lista->id }}', '{{ $lista->codigo }}', '{{ addslashes($lista->descripcion) }}', '{{ addslashes($lista->macroscopico) }}')">
+
+                        <h4 class="font-semibold text-gray-900 mb-1 text-xs">{{ $lista->descripcion }}</h4>
+                        <div class="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
+                            <p class="mt-1 leading-relaxed">{{ Str::limit($lista->macroscopico, 100) }}</p>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
 </x-app-layout>

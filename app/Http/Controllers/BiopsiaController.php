@@ -10,10 +10,7 @@ class BiopsiaController extends Controller
     // VISTA GENERAL DE TODAS LAS BIOPSIAS (PERSONAS Y MASCOTAS)
     public function index(Request $request)
     {
-        $query = Biopsia::with(['paciente', 'mascota', 'doctor', 'lista_biopsia'])
-            // ->activas()
-            // ->archivadas()
-         
+        $query = Biopsia::with(['paciente', 'mascota', 'doctor'])
             ->orderBy('fecha_recibida', 'desc');
 
         // Filtro por tipo si se especifica
@@ -42,14 +39,9 @@ class BiopsiaController extends Controller
                     ->orWhereHas('mascota', function ($subq) use ($buscar) {
                         $subq->where('nombre', 'like', "%{$buscar}%")
                             ->orWhere('propietario', 'like', "%{$buscar}%");
-                    })
-                    ->orWhereHas('lista_biopsia', function ($subq) use ($buscar) {
-                        $subq->where('codigo', 'like', "%{$buscar}%")
-                            ->orWhere('diagnostico', 'like', "%{$buscar}%");
                     });
             });
         }
-
         $biopsias = $query->paginate(10);
 
         // Estadísticas simples
@@ -72,7 +64,7 @@ class BiopsiaController extends Controller
     // VER DETALLES DE UNA BIOPSIA
     public function show($nbiopsia)
     {
-        $biopsia = Biopsia::with(['paciente', 'mascota', 'doctor', 'lista_biopsia'])
+        $biopsia = Biopsia::with(['paciente', 'mascota', 'doctor'])
             ->where('nbiopsia', $nbiopsia)
             ->firstOrFail();
 

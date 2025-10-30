@@ -17,26 +17,23 @@ class Biopsia extends Model
 
     protected $fillable = [
         'nbiopsia',
+        'tipo',
+        'estado',
         'diagnostico_clinico',
         'fecha_recibida',
-        'estado',
-        'tipo',
-        'diagnostico',
         'macroscopico',
         'microscopico',
-        'descripcion',
+        'diagnostico',
         'doctor_id',
         'paciente_id',
         'mascota_id',
-        'lista_id',
     ];
 
     protected $casts = [
-        'fecha_recibida' => 'date',
-        'estado' => 'boolean',
         'tipo' => 'string',
+        'estado' => 'boolean',
+        'fecha_recibida' => 'date',
         'doctor_id' => 'integer',
-        'lista_id' => 'integer',
         'paciente_id' => 'integer',
         'mascota_id' => 'integer',
     ];
@@ -58,9 +55,6 @@ class Biopsia extends Model
 
 
     // Métodos estáticos
-
-
-
     public function scopePersonas($query)
     {
         return $query->whereNotNull('paciente_id');
@@ -69,7 +63,6 @@ class Biopsia extends Model
     {
         return $query->whereNotNull('lista_id');
     }
-
     public function scopeMascotas($query)
     {
         return $query->whereNotNull('mascota_id');
@@ -89,7 +82,6 @@ class Biopsia extends Model
     {
         return $this->update(['estado' => true]);
     }
-
     public function scopeDelMes($query, $mes = null, $año = null)
     {
         $mes = $mes ?? now()->month;
@@ -98,12 +90,10 @@ class Biopsia extends Model
         return $query->whereMonth('fecha_recibida', $mes)
             ->whereYear('fecha_recibida', $año);
     }
-
     public function scopeActivas($query)
     {
         return $query->where('estado', true);
     }
-
     public function scopeArchivadas($query)
     {
         return $query->where('estado', false);
@@ -111,8 +101,6 @@ class Biopsia extends Model
     public static function generarNumeroBiopsia($tipoBiopsia)
     {
         return DB::transaction(function () use ($tipoBiopsia) {
-            $año = date('Y');
-
             // Determinar prefijo según el tipo
             $prefijo = match ($tipoBiopsia) {
                 'persona-normal' => 'BPN',
@@ -122,25 +110,23 @@ class Biopsia extends Model
                 default => 'BP' // Fallback
             };
 
-            $prefijoCompleto = "{$prefijo}{$año}";
-
             // Bloquear para evitar duplicados
-            $ultimo = static::where('nbiopsia', 'like', "{$prefijoCompleto}%")
+            $ultimo = static::where('nbiopsia', 'like', "{$prefijo}%")
                 ->lockForUpdate()
                 ->orderBy('nbiopsia', 'desc')
                 ->first();
 
             if ($ultimo) {
-                // Extraer los últimos 4 dígitos y sumar 1
-                $ultimoNumero = (int)substr($ultimo->nbiopsia, -4);
+                // Extraer el número completo después del prefijo
+                $ultimoNumero = (int)substr($ultimo->nbiopsia, strlen($prefijo));
                 $nuevoNumero = $ultimoNumero + 1;
             } else {
-                // Primera biopsia del tipo en el año
+                // Primera biopsia del tipo
                 $nuevoNumero = 1;
             }
 
-            // Formato: BPN2025-0001 (4 dígitos con ceros a la izquierda)
-            return sprintf("%s%04d", $prefijoCompleto, $nuevoNumero);
+            // Formato: BPN0001 (4 dígitos con ceros a la izquierda)
+            return sprintf("%s%04d", $prefijo, $nuevoNumero);
         });
     }
 }
