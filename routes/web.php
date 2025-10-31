@@ -14,6 +14,7 @@ use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserAdminController;
 use App\Models\Biopsia;
+use App\Http\Controllers\SobreController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -166,6 +167,13 @@ Route::middleware('auth')->group(function () {
         // LISTA DE CITOLOGIAS
         Route::get('listas/citologias/{listaCitologia}/edit', [ListaCitologiaController::class, 'edit'])->name('listas.citologias.edit');
         Route::put('listas/citologias/{listaCitologia}', [ListaCitologiaController::class, 'update'])->name('listas.citologias.update');
+    });
+
+    // Rutas para el módulo de impresión de sobres
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/sobres', [SobreController::class, 'index'])->name('sobres.index');
+        Route::post('/sobres/generar', [SobreController::class, 'generar'])->name('sobres.generar');
+        Route::post('/sobres/generar-manual', [SobreController::class, 'generarManual'])->name('sobres.generar.manual');
     });
 
     // Rutas de administración de usuarios - solo para administradores
