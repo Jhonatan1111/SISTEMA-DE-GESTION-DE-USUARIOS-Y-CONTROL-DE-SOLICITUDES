@@ -11,6 +11,10 @@
                     class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
                     Citologías
                 </a>
+                <a href="{{ route('sobres.index') }}"
+                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
+                    Imprimir Sobres
+                </a>
             </nav>
         </div>
 
