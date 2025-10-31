@@ -35,7 +35,7 @@
             <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
                 <div class="flex items-center">
                     <div class="flex-1">
-                        <h3 class="text-sm font-medium text-gray-500 uppercase">Citologías Activas</h3>
+                        <h3 class="text-sm font-medium text-gray-500 uppercase">Activas</h3>
                         <p class="text-2xl font-bold text-gray-900">{{ $citologias->where('estado', 1)->count() }}</p>
                     </div>
                     <div class="text-green-500">
@@ -49,7 +49,7 @@
             <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-yellow-500">
                 <div class="flex items-center">
                     <div class="flex-1">
-                        <h3 class="text-sm font-medium text-gray-500 uppercase">Citologías Inactivas</h3>
+                        <h3 class="text-sm font-medium text-gray-500 uppercase">Archivadas</h3>
                         <p class="text-2xl font-bold text-gray-900">{{ $citologias->where('estado', 0)->count() }}</p>
                     </div>
                     <div class="text-yellow-500">
@@ -76,15 +76,13 @@
             </div>
         </div>
 
-<!-- Filtros y búsqueda -->
+        <!-- Filtros y búsqueda -->
 <div class="bg-green-100 p-4 rounded-lg shadow-md mb-6">
-    <form method="GET" action="{{ route('citologias.personas.index') }}" class="flex flex-wrap items-center gap-4">
-        <!-- Campo de búsqueda por Paciente o Doctor -->
+    <form class="flex flex-wrap items-center gap-4">
+        <!-- Campo de búsqueda -->
         <div class="flex-1 min-w-[230px]">
             <div class="relative">
-                <input type="text" id="buscar" name="buscar" 
-                    value="{{ request('buscar') }}"
-                    placeholder="Buscar por Paciente o Doctor"
+                <input type="text" id="busqueda" placeholder="Buscar por Paciente o Doctor"
                     class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,42 +93,40 @@
             </div>
         </div>
 
-        <!-- Filtro por estado -->
+        <!-- Filtro por tipo -->
         <div class="flex-shrink-0 min-w-[180px]">
-            <select id="estado" name="estado"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-100 focus:border-transparent">
-                <option value="">Todos los estados</option>
-                <option value="1" {{ request('estado') === '1' ? 'selected' : '' }}>Activas</option>
-                <option value="0" {{ request('estado') === '0' ? 'selected' : '' }}>Inactivas</option>
+            <select id="tipo"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                <option value="">Todos los tipos</option>
+                <option value="normal">Normal</option>
+                <option value="liquida">Líquida</option>
+                <option value="especial">Especial</option>
             </select>
         </div>
 
-        <!-- Filtro por doctor -->
-        <div class="flex-shrink-0 min-w-[200px]">
-            <select id="doctor" name="doctor"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                <option value="">Todos los doctores</option>
-                @foreach(\App\Models\Doctor::where('estado_servicio', true)->orderBy('nombre')->get() as $doctor)
-                    <option value="{{ $doctor->id }}" {{ request('doctor') == $doctor->id ? 'selected' : '' }}>
-                        {{ $doctor->nombre }} {{ $doctor->apellido }}
-                    </option>
-                @endforeach
+        <!-- Filtro por estado -->
+        <div class="flex-shrink-0 min-w-[180px]">
+            <select id="estado"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-100 focus:border-transparent">
+                <option value="">Todos los estados</option>
+                <option value="1">Activas</option>
+                <option value="0">Archivadas</option>
             </select>
         </div>
 
         <!-- Botones -->
-        <div class="flex gap-4 items-center mt-1">
+         <div class="flex gap-4 items-center mt-1">
             <button type="submit"
                 class="text-blue-600 font-semibold hover:underline transition-colors">
                 Filtrar
             </button>
-            <a href="{{ route('citologias.personas.index') }}"
+            <button type="reset"
                 class="text-purple-600 font-semibold hover:underline transition-colors">
                 Limpiar
-            </a>
+            </button>
         </div>
-    </form>
 </div>
+
 
         <!-- Mensajes de éxito/error -->
         @if(session('success'))
@@ -226,7 +222,7 @@
                                 </span>
                                 @else
                                 <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                                    Inactiva
+                                    Archivada
                                 </span>
                                 @endif
                             </td>
@@ -256,7 +252,7 @@
                                         <button type="submit"
                                             class="{{ $citologia->estado ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900' }}"
                                             onclick="return confirm('¿Está seguro de cambiar el estado de esta citología?')">
-                                            {{ $citologia->estado ? 'Desactivar' : 'Activar' }}
+                                            {{ $citologia->estado ? 'Archivar' : 'Restaurar' }}
                                         </button>
                                         @endif
                                     </form>
