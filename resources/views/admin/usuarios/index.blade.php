@@ -30,7 +30,7 @@
                 </div>
                 <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
                     <p class="text-gray-600 text-sm font-semibold uppercase">Empleados</p>
-                    <p class="text-4xl font-bold text-green-600 mt-2">{{ $usuarios->where('role', 'empleado')->count() }}</p>
+                    <p class="text-4xl font-bold text-green-600 mt-2">{{ $usuarios->where('role', 'user')->count() }}</p>
                 </div>
             </div>
             {{-- Mensajes de éxito/error --}}
@@ -58,36 +58,28 @@
             @endif
 
             {{-- Tabla de usuarios --}}
-            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-violet-200">
-                        <thead class="bg-blue-400">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                    Nombre
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                    Celular
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                    Email
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                    Rol
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                    Fecha
-                                </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                    Acciones
-                                </th>
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-blue-300 from-slate-800 to-slate-700 text-grey-900">
+                                <th class="px-6 py-4 text-left text-sm font-bold">Nombre</th>
+                                <th class="px-6 py-4 text-left text-sm font-bold">Apellido</th>
+                                <th class="px-6 py-4 text-left text-sm font-bold">Celular</th>
+                                <th class="px-6 py-4 text-left text-sm font-bold">Email</th>
+                                <th class="px-6 py-4 text-left text-sm font-bold">Rol</th>
+                                <th class="px-6 py-4 text-left text-sm font-bold">Fecha</th>
+                                <th class="px-6 py-4 text-center text-sm font-bold">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
+                        <tbody class="divide-y divide-gray-200">
                             @forelse ($usuarios as $usuario)
-                                <tr class="hover:bg-blue-50">
+                                <tr class="hover:bg-blue-50 transition-colors duration-200 group">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="text-sm font-medium text-gray-900">{{ $usuario->nombre }} {{ $usuario->apellido }}</span>
+                                        <span class="text-gray-900 font-semibold">{{ $usuario->nombre }}</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="text-gray-700">{{ $usuario->apellido }}</span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="text-gray-600">{{ $usuario->celular }}</span>
