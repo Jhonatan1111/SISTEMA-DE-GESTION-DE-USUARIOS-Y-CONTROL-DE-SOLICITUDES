@@ -7,104 +7,110 @@ use Illuminate\Http\Request;
 
 class ListaBiopsiaController extends Controller
 {
-    // Listar biopsias
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        // Obtener todas las biopsias ordenadas por código
+        //
         $listaBiopsia = ListaBiopsia::orderBy('codigo')
             ->paginate(10);
-        // Pasar la lista de biopsias a la vista
         return view('listas.biopsias.index', compact('listaBiopsia'));
     }
 
-    // Mostrar formulario para crear biopsia
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
-        // Generar un nuevo código para la biopsia
+        //
         $codigoGenerado = ListaBiopsia::generarCodigoLista();
-        // Pasar el código generado a la vista
         return view('listas.biopsias.create', compact('codigoGenerado'));
     }
 
-    // Creacion de una lista de biopsia
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        // obtener codigo generado en la ruta create
         $codigoGenerado = ListaBiopsia::generarCodigoLista();
 
-        // validar la informacion obtenida como datos del tipo correcto
         $validated = $request->validate([
+            'diagnostico' => 'required|string',
             'macroscopico' => 'nullable|string',
+            'microscopico' => 'nullable|string',
             'descripcion' => 'nullable|string',
         ]);
 
-        // capturado de errores para no crashear la aplicacion
         try {
-            // Usar updateOrCreate para mantener la secuencia de códigos LB001, LB002, etc.
-            // aunque el ID no sea secuencial
-            ListaBiopsia::updateOrCreate(
-                ['codigo' => $codigoGenerado], // Buscar por código
-                [
-                    'descripcion' => $validated['descripcion'] ?? null,
-                    'macroscopico' => $validated['macroscopico'] ?? null,
-                ]
-            );
-        }
-        // capturador de errores para no crashear la aplicacion y lanzar mensaje de error para conocer su causa
-        catch (\Exception $e) {
+            ListaBiopsia::create([
+                'codigo' => $codigoGenerado,
+                'diagnostico' => $validated['diagnostico'],
+                'macroscopico' => $validated['macroscopico'] ?? null,
+                'microscopico' => $validated['microscopico'] ?? null,
+                'descripcion' => $validated['descripcion'] ?? null,
+            ]);
+
+        } catch (\Exception $e) {
             return back()
                 ->withInput()
                 ->with('error', 'Error al crear la lista: ' . $e->getMessage());
         }
 
-        // redireccion de la pagina a la lista de biopsias con un mensaje de exito y vista de creacion
         return redirect()->route('listas.biopsias.index')->with('success', 'Biopsia creada exitosamente.');
     }
 
-    // Vista de edicion de una lista de biopsia
     public function edit(ListaBiopsia $listaBiopsia)
     {
-        // Pasar la lista de biopsia a la vista
+        //
         return view('listas.biopsias.edit', compact('listaBiopsia'));
     }
 
-    // Actualizacion de una lista de biopsia
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, ListaBiopsia $listaBiopsia)
     {
-        // validar la informacion obtenida como datos del tipo correcto
-        $validated = $request->validate([
-            'descripcion' => 'nullable|string',
-            'macroscopico' => 'nullable|string',
+        //
+        $request->validate([
+            'descripcion' => 'required|string',
+            'diagnostico' => 'required|string',
+            'macroscopico' => 'required|string',
+            'microscopico' => 'required|string',
         ]);
 
-        try {
-            // actualizar la lista de biopsia en la base de datos usando eloquent
-            $listaBiopsia->update($validated);
-            return redirect()->route('listas.biopsias.index')->with('success', 'Biopsia actualizada exitosamente.');
-        }
-        // capturador de errores para no crashear la aplicacion y lanzar mensaje de error para conocer su causa
-        catch (\Exception $e) {
-            return back()
-                ->withInput()
-                ->with('error', 'Error al actualizar la lista: ' . $e->getMessage());
-        }
+        $listaBiopsia->update($request->only([
+            'descripcion',
+            'diagnostico', 
+            'macroscopico',
+            'microscopico'
+        ]));
 
-        // redireccion de ruta hacia la pagina principal de las listas conforme a su actualizacion exitosa
         return redirect()->route('listas.biopsias.index')->with('success', 'Biopsia actualizada exitosamente.');
     }
 
-    // eliminacion de lista de biopsia, usando el modelado eloquent de lista de biopsia para la sincronizacion de dato
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(ListaBiopsia $listaBiopsia)
     {
-        // eliminacion de la lista de biopsia en la base de datos usando eloquent
-        try {
-            $listaBiopsia->delete();
-            return redirect()->route('listas.biopsias.index')
-                ->with('success', 'Biopsia eliminada exitosamente.');
+        //
+        $listaBiopsia->delete();
+        return redirect()->route('listas.biopsias.index')->with('success', 'Biopsia eliminada exitosamente.');
+    }
+
+    public function getByCodigo($codigo)
+    {
+        $listaBiopsia = ListaBiopsia::where('codigo', strtoupper($codigo))->firstOrFail();
+        if (!$listaBiopsia) {
+            return redirect()->route('listas.biopsias.index')->with('error', 'Biopsia no encontrada.');
         }
-        // excepcion de error y muestreo de causa
-        catch (\Exception $e) {
-            return back()->with('error', 'Error al eliminar la lista: ' . $e->getMessage());
-        }
+    }
+    public function getCodigos()
+    {
+        $codigos = ListaBiopsia::select('codigo', 'descripcion')
+            ->orderBy('codigo')
+            ->get();
+        return response()->json($codigos);
     }
 }

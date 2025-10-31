@@ -7,77 +7,91 @@ use Illuminate\Http\Request;
 
 class ListaCitologiaController extends Controller
 {
-    // Listar citologías
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        // Obtener todas las citologías ordenadas por código
         $listaCitologia = ListaCitologia::orderBy('codigo')
             ->paginate(10);
-        // Pasar la lista de citologías a la vista
         return view('listas.citologias.index', compact('listaCitologia'));
     }
 
-    // Mostrar formulario para crear citología
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
-        // Generar un nuevo código para la citología
         $codigoGenerado = ListaCitologia::generarCodigoLista();
-        // Pasar el código generado a la vista
         return view('listas.citologias.create', compact('codigoGenerado'));
     }
 
-    // Creacion de una lista de citologia
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        // obtener codigo generado en la ruta create
-        $codigoGenerado = ListaCitologia::generarCodigoLista();
-
-        // validar la informacion obtenida como datos del tipo correcto
+        // Cambiar la validación para permitir actualización de registros existentes
         $validated = $request->validate([
-            'descripcion' => 'nullable|string',
-            'diagnostico' => 'nullable|string',
+            'codigo' => 'required|string|max:255',
+            'descripcion' => 'required|string',
+            'diagnostico' => 'required|string',
 
         ]);
 
-        // capturado de errores para no crashear la aplicacion
         try {
-            // Usar updateOrCreate para mantener la secuencia de códigos LC001, LC002, etc.
-            // aunque el ID no sea secuencial
-            ListaCitologia::updateOrCreate(
-                ['codigo' => $codigoGenerado], // Buscar por código
+            // Usar updateOrCreate para evitar duplicados
+            // Si existe un registro con el mismo código, lo actualiza
+            // Si no existe, crea uno nuevo
+            $citologia = ListaCitologia::updateOrCreate(
+                ['codigo' => $validated['codigo']], // Condición de búsqueda
                 [
                     'descripcion' => $validated['descripcion'] ?? null,
                     'diagnostico' => $validated['diagnostico'] ?? null,
                 ]
             );
+
+            if ($citologia->wasRecentlyCreated) {
+                $mensaje = 'Citología creada exitosamente.';
+            } else {
+                $mensaje = 'Citología actualizada exitosamente (refrescada con nuevos datos).';
+            }
+
+            return redirect()->route('listas.citologias.index')->with('success', $mensaje);
         } catch (\Exception $e) {
             return back()
                 ->withInput()
-                ->with('error', 'Error al crear la lista: ' . $e->getMessage());
+                ->with('error', 'Error al procesar la citología: ' . $e->getMessage());
         }
-        // redireccionar a la ruta index con un mensaje de exito
-        return redirect()->route('listas.citologias.index')->with('success', 'Lista creada exitosamente.');
     }
 
+    /**
+     * Display the specified resource.
+     */
+    public function show(ListaCitologia $listaCitologia)
+    {
+        //
+    }
 
-    // Vista de edicion de una lista de citologia
+    /**
+     * Show the form for editing the specified resource.
+     */
     public function edit(ListaCitologia $listaCitologia)
     {
-        // Pasar la lista de citologia a la vista
         return view('listas.citologias.edit', compact('listaCitologia'));
     }
 
-    // Actualizacion de una lista de citologia
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, ListaCitologia $listaCitologia)
     {
-        // validar la informacion obtenida como datos del tipo correcto
         $validated = $request->validate([
-            'descripcion' => 'nullable|string',
-            'diagnostico' => 'nullable|string',
+            'descripcion' => 'required|string',
+            'diagnostico' => 'required|string',
         ]);
 
         try {
-            // actualizar la lista de biopsia en la base de datos usando eloquent
             $listaCitologia->update($validated);
             return redirect()->route('listas.citologias.index')->with('success', 'Citología actualizada exitosamente.');
         } catch (\Exception $e) {
@@ -87,17 +101,16 @@ class ListaCitologiaController extends Controller
         }
     }
 
-    // eliminacion de lista de citologia, usando el modelado eloquent de lista de citologia para la sincronizacion de dato
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(ListaCitologia $listaCitologia)
     {
-        // eliminacion de la lista de citologia en la base de datos usando eloquent
         try {
             $listaCitologia->delete();
             return redirect()->route('listas.citologias.index')
                 ->with('success', 'Citología eliminada exitosamente.');
-        }
-        // excepcion de error y muestreo de causa
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return back()->with('error', 'Error al eliminar la citología: ' . $e->getMessage());
         }
     }
