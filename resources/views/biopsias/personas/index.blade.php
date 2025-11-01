@@ -15,7 +15,6 @@
                     class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
                     Mascotas
                 </a>
-
             </nav>
         </div>
 
@@ -109,6 +108,7 @@
                     <div class="relative">
                         <input type="text"
                             name="buscar"
+                            id="busqueda-rapida"
                             value="{{ request('buscar') }}"
                             placeholder="Buscar por paciente, doctor o diagnóstico..."
                             class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
@@ -119,6 +119,16 @@
                             </svg>
                         </div>
                     </div>
+                </div>
+
+                <!-- Filtro por tipo -->
+                <div class="flex-shrink-0 min-w-[180px]">
+                    <select name="tipo"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        <option value="">Todos los tipos</option>
+                        <option value="normal" {{ request('tipo') == 'normal' ? 'selected' : '' }}>Normal</option>
+                        <option value="liquida" {{ request('tipo') == 'liquida' ? 'selected' : '' }}>Líquida</option>
+                    </select>
                 </div>
 
                 <!-- Filtro por estado -->
@@ -147,237 +157,163 @@
                 <!-- Botones -->
                 <div class="flex gap-4 items-center mt-1">
                     <button type="submit"
-                        class="text-blue-600 font-semibold hover:underline transition-colors">
+                        class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
                         Filtrar
                     </button>
                     <a href="{{ route('biopsias.personas.index') }}"
-                        class="text-purple-600 font-semibold hover:underline transition-colors">
+                        class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors">
                         Limpiar
                     </a>
                 </div>
             </form>
         </div>
 
-        <!-- Mensajes de éxito/error -->
-        @if(session('success'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            <div class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                </svg>
-                {{ session('success') }}
-            </div>
-        </div>
-        @endif
-
-        @if(session('error'))
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <div class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                </svg>
-                {{ session('error') }}
-            </div>
-        </div>
-        @endif
-
-        <!-- Tabla de biopsias -->
+        <!-- Tabla -->
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-blue-400">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                N° Biopsia
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                Fecha Recibida
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                Paciente
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                Doctor
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                Diagnostico Clinico
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                Estado
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                Acciones
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse($biopsias as $biopsia)
-                        <tr class="hover:bg-blue-50 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">{{ $biopsia->nbiopsia }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {{ $biopsia->fecha_recibida->format('d/m/Y') }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Número</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paciente</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doctor</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diagnóstico</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($biopsias as $biopsia)
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="text-sm font-bold text-blue-600">{{ $biopsia->nbiopsia }}</span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if($biopsia->tipo === 'normal')
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                <img src="/image/normal.png" alt="Normal" class="w-4 h-4 mr-1">
+                                Normal
+                            </span>
+                            @else
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                <img src="/image/lavado.png" alt="Líquida" class="w-4 h-4 mr-1">
+                                Líquida
+                            </span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{ \Carbon\Carbon::parse($biopsia->fecha_recibida)->format('d/m/Y') }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm">
+                                <div class="font-medium text-gray-900">
+                                    {{ $biopsia->paciente->nombre ?? 'N/A' }} {{ $biopsia->paciente->apellido ?? '' }}
                                 </div>
-                                <div class="ml-0">
-                                    <div class="text-sm font-medium text-gray-900">
-                                        @if($biopsia->paciente_id && $biopsia->paciente)
-                                        {{ $biopsia->paciente->nombre }} {{ $biopsia->paciente->apellido }}
-                                        @elseif($biopsia->mascota_id && $biopsia->mascota)
-                                        {{ $biopsia->mascota->nombre }}
-                                        @else
-                                        Información no disponible
-                                        @endif
-                                    </div>
-                                    <div class="text-sm text-gray-500">
-                                        @if($biopsia->paciente_id && $biopsia->paciente)
-                                        DUI: {{ $biopsia->paciente->dui ?? 'N/A' }}
-                                        @elseif($biopsia->mascota_id && $biopsia->mascota)
-                                        Propietario: {{ $biopsia->mascota->propietario ?? 'N/A' }}
-                                        @else
-                                        Tipo: N/A
-                                        @endif
-                                    </div>
+                                <div class="text-gray-500">
+                                    {{ $biopsia->paciente->edad ?? 'N/A' }} años
                                 </div>
-            </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                <div class="font-medium">Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}</div>
-                <div class="text-gray-500">{{ $biopsia->doctor->jvpm ?? 'J.V.P.M N/A' }}</div>
-            </td>
-            <td class="px-6 py-4 text-sm text-gray-900">
-                <div class="max-w-xs truncate" title="{{ $biopsia->diagnostico_clinico }}">
-                    {{ Str::limit($biopsia->diagnostico_clinico, 50) }}
-                </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-                @if($biopsia->estado)
-                <div class="flex items-center">
-                    <div class="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div>
-                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                        Activa
-                    </span>
-                </div>
-                @else
-                <div class="flex items-center">
-                    <div class="h-2.5 w-2.5 rounded-full bg-red-400 mr-2"></div>
-                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                        Inactiva
-                    </span>
-                </div>
-                @endif
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                <div class="flex items-center space-x-2">
-                    <!-- Editar -->
-                    @if (auth()->user()->role === 'admin')
-                    <a href="{{ route('biopsias.personas.edit', $biopsia->nbiopsia) }}"
-                        class="text-indigo-600 hover:text-indigo-900">
-                        Editar
-                    </a>
-                    @endif
-                    <a href="{{ route('biopsias.personas.show', $biopsia->nbiopsia) }}"
-                        class="text-purple-600 hover:text-purple-900">
-                        Ver
-                    </a>
+                                <div class="text-gray-400 text-xs">
+                                    DUI: {{ $biopsia->paciente->dui ?? 'N/A' }}
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <div class="font-medium">Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}</div>
+                            <div class="text-gray-500">{{ $biopsia->doctor->jvpm ?? 'J.V.P.M N/A' }}</div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900">
+                            <div class="max-w-xs truncate" title="{{ $biopsia->diagnostico_clinico }}">
+                                {{ Str::limit($biopsia->diagnostico_clinico, 50) }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if($biopsia->estado)
+                            <div class="flex items-center">
+                                <div class="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div>
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                    Activa
+                                </span>
+                            </div>
+                            @else
+                            <div class="flex items-center">
+                                <div class="h-2.5 w-2.5 rounded-full bg-red-400 mr-2"></div>
+                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                    Inactiva
+                                </span>
+                            </div>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <div class="flex items-center space-x-2">
+                                <!-- Editar -->
+                                @if (auth()->user()->role === 'admin')
+                                <a href="{{ route('biopsias.personas.edit', $biopsia->nbiopsia) }}"
+                                    class="text-indigo-600 hover:text-indigo-900">
+                                    Editar
+                                </a>
+                                @endif
+                                <a href="{{ route('biopsias.personas.show', $biopsia->nbiopsia) }}"
+                                    class="text-purple-600 hover:text-purple-900">
+                                    Ver
+                                </a>
 
-                    <!-- Toggle Estado -->
-                    @if (auth()->user()->role === 'admin')
-                    <form action="{{ route('biopsias.personas.toggle-estado', $biopsia->nbiopsia) }}" method="POST" class="inline">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit"
-                            class="font-semibold transition-colors {{ $biopsia->estado ? 'text-yellow-600 hover:text-yellow-700' : 'text-green-600 hover:text-green-700' }}">
-                            {{ $biopsia->estado ? 'Desactivar' : 'Activar' }}
-                        </button>
-                    </form>
-                    @endif
-                </div>
-            </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="7" class="px-6 py-4 text-center text-gray-500">
-                    <div class="py-8">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
-                        </svg>
-                        <h3 class="mt-2 text-sm font-medium text-gray-900">No hay biopsias de personas registradas</h3>
-                        <p class="mt-1 text-sm text-gray-500">Comienza creando tu primera biopsia para personas.</p>
-                        <div class="mt-6">
-                            <a href="{{ route('biopsias.personas.create') }}"
-                                class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                <!-- Toggle Estado -->
+                                @if (auth()->user()->role === 'admin')
+                                <form action="{{ route('biopsias.personas.toggle-estado', $biopsia->nbiopsia) }}" method="POST" class="inline">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit"
+                                        // Ya lo tienes en desactivar, agrégalo también en editar
+                                        onclick="return confirm('¿Estás seguro de cambiar el estado de esta biopsia?')"
+                                        class="font-semibold transition-colors {{ $biopsia->estado ? 'text-yellow-600 hover:text-yellow-700' : 'text-green-600 hover:text-green-700' }}">
+                                        {{ $biopsia->estado ? 'Desactivar' : 'Activar' }}
+                                    </button>
+                                </form>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="8" class="px-6 py-4 text-center text-gray-500">
+                            <div class="py-8">
+                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
                                 </svg>
-                                Nueva Biopsia
-                            </a>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            @endforelse
-            </tbody>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900">No hay biopsias de personas registradas</h3>
+                                <p class="mt-1 text-sm text-gray-500">Comienza creando tu primera biopsia para personas.</p>
+                                <div class="mt-6">
+                                    <a href="{{ route('biopsias.personas.create') }}"
+                                        class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                        </svg>
+                                        Nueva Biopsia
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
             </table>
         </div>
+
         <!-- Paginación -->
         @if($biopsias->hasPages())
         <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
             {{ $biopsias->links() }}
         </div>
         @endif
+    </div>
 
-    </div>
-    </div>
     <script>
-        const inputBuscar = document.querySelector('input[placeholder*="Buscar"]');
-        const filtroEstado = document.getElementById('filtro_estado');
-        const rows = document.querySelectorAll('tbody tr');
-
-        // Función para aplicar todos los filtros
-        function aplicarFiltros() {
-            const searchTerm = inputBuscar.value.toLowerCase();
-            const estado = filtroEstado.value;
-
-            rows.forEach(row => {
-                // Saltar la fila de "no hay registros"
-                if (row.cells.length === 1) return;
-
-                const text = row.textContent.toLowerCase();
-                const cumpleBusqueda = text.includes(searchTerm) || searchTerm === '';
-
-                let cumpleEstado = true;
-                if (estado === '1') {
-                    cumpleEstado = row.querySelector('.bg-green-100') !== null;
-                } else if (estado === '0') {
-                    cumpleEstado = row.querySelector('.bg-red-100') !== null;
-                }
-
-                row.style.display = (cumpleBusqueda && cumpleEstado) ? '' : 'none';
-            });
-        }
-
-        // Aplicar filtros al escribir
-        inputBuscar.addEventListener('input', aplicarFiltros);
-
-        // Aplicar filtros al cambiar estado
-        filtroEstado.addEventListener('change', aplicarFiltros);
-
-        // Búsqueda en tiempo real
-        document.querySelector('input[placeholder*="Buscar"]').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const rows = document.querySelectorAll('tbody tr:not(:last-child)');
-
-            rows.forEach(row => {
-                const text = row.textContent.toLowerCase();
-                if (text.includes(searchTerm) || searchTerm === '') {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+        document.getElementById('busqueda-rapida').addEventListener('input', function(e) {
+            const valor = e.target.value.toLowerCase();
+            document.querySelectorAll('tbody tr').forEach(fila => {
+                const texto = fila.textContent.toLowerCase();
+                fila.style.display = texto.includes(valor) ? '' : 'none';
             });
         });
     </script>

@@ -108,6 +108,7 @@
                     <div class="relative">
                         <input type="text"
                             name="buscar"
+                            id="busqueda-rapida"
                             value="{{ request('buscar') }}"
                             placeholder="Buscar por mascota, dueño, doctor o diagnóstico..."
                             class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
@@ -118,6 +119,16 @@
                             </svg>
                         </div>
                     </div>
+                </div>
+
+                <!-- Filtro por tipo -->
+                <div class="flex-shrink-0 min-w-[180px]">
+                    <select name="tipo"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        <option value="">Todos los tipos</option>
+                        <option value="normal" {{ request('tipo') == 'normal' ? 'selected' : '' }}>Normal</option>
+                        <option value="liquida" {{ request('tipo') == 'liquida' ? 'selected' : '' }}>Líquida</option>
+                    </select>
                 </div>
 
                 <!-- Filtro por estado -->
@@ -253,6 +264,7 @@
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit"
+                                        onclick="return confirm('¿Estás seguro de cambiar el estado de esta biopsia?')"
                                         class="font-semibold transition-colors {{ $biopsia->estado ? 'text-yellow-600 hover:text-yellow-700' : 'text-green-600 hover:text-green-700' }}">
                                         {{ $biopsia->estado ? 'Desactivar' : 'Activar' }}
                                     </button>
@@ -294,4 +306,14 @@
         </div>
         @endif
     </div>
+    <script>
+        document.getElementById('busqueda-rapida').addEventListener('input', function(e) {
+            const valor = e.target.value.toLowerCase();
+            document.querySelectorAll('tbody tr').forEach(fila => {
+                const texto = fila.textContent.toLowerCase();
+                fila.style.display = texto.includes(valor) ? '' : 'none';
+            });
+        });
+    </script>
+
 </x-app-layout>
