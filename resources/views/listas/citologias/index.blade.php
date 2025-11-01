@@ -1,4 +1,5 @@
 <x-app-layout>
+
     <div class="container mx-auto px-4 py-6">
         <!-- Navegación separada -->
         <div class="mb-6">
@@ -11,9 +12,6 @@
                     class="px-4 py-2 text-sm font-medium bg-white text-gray-900 rounded-md shadow-sm">
                     Citologías
                 </a>
-                <a href="{{ route('sobres.index') }}"
-                    class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-white rounded-md transition-colors">
-                    Imprimir Sobres
             </nav>
         </div>
         <div class="flex justify-between items-center mb-6">
