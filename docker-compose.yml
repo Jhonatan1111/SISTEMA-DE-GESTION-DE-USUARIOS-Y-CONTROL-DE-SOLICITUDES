@@ -1,15 +1,22 @@
 services:
   app:
-    image: ghcr.io/jhonatan1111/sistema-laboratorio-patologico:latest
+    build:
+      context: .
+    image: lape
     ports:
       - "8080:80"
+    volumes:
+      - ./public/build:/var/www/html/public/build:ro
     environment:
+      APP_ENV: production
+      APP_DEBUG: false
+      APP_KEY: base64:rbkwJFJA3z2Xq0cDjTamb1RHSErYrjV5RPT1bSak3E8=
       DB_CONNECTION: mysql
       DB_HOST: mysql
       DB_PORT: 3306
       DB_DATABASE: lape
       DB_USERNAME: root
-      DB_PASSWORD: mario
+      DB_PASSWORD: password
     depends_on:
       mysql:
         condition: service_healthy
