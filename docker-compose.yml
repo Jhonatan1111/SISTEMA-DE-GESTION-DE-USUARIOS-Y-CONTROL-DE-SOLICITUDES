@@ -1,5 +1,5 @@
 services:
-  app:
+  app-dev:
     #  build:
     #   context: .
     # image: lape
@@ -30,7 +30,7 @@ services:
     image: ghcr.io/jhonatan1111/sistema-laboratorio-patologico:latest
     command: ["bash", "-lc", "php artisan migrate --force && php artisan db:seed --force || true; exec apache2-foreground"]
     ports:
-      - "8080:80"
+      - "8081:80"
     profiles: ["prod"]
     environment:
       APP_ENV: production

@@ -72,6 +72,36 @@ docker-compose down -v
 - **dev**: Monta assets locales para desarrollo frontend
 - **prod**: Usa assets compilados de la imagen Docker
 
+### Puertos por perfil
+- Dev: `http://localhost:8080` (mapea `8080:80`)
+- Prod: `http://localhost:8081` (mapea `8081:80`)
+
+### Cambiar de perfil sin choques
+Para alternar entre `dev` y `prod` sin conflictos de puerto:
+```bash
+docker-compose --profile dev down --remove-orphans
+# o
+docker-compose --profile prod down --remove-orphans
+
+# Levantar el perfil deseado
+docker-compose --profile prod up -d
+# o
+docker-compose --profile dev up -d
+
+# Ver quién usa el puerto 8080 (Windows)
+docker ps --format "table {{.Names}}\t{{.Ports}}" | findstr 8080
+
+# Si queda un contenedor ocupando 8080, eliminarlo
+# (reemplaza <nombre> por el contenedor listado)
+docker rm -f <nombre>
+```
+
+Si persiste el conflicto de red/puerto:
+```bash
+docker-compose down -v --remove-orphans
+docker network prune -f
+```
+
 ### Solución de Problemas
 
 **Error 500:**
