@@ -27,25 +27,27 @@ cp .env.example .env
 
 3. **Levantar el sistema**
 
-**Opción A: Modo Desarrollo** (para modificar frontend)
+**Opción A: Entorno de la base de datos y contenedor** (para modificar backend, database)
 ```bash
-# Compilar assets (opcional)
-npm ci
-npm run build
-
-# Levantar contenedores
-docker-compose --profile dev up -d
+# Levantar servicios de desarrollo, (creacion de imagen mysql , junto a contenedor)
+docker-compose up -d 
 ```
 
-**Opción B: Modo Producción** (solo imagen)
+**Opción B: Modo Producción** (solo imagen, aplicacion web)
 ```bash
 docker-compose --profile prod up -d
 ```
+**Opción C: Modo Desarrollo** (solo imagen, aplicacion web)
+```bash
+docker-compose --profile dev up -d
+```
+
 
 4. **Acceder a la aplicación**
-- URL: http://localhost:8080
-- Usuario: `admin@admin.com`
-- Contraseña: `password`
+- URL: http://localhost:8081 (produccion)
+- URL: http://localhost:8080 (desarrollo)
+- Usuario: `admin@gmail.com`
+- Contraseña: `123456`
 
 ### Comandos Útiles
 
@@ -53,18 +55,10 @@ docker-compose --profile prod up -d
 # Ver logs
 docker-compose logs -f app
 
-# Verificar migraciones
-docker exec <container-name> php artisan migrate:status
-
-# Parar servicios
-docker-compose down
-
-# Reinicio limpio
-docker-compose down
-docker-compose --profile dev up -d
-
 # Limpiar volúmenes (si hay problemas con MySQL)
 docker-compose down -v
+
+##
 ```
 
 ### Perfiles Disponibles
@@ -73,46 +67,26 @@ docker-compose down -v
 - **prod**: Usa assets compilados de la imagen Docker
 
 ### Puertos por perfil
-- Dev: `http://localhost:8080` (mapea `8080:80`)
-- Prod: `http://localhost:8081` (mapea `8081:80`)
+- Dev: `http://localhost:8080` 
+- Prod: `http://localhost:8081` 
 
-### Cambiar de perfil sin choques
-Para alternar entre `dev` y `prod` sin conflictos de puerto:
+### Apagar y levantar entre `dev` y `prod`
+Nota: al ejecutar `docker-compose down` sin `--profile`, solo se detiene el servicio `mysql`. Para apagar o levantar la aplicación web, usa los comandos con el perfil `dev` o `prod` indicados abajo.
 ```bash
 docker-compose --profile dev down --remove-orphans
 # o
 docker-compose --profile prod down --remove-orphans
 
 # Levantar el perfil deseado
+# produccion
 docker-compose --profile prod up -d
-# o
+# desarrollo
 docker-compose --profile dev up -d
 
 # Ver quién usa el puerto 8080 (Windows)
 docker ps --format "table {{.Names}}\t{{.Ports}}" | findstr 8080
 
-# Si queda un contenedor ocupando 8080, eliminarlo
-# (reemplaza <nombre> por el contenedor listado)
-docker rm -f <nombre>
 ```
 
-Si persiste el conflicto de red/puerto:
-```bash
-docker-compose down -v --remove-orphans
-docker network prune -f
-```
 
-### Solución de Problemas
 
-**Error 500:**
-```bash
-# Verificar assets
-docker exec <container-name> ls -la public/build
-docker exec <container-name> cat public/build/manifest.json
-```
-
-**MySQL no arranca:**
-```bash
-docker-compose down -v
-docker-compose --profile dev up -d
-```
