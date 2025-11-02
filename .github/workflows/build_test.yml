@@ -79,3 +79,13 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/jhonatan1111/sistema-laboratorio-patologico:latest
+
+      - name: Smoke test assets in image
+        run: |
+          set -e
+          docker pull ghcr.io/jhonatan1111/sistema-laboratorio-patologico:latest
+          echo "Listing built assets in image..."
+          docker run --rm ghcr.io/jhonatan1111/sistema-laboratorio-patologico:latest ls -la /var/www/html/public/build || true
+          echo "Verifying manifest.json presence..."
+          docker run --rm ghcr.io/jhonatan1111/sistema-laboratorio-patologico:latest test -f /var/www/html/public/build/manifest.json
+          echo "Smoke test passed: manifest.json found."
