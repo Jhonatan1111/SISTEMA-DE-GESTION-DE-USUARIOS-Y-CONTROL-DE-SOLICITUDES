@@ -1,15 +1,47 @@
 services:
-  app:
+  app-dev:
+    #  build:
+    #   context: .
+    # image: lape
     image: ghcr.io/jhonatan1111/sistema-laboratorio-patologico:latest
+    command: ["bash", "-lc", "php artisan migrate --force && php artisan db:seed --force || true; exec apache2-foreground"]
     ports:
       - "8080:80"
+    profiles: ["dev"]
+    volumes:
+      - ./public/build:/var/www/html/public/build:ro
     environment:
+      APP_ENV: production
+      APP_DEBUG: false
+      APP_KEY: base64:rbkwJFJA3z2Xq0cDjTamb1RHSErYrjV5RPT1bSak3E8=
       DB_CONNECTION: mysql
       DB_HOST: mysql
       DB_PORT: 3306
       DB_DATABASE: lape
       DB_USERNAME: root
-      DB_PASSWORD: mario
+      DB_PASSWORD: password
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - lape-network
+
+  app-prod:
+    image: ghcr.io/jhonatan1111/sistema-laboratorio-patologico:latest
+    command: ["bash", "-lc", "php artisan migrate --force && php artisan db:seed --force || true; exec apache2-foreground"]
+    ports:
+      - "8081:80"
+    profiles: ["prod"]
+    environment:
+      APP_ENV: production
+      APP_DEBUG: false
+      APP_KEY: base64:rbkwJFJA3z2Xq0cDjTamb1RHSErYrjV5RPT1bSak3E8=
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: lape
+      DB_USERNAME: root
+      DB_PASSWORD: password
     depends_on:
       mysql:
         condition: service_healthy

@@ -1,3 +1,13 @@
+FROM node:20 AS assets-builder
+
+WORKDIR /app
+
+# Copiar proyecto completo para construir assets con Vite
+COPY . .
+
+# Instalar dependencias de Node y construir assets
+RUN npm ci && npm run build
+
 FROM php:8.4-apache
 
 # Instalar extensiones necesarias
@@ -20,6 +30,12 @@ WORKDIR /var/www/html
 
 # Copiar proyecto
 COPY . .
+
+# Copiar assets construidos desde la etapa de Node
+COPY --from=assets-builder /app/public/build /var/www/html/public/build
+
+# Asegurar que no se use Vite dev server dentro del contenedor
+RUN rm -f /var/www/html/public/hot
 
 # Instalar dependencias
 RUN composer install --no-dev --optimize-autoloader

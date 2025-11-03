@@ -1,61 +1,92 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistema de Gestión de Usuarios y Control de Solicitudes
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema de laboratorio patológico desarrollado con Laravel para la gestión de usuarios, doctores, pacientes, mascotas, biopsias y citologías.
 
-## About Laravel
+## 🚀 Inicio Rápido
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Prerrequisitos
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) instalado
+- Git
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Instalación
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. **Clonar el repositorio**
+```bash
+git clone https://github.com/jhonatan1111/sistema-laboratorio-patologico.git
+cd sistema-laboratorio-patologico
+```
 
-## Learning Laravel
+2. **Configurar entorno**
+```bash
+# Windows
+copy .env.example .env
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+# Linux/Mac
+cp .env.example .env
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+3. **Levantar el sistema**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Opción A: Entorno de la base de datos y contenedor** (para modificar backend, database)
+```bash
+# Levantar servicios de desarrollo, (creacion de imagen mysql , junto a contenedor)
+docker-compose up -d 
+```
 
-## Laravel Sponsors
+**Opción B: Modo Producción** (solo imagen, aplicacion web)
+```bash
+docker-compose --profile prod up -d
+```
+**Opción C: Modo Desarrollo** (solo imagen, aplicacion web)
+```bash
+docker-compose --profile dev up -d
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-### Premium Partners
+4. **Acceder a la aplicación**
+- URL: http://localhost:8081 (produccion)
+- URL: http://localhost:8080 (desarrollo)
+- Usuario: `admin@gmail.com`
+- Contraseña: `123456`
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Comandos Útiles
 
-## Contributing
+```bash
+# Ver logs
+docker-compose logs -f app
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Limpiar volúmenes (si hay problemas con MySQL)
+docker-compose down -v
 
-## Code of Conduct
+##
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Perfiles Disponibles
 
-## Security Vulnerabilities
+- **dev**: Monta assets locales para desarrollo frontend
+- **prod**: Usa assets compilados de la imagen Docker
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Puertos por perfil
+- Dev: `http://localhost:8080` 
+- Prod: `http://localhost:8081` 
 
-## License
+### Apagar y levantar entre `dev` y `prod`
+Nota: al ejecutar `docker-compose down` sin `--profile`, solo se detiene el servicio `mysql`. Para apagar o levantar la aplicación web, usa los comandos con el perfil `dev` o `prod` indicados abajo.
+```bash
+docker-compose --profile dev down --remove-orphans
+# o
+docker-compose --profile prod down --remove-orphans
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Levantar el perfil deseado
+# produccion
+docker-compose --profile prod up -d
+# desarrollo
+docker-compose --profile dev up -d
+
+# Ver quién usa el puerto 8080 (Windows)
+docker ps --format "table {{.Names}}\t{{.Ports}}" | findstr 8080
+
+```
+
+
+
