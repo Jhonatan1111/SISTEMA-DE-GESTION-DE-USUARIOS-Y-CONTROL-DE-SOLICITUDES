@@ -24,14 +24,13 @@
                 <h1 class="text-3xl font-bold text-gray-900">Biopsias Generales</h1>
                 <p class="text-gray-600 mt-1">Gestión completa de todas las biopsias del sistema</p>
             </div>
-            <div class="flex space-x-3">
-                <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    Exportar Datos
-                </button>
-            </div>
+            <a href="{{ route('biopsias.exportar-pdf', request()->all()) }}"
+                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                EXPORTAR PDF
+            </a>
         </div>
 
         <!-- Estadísticas -->
@@ -155,6 +154,20 @@
                         </option>
                         @endforeach
                     </select>
+                </div>
+
+                <!-- Filtro por fechas -->
+                <div class="flex-shrink-0 min-w-[180px]">
+                    <label for="fecha_desde" class="block text-sm text-gray-600 mb-1">Desde</label>
+                    <input type="date" name="fecha_desde" id="fecha_desde"
+                           value="{{ request('fecha_desde') }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                </div>
+                <div class="flex-shrink-0 min-w-[180px]">
+                    <label for="fecha_hasta" class="block text-sm text-gray-600 mb-1">Hasta</label>
+                    <input type="date" name="fecha_hasta" id="fecha_hasta"
+                           value="{{ request('fecha_hasta') }}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
                 </div>
 
                 <!-- Botones -->
