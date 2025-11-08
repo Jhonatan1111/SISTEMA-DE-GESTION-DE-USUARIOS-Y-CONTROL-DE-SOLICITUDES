@@ -19,7 +19,7 @@
                             <img src="/image/normal.png" alt="Normal" class="mx-auto w-12 h-12">
                         </span>
                         <h3 class="text-lg font-bold text-blue-900 mb-1">Normal</h3>
-                        <p class="text-sm text-blue-600">BMN0001</p>
+                        <p class="text-sm text-blue-600">BMN000X</p>
                     </div>
                 </button>
 
@@ -32,7 +32,7 @@
                             <img src="/image/lavado.png" alt="Lavado" class="mx-auto w-12 h-12">
                         </span>
                         <h3 class="text-lg font-bold text-purple-900 mb-1">Lavado</h3>
-                        <p class="text-sm text-purple-600">BML0001</p>
+                        <p class="text-sm text-purple-600">BML000X</p>
                     </div>
                 </button>
             </div>
@@ -165,7 +165,7 @@
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">Buscar por Código</label>
                                 <div class="flex gap-2">
-                                    <input type="text" id="buscar_codigo" placeholder="Ej: L001"
+                                    <input type="text" id="buscar_codigo" placeholder="Ej: LB001"
                                         class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500 uppercase transition-all">
                                     <button type="button" id="btn_buscar_codigo"
                                         class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-semibold transition-transform hover:scale-105">

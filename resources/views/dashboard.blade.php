@@ -10,7 +10,8 @@
 
         <!-- Cards Container -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            
+            @if (auth()->user()->role === 'admin')
+
             <!-- Gestión de Usuarios -->
             <a href="{{ route('admin.usuarios.index') }}" class="group">
                 <div class="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden h-full">
@@ -30,6 +31,7 @@
                     </div>
                 </div>
             </a>
+            @endif
 
             <!-- Gestión de Doctores -->
             <a href="{{ route('doctores.index') }}" class="group">
@@ -91,7 +93,7 @@
                 </div>
             </a>
 
-             <!-- Gestión de Citologías -->
+            <!-- Gestión de Citologías -->
             <a href="{{ route('citologias.personas.index') }}" class="group">
                 <div class="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden h-full">
                     <div class="bg-gradient-to-r from-pink-500 to-pink-600 px-6 py-8 flex justify-center">

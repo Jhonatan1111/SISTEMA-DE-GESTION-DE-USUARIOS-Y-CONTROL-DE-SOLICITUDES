@@ -92,113 +92,154 @@
             </div>
         </div>
 
-        <!-- Filtros y búsqueda -->
-        <div class="sticky top-2 z-10 bg-green-50 border border-green-200 rounded-xl shadow-sm mb-6">
-            <form method="GET" action="{{ route('biopsias.index') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 p-4 items-end">
-                <!-- Campo de búsqueda -->
-                <div class="lg:col-span-4 md:col-span-2 col-span-1">
-                    <div class="relative">
-                        <input type="text"
-                            name="buscar"
-                            id="busqueda-rapida"
-                            value="{{ request('buscar') }}"
-                            placeholder="Buscar por paciente, mascota, doctor o diagnóstico..."
-                            class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+        <!-- Filtros y búsqueda (colapsable estilo "Usar Plantilla") -->
+        @php
+        $filters = ['buscar','categoria','tipo','estado','doctor','fecha_desde','fecha_hasta'];
+        $activeCount = collect($filters)->filter(function($f){ return request($f); })->count();
+        @endphp
+        <div class="sticky top-2 z-10 mb-6">
+            <div class="bg-green-50 border border-green-200 rounded-xl shadow-sm overflow-hidden">
+                <button type="button" onclick="toggleFiltros()" class="w-full px-4 py-3 flex items-center justify-between hover:bg-green-100 transition-colors">
+                    <span class="flex items-center gap-2">
+                        <svg class="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <span class="text-sm font-medium text-gray-700">Filtros y búsqueda</span>
+                    </span>
+                    <span class="text-xs text-gray-500 flex items-center gap-2">
+                        <svg id="icon-filtros" class="w-5 h-5 transform transition-transform {{ $activeCount ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                        {{ $activeCount }} filtro(s) activo(s)
+                    </span>
+                </button>
+
+                <div id="filtros-content" class="{{ $activeCount ? '' : 'hidden' }} px-4 pb-3">
+                    <form method="GET" action="{{ route('biopsias.index') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 p-4 items-end">
+                        <!-- Campo de búsqueda -->
+                        <div class="lg:col-span-4 md:col-span-2 col-span-1">
+                            <div class="relative">
+                                <input type="text"
+                                    name="buscar"
+                                    id="busqueda-rapida"
+                                    value="{{ request('buscar') }}"
+                                    placeholder="Buscar por paciente, mascota, doctor o diagnóstico..."
+                                    class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Filtro por categoría (Persona/Mascota) -->
-                <div class="lg:col-span-2 col-span-1">
-                    <div class="relative">
-                        <select name="categoria"
-                            class="w-full pl-3 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
-                            <option value="">Todas las categorías</option>
-                            <option value="persona" {{ request('categoria') == 'persona' ? 'selected' : '' }}>Personas</option>
-                            <option value="mascota" {{ request('categoria') == 'mascota' ? 'selected' : '' }}>Mascotas</option>
-                        </select>
-                    </div>
-                </div>
+                        <!-- Filtro por categoría (Persona/Mascota) -->
+                        <div class="lg:col-span-2 col-span-1">
+                            <label for="categoria" class="block text-sm text-gray-600 mb-1">Categoría</label>
+                            <div class="relative">
+                                <select name="categoria"
+                                    class="w-full pl-3 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
+                                    <option value="">Todas las categorías</option>
+                                    <option value="persona" {{ request('categoria') == 'persona' ? 'selected' : '' }}>Personas</option>
+                                    <option value="mascota" {{ request('categoria') == 'mascota' ? 'selected' : '' }}>Mascotas</option>
+                                </select>
+                            </div>
+                        </div>
 
-                <!-- Filtro por tipo -->
-                <div class="lg:col-span-2 col-span-1">
-                    <div class="relative">
-                        <select name="tipo"
-                            class="w-full pl-3 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
-                            <option value="">Todos los tipos</option>
-                            <option value="normal" {{ request('tipo') == 'normal' ? 'selected' : '' }}>Normal</option>
-                            <option value="liquida" {{ request('tipo') == 'liquida' ? 'selected' : '' }}>Líquida</option>
-                        </select>
-                    </div>
-                </div>
+                        <!-- Filtro por tipo -->
+                        <div class="lg:col-span-2 col-span-1">
+                            <label for="tipo" class="block text-sm text-gray-600 mb-1">Tipo</label>
+                            <div class="relative">
+                                <select name="tipo"
+                                    class="w-full pl-3 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
+                                    <option value="">Todos los tipos</option>
+                                    <option value="normal" {{ request('tipo') == 'normal' ? 'selected' : '' }}>Normal</option>
+                                    <option value="liquida" {{ request('tipo') == 'liquida' ? 'selected' : '' }}>Líquida</option>
+                                </select>
+                            </div>
+                        </div>
 
-                <!-- Filtro por estado -->
-                <div class="lg:col-span-2 col-span-1">
-                    <div class="relative">
-                        <select name="estado"
-                            class="w-full pl-3 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
-                            <option value="">Todos los estados</option>
-                            <option value="1" {{ request('estado') == '1' ? 'selected' : '' }}>Activas</option>
-                            <option value="0" {{ request('estado') == '0' ? 'selected' : '' }}>Inactivas</option>
-                        </select>
-                    </div>
-                </div>
+                        <!-- Filtro por estado -->
+                        <div class="lg:col-span-2 col-span-1">
+                            <label for="estado" class="block text-sm text-gray-600 mb-1">Estado</label>
+                            <div class="relative">
+                                <select name="estado"
+                                    class="w-full pl-3 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
+                                    <option value="">Todos los estados</option>
+                                    <option value="1" {{ request('estado') == '1' ? 'selected' : '' }}>Activas</option>
+                                    <option value="0" {{ request('estado') == '0' ? 'selected' : '' }}>Inactivas</option>
+                                </select>
+                            </div>
+                        </div>
 
-                <!-- Filtro por doctor -->
-                <div class="lg:col-span-2 col-span-1">
-                    <div class="relative">
-                        <select name="doctor"
-                            class="w-full pl-3 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
-                            <option value="">Todos los doctores</option>
-                            @foreach(\App\Models\Doctor::all() as $doctor)
-                            <option value="{{ $doctor->id }}" {{ request('doctor') == $doctor->id ? 'selected' : '' }}>
-                                Dr. {{ $doctor->nombre }} {{ $doctor->apellido }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
+                        <!-- Filtro por doctor -->
+                        <div class="lg:col-span-2 col-span-1">
+                            <label for="doctor" class="block text-sm text-gray-600 mb-1">Doctor</label>
+                            <div class="relative">
+                                <select name="doctor"
+                                    class="w-full pl-3 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
+                                    <option value="">Todos los doctores</option>
+                                    @foreach(\App\Models\Doctor::all() as $doctor)
+                                    <option value="{{ $doctor->id }}" {{ request('doctor') == $doctor->id ? 'selected' : '' }}>
+                                        Dr. {{ $doctor->nombre }} {{ $doctor->apellido }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
 
-                <!-- Filtro por fechas -->
-                <div class="lg:col-span-2 col-span-1">
-                    <label for="fecha_desde" class="block text-sm text-gray-600 mb-1">Desde</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM6 9a1 1 0 100 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
-                        </span>
-                        <input type="date" name="fecha_desde" id="fecha_desde" value="{{ request('fecha_desde') }}"
-                               class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400">
-                    </div>
-                </div>
-                <div class="lg:col-span-2 col-span-1">
-                    <label for="fecha_hasta" class="block text-sm text-gray-600 mb-1">Hasta</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM6 9a1 1 0 100 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
-                        </span>
-                        <input type="date" name="fecha_hasta" id="fecha_hasta" value="{{ request('fecha_hasta') }}"
-                               class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400">
-                    </div>
-                </div>
+                        <!-- Filtro por fechas -->
+                        <div class="lg:col-span-2 col-span-1">
+                            <label for="fecha_desde" class="block text-sm text-gray-600 mb-1">Desde</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM6 9a1 1 0 100 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                                <input type="date" name="fecha_desde" id="fecha_desde" value="{{ request('fecha_desde') }}"
+                                    class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400">
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2 col-span-1">
+                            <label for="fecha_hasta" class="block text-sm text-gray-600 mb-1">Hasta</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM6 9a1 1 0 100 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                                <input type="date" name="fecha_hasta" id="fecha_hasta" value="{{ request('fecha_hasta') }}"
+                                    class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400">
+                            </div>
+                        </div>
 
-                <!-- Botones -->
-                <div class="lg:col-span-2 md:col-span-2 col-span-1 flex gap-4 items-center mt-1">
-                    <button type="submit"
-                        class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
-                        Filtrar
-                    </button>
-                    <a href="{{ route('biopsias.index') }}"
-                        class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors">
-                        Limpiar
-                    </a>
+                        <!-- Botones -->
+                        <div class="lg:col-span-2 md:col-span-2 col-span-1 flex gap-4 items-center mt-1">
+                            <button type="submit"
+                                class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
+                                Filtrar
+                            </button>
+                            <a href="{{ route('biopsias.index') }}"
+                                class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors">
+                                Limpiar
+                            </a>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
+
+        <script>
+            function toggleFiltros() {
+                const content = document.getElementById('filtros-content');
+                const icon = document.getElementById('icon-filtros');
+                if (!content || !icon) return;
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            }
+        </script>
 
         <!-- Mensajes de éxito/error -->
         @if(session('success'))

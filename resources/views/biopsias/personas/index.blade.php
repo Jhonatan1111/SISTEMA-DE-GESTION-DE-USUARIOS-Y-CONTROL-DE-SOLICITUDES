@@ -125,39 +125,36 @@
 
                 <!-- Filtro por tipo -->
                 <div class="lg:col-span-2 col-span-1">
+                    <label for="tipo" class="block text-sm text-gray-600 mb-1">Tipo</label>
                     <div class="relative">
                         <select name="tipo"
-                            class="w-full appearance-none pl-3 pr-9 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
+                            class="w-full pl-3 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
                             <option value="">Todos los tipos</option>
                             <option value="normal" {{ request('tipo') == 'normal' ? 'selected' : '' }}>Normal</option>
                             <option value="liquida" {{ request('tipo') == 'liquida' ? 'selected' : '' }}>Líquida</option>
                         </select>
-                        <span class="pointer-events-none absolute right-2.5 top-2.5 text-gray-400">
-                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 011.08 1.04l-4.25 4.25a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z"/></svg>
-                        </span>
                     </div>
                 </div>
 
                 <!-- Filtro por estado -->
                 <div class="lg:col-span-2 col-span-1">
+                    <label for="estado" class="block text-sm text-gray-600 mb-1">Estado</label>
                     <div class="relative">
                         <select name="estado"
-                            class="w-full appearance-none pl-3 pr-9 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
+                            class="w-full pl-3 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
                             <option value="">Todos los estados</option>
                             <option value="1" {{ request('estado') == '1' ? 'selected' : '' }}>Activas</option>
                             <option value="0" {{ request('estado') == '0' ? 'selected' : '' }}>Inactivas</option>
                         </select>
-                        <span class="pointer-events-none absolute right-2.5 top-2.5 text-gray-400">
-                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 011.08 1.04l-4.25 4.25a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z"/></svg>
-                        </span>
                     </div>
                 </div>
 
                 <!-- Filtro por doctor -->
                 <div class="lg:col-span-2 col-span-1">
+                    <label for="doctor" class="block text-sm text-gray-600 mb-1">Doctor</label>
                     <div class="relative">
                         <select name="doctor"
-                            class="w-full appearance-none pl-3 pr-9 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
+                            class="w-full pl-3 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
                             <option value="">Todos los doctores</option>
                             @foreach(\App\Models\Doctor::all() as $doctor)
                             <option value="{{ $doctor->id }}" {{ request('doctor') == $doctor->id ? 'selected' : '' }}>
@@ -165,9 +162,6 @@
                             </option>
                             @endforeach
                         </select>
-                        <span class="pointer-events-none absolute right-2.5 top-2.5 text-gray-400">
-                            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20"><path d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 011.08 1.04l-4.25 4.25a.75.75 0 01-1.06 0L5.21 8.27a.75.75 0 01.02-1.06z"/></svg>
-                        </span>
                     </div>
                 </div>
 
@@ -285,13 +279,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex items-center space-x-2">
-                                <!-- Editar -->
-                                @if (auth()->user()->role === 'admin')
-                                <a href="{{ route('biopsias.personas.edit', $biopsia->nbiopsia) }}"
-                                    class="text-indigo-600 hover:text-indigo-900">
-                                    Editar
-                                </a>
-                                @endif
+                                
                                 <a href="{{ route('biopsias.personas.show', $biopsia->nbiopsia) }}"
                                     class="text-purple-600 hover:text-purple-900">
                                     Ver

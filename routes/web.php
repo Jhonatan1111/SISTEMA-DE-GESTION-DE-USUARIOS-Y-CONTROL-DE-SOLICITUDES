@@ -61,6 +61,12 @@ Route::middleware('auth')->group(function () {
     Route::get('biopsias/personas/{nbiopsia}/imprimir', [BiopsiaPacienteController::class, 'imprimir'])->name('biopsias.personas.imprimir'); // ← MOVER AQUÍ (fuera de admin)
     Route::get('biopsias/personas/{nbiopsia}/pdf', [BiopsiaPacienteController::class, 'descargarPdf'])->name('biopsias.personas.pdf');
 
+    // BUSCADOR DE LISTAS PARA PERSONAS (AJAX)
+    Route::get('/biopsias-personas/buscar-lista/{id}', [BiopsiaPacienteController::class, 'buscarLista'])
+        ->name('biopsias.personas.buscar-lista');
+    Route::get('/biopsias-personas/buscar-lista-codigo/{codigo}', [BiopsiaPacienteController::class, 'buscarListaPorCodigo'])
+        ->name('biopsias.personas.buscar-lista-codigo');
+
     // BIOPSIAS MASCOTAS
     Route::get('biopsias/mascotas/obtener-numero-correlativo', [BiopsiaMascotaController::class, 'obtenerNumeroCorrelativo'])->name('biopsias.mascotas.obtener-numero-correlativo');
     Route::get('biopsias/mascotas', [BiopsiaMascotaController::class, 'index'])->name('biopsias.mascotas.index');

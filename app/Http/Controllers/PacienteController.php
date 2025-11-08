@@ -32,7 +32,7 @@ class PacienteController extends Controller
             'fecha_nacimiento' => 'date',
             'estado_civil' => 'string',
             'ocupacion' => 'string',
-            'correo' => 'string|email|unique:pacientes',
+            'correo' => 'nullable|string|email|max:255',
             'direccion' => 'nullable|string|max:500',
             'celular' => 'required|digits:8|unique:pacientes',
         ]);
