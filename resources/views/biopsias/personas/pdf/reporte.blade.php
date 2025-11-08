@@ -27,13 +27,13 @@
         .header {
             text-align: center;
             margin-bottom: 20px;
-            border-bottom: 2px solid #2563eb;
+            border-bottom: 2px solid #10b981; /* Verde, igual que Mascotas */
             padding-bottom: 10px;
         }
 
         .header h1 {
             font-size: 18px;
-            color: #1e40af;
+            color: #047857; /* Verde oscuro, igual que Mascotas */
             margin-bottom: 5px;
         }
 
@@ -65,7 +65,7 @@
         }
 
         th {
-            background-color: #2563eb;
+            background-color: #10b981; /* Verde, igual que Mascotas */
             color: white;
             padding: 8px 4px;
             text-align: left;

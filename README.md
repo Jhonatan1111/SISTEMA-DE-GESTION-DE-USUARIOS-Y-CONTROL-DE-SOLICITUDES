@@ -89,4 +89,5 @@ docker ps --format "table {{.Names}}\t{{.Ports}}" | findstr 8080
 ```
 
 
+composer require barryvdh/laravel-dompdf
 
