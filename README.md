@@ -25,6 +25,32 @@ copy .env.example .env
 cp .env.example .env
 ```
 
+```bash
+# Instalar dependencias composer
+composer upgrade 
+
+# Instalar dependencias de composer
+composer install --no-interaction --prefer-dist
+
+# Generar llave de aplicacion
+php artisan key:generate
+
+# Dependecia de dompdf para generar pdf
+composer require barryvdh/laravel-dompdf
+
+# Migrar Base de Datos
+php artisan migrate --seed
+
+# Instalar Node.js y npm
+npm install
+
+# Construir assets de frontend
+npm run build
+
+# Iniciar servidor de desarrollo
+php artisan serve
+```
+
 3. **Levantar el sistema**
 
 **Opción A: Entorno de la base de datos y contenedor** (para modificar backend, database)
@@ -87,8 +113,3 @@ docker-compose --profile dev up -d
 docker ps --format "table {{.Names}}\t{{.Ports}}" | findstr 8080
 
 ```
-
-
-composer require barryvdh/laravel-dompdf
-composer install --no-interaction --prefer-dist
-
