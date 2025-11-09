@@ -19,7 +19,7 @@
                             <img src="/image/normal.png" alt="Bnormal" class="mx-auto w-12 h-12">
                         </span>
                         <h3 class="text-lg font-bold text-blue-900 mb-1">Normal</h3>
-                        <p class="text-sm text-blue-600">BPN2025XXXX</p>
+                        <p class="text-sm text-blue-600">BPN000X</p>
                     </div>
                 </button>
 
@@ -32,7 +32,7 @@
                             <img src="/image/lavado.png" alt="Lavado" class="mx-auto w-12 h-12">
                         </span>
                         <h3 class="text-lg font-bold text-purple-900 mb-1">Lavado</h3>
-                        <p class="text-sm text-purple-600">BPL2025XXXX</p>
+                        <p class="text-sm text-purple-600">BPL000X</p>
                     </div>
                 </button>
             </div>
@@ -95,7 +95,7 @@
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Número de Biopsia</label>
                             <div class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg bg-blue-50 flex items-center">
-                                <span class="font-semibold text-green-600" id="numero_display_header">BPN0013</span>
+                                <span class="font-semibold text-green-600" id="numero_display_header"></span>
                             </div>
                         </div>
 
@@ -165,7 +165,7 @@
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">Buscar por Código</label>
                                 <div class="flex gap-2">
-                                    <input type="text" id="buscar_codigo" placeholder="Ej: L001"
+                                    <input type="text" id="buscar_codigo" placeholder="Ej: LB001"
                                         class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500 uppercase transition-all">
                                     <button type="button" id="btn_buscar_codigo"
                                         class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-semibold transition-transform hover:scale-105">
@@ -198,18 +198,24 @@
                         </div>
                     </div>
                 </div>
+                <!-- Análisis (Opcional) -->
+                <div class="bg-gradient-to-r from-green-50 via-white to-green-50 border border-green-200 rounded-2xl shadow-lg overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-2xl">
+                    <button type="button" onclick="toggleAnalisis()" class="w-full px-6 py-4 flex justify-between items-center hover:bg-green-100 transition-colors">
+                        <span class="font-medium text-green-800">
+                            <svg class="w-5 h-5 inline mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                            </svg>
+                            Análisis Detallado (Opcional)
+                        </span>
+                        <svg id="icon-analisis" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
 
-                <!-- Análisis Detallado -->
-                <div class="bg-gradient-to-r from-green-50 via-white to-green-50 p-6 rounded-2xl shadow-xl border border-green-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
-                    <h2 class="text-xl font-bold text-green-700 mb-4 border-b-2 border-green-200 pb-2">Análisis Detallado</h2>
-                    <div class="space-y-4">
-
-
+                    <div id="analisis-content" class="hidden px-6 pb-4 space-y-4">
                         <!-- Macroscópico -->
                         <div>
-                            <label for="macroscopico" class="block text-sm font-semibold text-gray-700 mb-1">
-                                Descripción Macroscópica
-                            </label>
+                            <label for="macroscopico" class="block text-sm font-semibold text-gray-700 mb-1">Descripción Macroscópica</label>
                             <textarea id="macroscopico" name="macroscopico" rows="4"
                                 class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
                                 placeholder="Describa las características macroscópicas de la muestra...">{{ old('macroscopico') }}</textarea>
@@ -217,18 +223,15 @@
 
                         <!-- Microscópico -->
                         <div>
-                            <label for="microscopico" class="block text-sm font-semibold text-gray-700 mb-1">
-                                Descripción Microscópica
-                            </label>
+                            <label for="microscopico" class="block text-sm font-semibold text-gray-700 mb-1">Descripción Microscópica</label>
                             <textarea id="microscopico" name="microscopico" rows="4"
                                 class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
                                 placeholder="Describa las características microscópicas de la muestra...">{{ old('microscopico') }}</textarea>
                         </div>
+
                         <!-- Diagnóstico Clínico -->
                         <div>
-                            <label for="diagnostico" class="block text-sm font-semibold text-gray-700 mb-1">
-                                Diagnóstico
-                            </label>
+                            <label for="diagnostico" class="block text-sm font-semibold text-gray-700 mb-1">Diagnóstico</label>
                             <textarea id="diagnostico" name="diagnostico" rows="3"
                                 class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
                                 placeholder="Diagnóstico de la muestra...">{{ old('diagnostico') }}</textarea>
@@ -368,114 +371,90 @@
             icon.classList.toggle('rotate-180');
         }
 
-        // Buscar por código (igual que edit)
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('btn_buscar_codigo').addEventListener('click', function() {
-                const codigo = document.getElementById('buscar_codigo').value.trim().toUpperCase();
-                if (!codigo) {
-                    alert('Ingresa un código');
-                    return;
-                }
+        // Buscar por codigo
+        document.getElementById('btn_buscar_codigo')?.addEventListener('click', function() {
+            const codigo = document.getElementById('buscar_codigo').value.trim().toUpperCase();
+            if (!codigo) {
+                alert('Por favor ingrese un código');
+                return;
+            }
 
-                fetch(`/biopsias-personas/buscar-lista-codigo/${codigo}`)
-                    .then(res => res.json())
-                    .then(result => {
-                        if (result.success) {
-                            const data = result.data;
-                            // Solo extraer macroscopico de las listas
-                            document.getElementById('macroscopico').value = data.macroscopico || '';
-                            document.getElementById('lista_id').value = data.id;
-                            document.getElementById('selected_template').value = `${data.codigo} - ${data.descripcion}`;
-                            // Los campos diagnostico y microscopico se escriben manualmente
-                            if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
-                        } else {
-                            alert(`Código "${codigo}" no encontrado`);
+            fetch(`{{ url('/biopsias-personas/buscar-lista-codigo') }}/${codigo}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('lista_id').value = data.data.id;
+                        document.getElementById('selected_template').value = data.data.codigo + ' - ' + data.data.descripcion;
+                        document.getElementById('macroscopico').value = data.data.macroscopico || '';
+
+                        if (document.getElementById('analisis-content').classList.contains('hidden')) {
+                            toggleAnalisis();
                         }
-                    })
-                    .catch(err => {
-                        console.error('Error:', err);
-                        alert('Error al buscar el código');
-                    });
-            });
-
-            // Mostrar modal al cargar
-            document.getElementById('modal-tipo').style.display = 'flex';
+                    } else {
+                        alert('Código no encontrado');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al buscar la plantilla');
+                });
         });
 
-        // Funciones para el modal de plantillas
+        // Modal de plantillas
         function openTemplateModal() {
             document.getElementById('template-modal').style.display = 'flex';
-            document.getElementById('template-search').focus();
-            // Inicializar el mensaje de búsqueda al abrir el modal
-            initializeModalMessage();
         }
 
         function closeTemplateModal() {
             document.getElementById('template-modal').style.display = 'none';
-            document.getElementById('template-search').value = '';
-            filterTemplates();
         }
 
-        // Función para inicializar el mensaje del modal
-        function initializeModalMessage() {
-            const items = document.querySelectorAll('.template-item');
-            const noResultsMsg = document.getElementById('no-results-message');
+        function selectTemplate(id, codigo, descripcion, macroscopico) {
+            document.getElementById('lista_id').value = id;
+            document.getElementById('selected_template').value = codigo + ' - ' + descripcion;
 
-            if (items.length === 0) {
-                // Si no hay plantillas disponibles
-                noResultsMsg.innerHTML = `
-                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-                    </svg>
-                    <p class="text-lg font-medium">No hay plantillas disponibles</p>
-                    <p class="text-sm">Contacta al administrador para agregar plantillas de biopsia</p>
-                `;
-                noResultsMsg.style.display = 'block';
+            const macroscopicoTextarea = document.getElementById('macroscopico');
+            const contenidoActual = macroscopicoTextarea.value.trim();
+
+            if (contenidoActual === '') {
+                macroscopicoTextarea.value = macroscopico || '';
             } else {
-                // Si hay plantillas, mostrar mensaje de búsqueda y ocultar todas las plantillas inicialmente
-                noResultsMsg.innerHTML = `
-                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                    <p class="text-lg font-medium">Escribe para buscar plantillas</p>
-                    <p class="text-sm">Usa el buscador arriba para encontrar plantillas por código, diagnóstico o descripción</p>
-                `;
-                noResultsMsg.style.display = 'block';
-
-                // Ocultar todas las plantillas inicialmente
-                items.forEach(item => {
-                    item.style.display = 'none';
-                });
+                macroscopicoTextarea.value = contenidoActual + ' ' + (macroscopico || '');
             }
+
+            closeTemplateModal();
+            if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
         }
 
         function clearTemplate() {
             document.getElementById('lista_id').value = '';
             document.getElementById('selected_template').value = '';
-            document.getElementById('macroscopico').value = '';
         }
 
-        function selectTemplate(id, codigo, descripcion, macroscopico) {
-            document.getElementById('lista_id').value = id;
+        function filterTemplates() {
+            const searchTerm = document.getElementById('template-search').value.toLowerCase();
+            const items = document.querySelectorAll('.template-item');
+            let visibleCount = 0;
 
-            // Manejar casos donde descripcion puede ser undefined o vacío
-            const descripcionText = descripcion && descripcion !== 'undefined' ? descripcion : 'Sin descripción';
-            document.getElementById('selected_template').value = `${codigo} - ${descripcionText}`;
+            items.forEach(item => {
+                const codigo = item.getAttribute('data-codigo').toLowerCase();
+                const diagnostico = item.getAttribute('data-diagnostico').toLowerCase();
+                const macroscopico = item.getAttribute('data-macroscopico').toLowerCase();
 
-            // Agregar la plantilla al contenido existente
-            const macroscopicoField = document.getElementById('macroscopico');
-            const contenidoActual = macroscopicoField.value.trim();
+                if (codigo.includes(searchTerm) || diagnostico.includes(searchTerm) || macroscopico.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
 
-            if (contenidoActual === '') {
-                // Si está vacío, usar solo la plantilla
-                macroscopicoField.value = macroscopico || '';
+            const noResultsMsg = document.getElementById('no-results-message');
+            if (visibleCount === 0 && searchTerm !== '') {
+                noResultsMsg.style.display = 'block';
             } else {
-                // Si ya tiene contenido, agregar la plantilla al final con separación visible
-                macroscopicoField.value = contenidoActual + ' ' + (macroscopico || '');
+                noResultsMsg.style.display = 'none';
             }
-
-            closeTemplateModal();
-            if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
         }
 
         function filterTemplates() {
@@ -537,12 +516,48 @@
                 noResultsMsg.style.display = 'none';
             }
         }
-    </script>
+        // Validación de fecha
+        function validarFecha(input) {
+            if (!input.value) return true;
 
+            const fechaSeleccionada = new Date(input.value + 'T00:00:00');
+            const fechaHoy = new Date();
+            fechaHoy.setHours(0, 0, 0, 0);
+
+            if (fechaSeleccionada > fechaHoy) {
+                alert('⚠️ La fecha de recepción no puede ser futura.\n\nPor favor selecciona una fecha válida (hoy o anterior).');
+                input.style.borderColor = '#ef4444';
+                input.focus();
+                input.select();
+                return false;
+            }
+
+            input.style.borderColor = '';
+            return true;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const fechaInput = document.getElementById('fecha_recibida');
+
+            if (form && fechaInput) {
+                form.addEventListener('submit', function(e) {
+                    if (!validarFecha(fechaInput)) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    }
+                });
+
+                fechaInput.addEventListener('change', function() {
+                    validarFecha(this);
+                });
+            }
+        });
+    </script>
     <!-- Modal de búsqueda de plantillas -->
     <div id="template-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
         <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 h-[70vh] overflow-hidden flex flex-col">
-            <!-- Header del Modal -->
             <div class="flex justify-between items-center p-4 border-b bg-gradient-to-r from-yellow-50 to-orange-50">
                 <div>
                     <h3 class="text-lg font-bold text-gray-900">Buscar y Seleccionar Plantilla</h3>
@@ -556,7 +571,6 @@
             </div>
 
             <div class="p-4 flex-1 overflow-y-auto">
-                <!-- Buscador -->
                 <div class="mb-4 bg-gradient-to-r from-blue-50 to-indigo-50 p-3 rounded-lg border border-blue-200">
                     <div class="flex items-center mb-2">
                         <h4 class="font-semibold text-blue-800 text-sm">Buscador</h4>
@@ -564,25 +578,17 @@
                     <input type="text" id="template-search" placeholder="Buscar por código, descripción o macro..."
                         class="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 text-base shadow-sm"
                         oninput="filterTemplates()">
-
                 </div>
 
-                <!-- Separador -->
                 <div class="flex items-center mb-3">
                     <div class="flex-1 border-t border-gray-300"></div>
                     <span class="px-3 text-xs text-gray-500 bg-white">Plantillas Disponibles</span>
                     <div class="flex-1 border-t border-gray-300"></div>
                 </div>
 
-                <!-- Lista de Plantillas -->
-                <div id="template-list" class="space-y-2 max-h-96 overflow-y-auto border border-gray-200 rounded-lg bg-gray-50 p-2" style="min-height: 350;">
-                    <!-- Mensaje cuando no hay resultados -->
+                <div id="template-list" class="space-y-2 max-h-96 overflow-y-auto border border-gray-200 rounded-lg bg-gray-50 p-2">
                     <div id="no-results-message" class="text-center py-8 text-gray-500" style="display: none;">
-                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.009-5.824-2.562M15 6.75A3.75 3.75 0 0011.25 3a3.75 3.75 0 00-3.75 3.75 0 003.75 3.75A3.75 3.75 0 0015 6.75z"></path>
-                        </svg>
                         <p class="text-lg font-medium">No se encontraron plantillas</p>
-                        <p class="text-sm">Intenta con otras palabras como 'anatomía', 'huesos', 'carne'</p>
                     </div>
 
                     @foreach($listas as $lista)
@@ -610,48 +616,4 @@
         </div>
     </div>
 
-    <script>
-        // Función para validar que la fecha no sea futura
-        function validarFecha(input) {
-            if (!input.value) return true;
-
-            const fechaSeleccionada = new Date(input.value + 'T00:00:00');
-            const fechaHoy = new Date();
-            fechaHoy.setHours(0, 0, 0, 0);
-
-            if (fechaSeleccionada > fechaHoy) {
-                // Mostrar alerta pero NO resetear automáticamente
-                alert('⚠️ La fecha de recepción no puede ser futura.\n\nPor favor selecciona una fecha válida (hoy o anterior).');
-                input.style.borderColor = '#ef4444';
-                input.focus();
-                input.select(); // Seleccionar el texto para facilitar el cambio
-                return false;
-            }
-
-            input.style.borderColor = '';
-            return true;
-        }
-
-        // Validación solo al enviar el formulario y al cambiar la fecha
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('form');
-            const fechaInput = document.getElementById('fecha_recibida');
-
-            if (form && fechaInput) {
-                // Validación al enviar formulario
-                form.addEventListener('submit', function(e) {
-                    if (!validarFecha(fechaInput)) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return false;
-                    }
-                });
-
-                // Validación solo al cambiar la fecha (no en tiempo real)
-                fechaInput.addEventListener('change', function() {
-                    validarFecha(this);
-                });
-            }
-        });
-    </script>
 </x-app-layout>

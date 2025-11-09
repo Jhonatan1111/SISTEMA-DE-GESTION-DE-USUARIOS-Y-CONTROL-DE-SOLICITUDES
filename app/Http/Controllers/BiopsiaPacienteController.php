@@ -55,6 +55,13 @@ class BiopsiaPacienteController extends Controller
         if ($request->filled('doctor')) {
             $query->where('doctor_id', $request->doctor);
         }
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate('fecha_recibida', '>=', $request->fecha_desde);
+        }
+
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate('fecha_recibida', '<=', $request->fecha_hasta);
+        }
 
         $biopsias = $query->orderBy('fecha_recibida', 'desc')
             ->paginate(10)
@@ -382,66 +389,63 @@ class BiopsiaPacienteController extends Controller
         return view('biopsias.pacientes.reporte-pdf', compact('paciente', 'biopsias'));
     }
 
-    // Exportar lista de biopsias de pacientes a CSV
-    public function exportarCsv(Request $request)
+    // EXPORTAR BIOPSIAS DE PERSONAS A PDF
+    public function exportarPdf(Request $request)
     {
-        $query = Biopsia::with(['paciente', 'doctor'])->humanos();
+        $query = Biopsia::with(['paciente', 'doctor'])
+            ->whereNotNull('paciente_id')
+            ->whereNull('mascota_id');
 
-        // Aplicar filtros si vienen en la request
-        if ($request->fecha_desde) {
-            $query->where('fecha_recibida', '>=', $request->fecha_desde);
+        // Aplicar filtros
+        if ($request->filled('buscar')) {
+            $buscar = $request->buscar;
+            $query->where(function ($q) use ($buscar) {
+                $q->where('nbiopsia', 'like', "%{$buscar}%")
+                    ->orWhere('diagnostico_clinico', 'like', "%{$buscar}%")
+                    ->orWhereHas('doctor', function ($q) use ($buscar) {
+                        $q->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('apellido', 'like', "%{$buscar}%")
+                            ->orWhere('jvpm', 'like', "%{$buscar}%");
+                    })
+                    ->orWhereHas('paciente', function ($q) use ($buscar) {
+                        $q->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('apellido', 'like', "%{$buscar}%")
+                            ->orWhere('dui', 'like', "%{$buscar}%");
+                    });
+            });
         }
-        if ($request->fecha_hasta) {
-            $query->where('fecha_recibida', '<=', $request->fecha_hasta);
+
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
         }
-        if ($request->doctor_id) {
-            $query->where('doctor_id', $request->doctor_id);
+
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        if ($request->filled('doctor')) {
+            $query->where('doctor_id', $request->doctor);
+        }
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate('fecha_recibida', '>=', $request->fecha_desde);
+        }
+
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate('fecha_recibida', '<=', $request->fecha_hasta);
         }
 
         $biopsias = $query->orderBy('fecha_recibida', 'desc')->get();
 
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="biopsias_pacientes_' . now()->format('Y-m-d') . '.csv"',
+        $data = [
+            'biopsias' => $biopsias,
+            'fecha' => now()->format('d/m/Y'),
+            'total' => $biopsias->count(),
+            'tipo' => 'Personas'
         ];
 
-        $callback = function () use ($biopsias) {
-            $file = fopen('php://output', 'w');
+        $pdf = Pdf::loadView('biopsias.personas.pdf.reporte', $data);
 
-            // Encabezados CSV
-            fputcsv($file, [
-                'Número Biopsia',
-                'Fecha Recibida',
-                'Paciente',
-                'DUI',
-                'Edad',
-                'Sexo',
-                'Doctor',
-                'Diagnóstico Clínico',
-                'Estado',
-                'Fecha Registro'
-            ]);
-
-            // Datos
-            foreach ($biopsias as $biopsia) {
-                fputcsv($file, [
-                    $biopsia->nbiopsia,
-                    $biopsia->fecha_recibida->format('d/m/Y'),
-                    $biopsia->paciente->nombre . ' ' . $biopsia->paciente->apellido,
-                    $biopsia->paciente->dui,
-                    $biopsia->paciente->edad,
-                    $biopsia->paciente->sexo === 'M' ? 'Masculino' : 'Femenino',
-                    $biopsia->doctor->nombre . ' ' . $biopsia->doctor->apellido,
-                    substr($biopsia->diagnostico_clinico, 0, 100) . '...',
-                    $biopsia->estado,
-                    $biopsia->created_at->format('d/m/Y H:i')
-                ]);
-            }
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
+        return $pdf->download('reporte_biopsias_personas_' . now()->format('Y-m-d') . '.pdf');
     }
     public function toggleEstado(Request $request, $nbiopsia)
     {

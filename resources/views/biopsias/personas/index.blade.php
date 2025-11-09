@@ -32,12 +32,14 @@
                     </svg>
                     Nueva Biopsia
                 </a>
-                <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
+                <a href="{{ route('biopsias.personas.exportar-pdf', request()->all()) }}"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    Exportar Datos
-                </button>
+                    EXPORTAR PDF
+                </a>
             </div>
         </div>
 
@@ -100,73 +102,141 @@
             </div>
         </div>
 
-        <!-- Filtros y búsqueda -->
-        <div class="bg-green-100 p-4 rounded-lg shadow-md mb-6">
-            <form method="GET" action="{{ route('biopsias.personas.index') }}" class="flex flex-wrap items-center gap-4">
-                <!-- Campo de búsqueda -->
-                <div class="flex-1 min-w-[230px]">
-                    <div class="relative">
-                        <input type="text"
-                            name="buscar"
-                            id="busqueda-rapida"
-                            value="{{ request('buscar') }}"
-                            placeholder="Buscar por paciente, doctor o diagnóstico..."
-                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
+        <!-- Filtros y búsqueda (colapsable estilo "Usar Plantilla") -->
+        @php
+        $filters = ['buscar','tipo','estado','doctor','fecha_desde','fecha_hasta'];
+        $activeCount = collect($filters)->filter(function($f){ return request($f); })->count();
+        @endphp
+        <div class="sticky top-2 z-10 mb-6">
+            <div class="bg-green-50 border border-green-200 rounded-xl shadow-sm overflow-hidden">
+                <button type="button" onclick="toggleFiltros()" class="w-full px-4 py-3 flex items-center justify-between hover:bg-green-100 transition-colors">
+                    <span class="flex items-center gap-2">
+                        <svg class="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <span class="text-sm font-medium text-gray-700">Filtros y búsqueda</span>
+                    </span>
+                    <span class="text-xs text-gray-500 flex items-center gap-2">
+                        <svg id="icon-filtros" class="w-5 h-5 transform transition-transform {{ $activeCount ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                        {{ $activeCount }} filtro(s) activo(s)
+                    </span>
+                </button>
+
+                <div id="filtros-content" class="{{ $activeCount ? '' : 'hidden' }} px-4 pb-3">
+                    <form method="GET" action="{{ route('biopsias.personas.index') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 p-4 items-end">
+                        <!-- Campo de búsqueda -->
+                        <div class="lg:col-span-4 md:col-span-2 col-span-1">
+                            <div class="relative">
+                                <input type="text"
+                                    name="buscar"
+                                    id="busqueda-rapida"
+                                    value="{{ request('buscar') }}"
+                                    placeholder="Buscar por paciente, doctor o diagnóstico..."
+                                    class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Filtro por tipo -->
-                <div class="flex-shrink-0 min-w-[180px]">
-                    <select name="tipo"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                        <option value="">Todos los tipos</option>
-                        <option value="normal" {{ request('tipo') == 'normal' ? 'selected' : '' }}>Normal</option>
-                        <option value="liquida" {{ request('tipo') == 'liquida' ? 'selected' : '' }}>Líquida</option>
-                    </select>
-                </div>
+                        <!-- Filtro por tipo -->
+                        <div class="lg:col-span-2 col-span-1">
+                            <label for="tipo" class="block text-sm text-gray-600 mb-1">Tipo</label>
+                            <div class="relative">
+                                <select name="tipo"
+                                    class="w-full pl-3 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
+                                    <option value="">Todos los tipos</option>
+                                    <option value="normal" {{ request('tipo') == 'normal' ? 'selected' : '' }}>Normal</option>
+                                    <option value="liquida" {{ request('tipo') == 'liquida' ? 'selected' : '' }}>Líquida</option>
+                                </select>
+                            </div>
+                        </div>
 
-                <!-- Filtro por estado -->
-                <div class="flex-shrink-0 min-w-[180px]">
-                    <select name="estado"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                        <option value="">Todos los estados</option>
-                        <option value="1" {{ request('estado') == '1' ? 'selected' : '' }}>Activas</option>
-                        <option value="0" {{ request('estado') == '0' ? 'selected' : '' }}>Inactivas</option>
-                    </select>
-                </div>
+                        <!-- Filtro por estado -->
+                        <div class="lg:col-span-2 col-span-1">
+                            <label for="estado" class="block text-sm text-gray-600 mb-1">Estado</label>
+                            <div class="relative">
+                                <select name="estado"
+                                    class="w-full pl-3 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
+                                    <option value="">Todos los estados</option>
+                                    <option value="1" {{ request('estado') == '1' ? 'selected' : '' }}>Activas</option>
+                                    <option value="0" {{ request('estado') == '0' ? 'selected' : '' }}>Inactivas</option>
+                                </select>
+                            </div>
+                        </div>
 
-                <!-- Filtro por doctor -->
-                <div class="flex-shrink-0 min-w-[180px]">
-                    <select name="doctor"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
-                        <option value="">Todos los doctores</option>
-                        @foreach(\App\Models\Doctor::all() as $doctor)
-                        <option value="{{ $doctor->id }}" {{ request('doctor') == $doctor->id ? 'selected' : '' }}>
-                            Dr. {{ $doctor->nombre }} {{ $doctor->apellido }}
-                        </option>
-                        @endforeach
-                    </select>
-                </div>
+                        <!-- Filtro por doctor -->
+                        <div class="lg:col-span-2 col-span-1">
+                            <label for="doctor" class="block text-sm text-gray-600 mb-1">Doctor</label>
+                            <div class="relative">
+                                <select name="doctor"
+                                    class="w-full pl-3 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400 text-sm">
+                                    <option value="">Todos los doctores</option>
+                                    @foreach(\App\Models\Doctor::all() as $doctor)
+                                    <option value="{{ $doctor->id }}" {{ request('doctor') == $doctor->id ? 'selected' : '' }}>
+                                        Dr. {{ $doctor->nombre }} {{ $doctor->apellido }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
 
-                <!-- Botones -->
-                <div class="flex gap-4 items-center mt-1">
-                    <button type="submit"
-                        class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
-                        Filtrar
-                    </button>
-                    <a href="{{ route('biopsias.personas.index') }}"
-                        class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors">
-                        Limpiar
-                    </a>
+                        <!-- Filtros por rango de fechas -->
+                        <div class="lg:col-span-2 col-span-1">
+                            <label for="fecha_desde" class="block text-sm text-gray-600 mb-1">Desde</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM6 9a1 1 0 100 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                                <input type="date" name="fecha_desde" id="fecha_desde" value="{{ request('fecha_desde') }}"
+                                    class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400">
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2 col-span-1">
+                            <label for="fecha_hasta" class="block text-sm text-gray-600 mb-1">Hasta</label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 7a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                                <input type="date" name="fecha_hasta" id="fecha_hasta" value="{{ request('fecha_hasta') }}"
+                                    class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400">
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="lg:col-span-2 md:col-span-2 col-span-1 flex gap-4 items-center mt-1">
+                            <button type="submit"
+                                class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium transition-colors">
+                                Filtrar
+                            </button>
+                            <a href="{{ route('biopsias.personas.index') }}"
+                                class="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors">
+                                Limpiar
+                            </a>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
+
+        <script>
+            function toggleFiltros() {
+                const content = document.getElementById('filtros-content');
+                const icon = document.getElementById('icon-filtros');
+                if (!content || !icon) return;
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            }
+        </script>
 
         <!-- Tabla -->
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
@@ -223,9 +293,11 @@
                             <div class="text-gray-500">{{ $biopsia->doctor->jvpm ?? 'J.V.P.M N/A' }}</div>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900">
-                            <div class="max-w-xs truncate" title="{{ $biopsia->diagnostico_clinico }}">
-                                {{ Str::limit($biopsia->diagnostico_clinico, 50) }}
-                            </div>
+                            <textarea
+                                class="w-full text-sm bg-transparent border border-gray-200 rounded-md resize-y"
+                                rows="3"
+                                readonly
+                                title="{{ $biopsia->diagnostico_clinico }}">{{ $biopsia->diagnostico_clinico }}</textarea>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($biopsia->estado)
@@ -246,13 +318,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex items-center space-x-2">
-                                <!-- Editar -->
-                                @if (auth()->user()->role === 'admin')
-                                <a href="{{ route('biopsias.personas.edit', $biopsia->nbiopsia) }}"
-                                    class="text-indigo-600 hover:text-indigo-900">
-                                    Editar
-                                </a>
-                                @endif
+
                                 <a href="{{ route('biopsias.personas.show', $biopsia->nbiopsia) }}"
                                     class="text-purple-600 hover:text-purple-900">
                                     Ver
@@ -264,7 +330,6 @@
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit"
-                                        // Ya lo tienes en desactivar, agrégalo también en editar
                                         onclick="return confirm('¿Estás seguro de cambiar el estado de esta biopsia?')"
                                         class="font-semibold transition-colors {{ $biopsia->estado ? 'text-yellow-600 hover:text-yellow-700' : 'text-green-600 hover:text-green-700' }}">
                                         {{ $biopsia->estado ? 'Desactivar' : 'Activar' }}
