@@ -170,20 +170,24 @@
                     <label for="fecha_desde" class="block text-sm text-gray-600 mb-1">Desde</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM6 9a1 1 0 100 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zM6 9a1 1 0 100 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                            </svg>
                         </span>
                         <input type="date" name="fecha_desde" id="fecha_desde" value="{{ request('fecha_desde') }}"
-                               class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400">
+                            class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400">
                     </div>
                 </div>
                 <div class="lg:col-span-2 col-span-1">
                     <label for="fecha_hasta" class="block text-sm text-gray-600 mb-1">Hasta</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 7a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
+                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 7a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+                            </svg>
                         </span>
                         <input type="date" name="fecha_hasta" id="fecha_hasta" value="{{ request('fecha_hasta') }}"
-                               class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400">
+                            class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400">
                     </div>
                 </div>
 
@@ -256,9 +260,11 @@
                             <div class="text-gray-500">{{ $biopsia->doctor->jvpm ?? 'J.V.P.M N/A' }}</div>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900">
-                            <div class="max-w-xs truncate" title="{{ $biopsia->diagnostico_clinico }}">
-                                {{ Str::limit($biopsia->diagnostico_clinico, 50) }}
-                            </div>
+                            <textarea
+                                class="w-full text-sm bg-transparent border border-gray-200 rounded-md resize-y"
+                                rows="3"
+                                readonly
+                                title="{{ $biopsia->diagnostico_clinico }}">{{ $biopsia->diagnostico_clinico }}</textarea>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($biopsia->estado)
@@ -279,7 +285,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex items-center space-x-2">
-                                
+
                                 <a href="{{ route('biopsias.personas.show', $biopsia->nbiopsia) }}"
                                     class="text-purple-600 hover:text-purple-900">
                                     Ver
@@ -291,7 +297,6 @@
                                     @csrf
                                     @method('PATCH')
                                     <button type="submit"
-                                        // Ya lo tienes en desactivar, agrégalo también en editar
                                         onclick="return confirm('¿Estás seguro de cambiar el estado de esta biopsia?')"
                                         class="font-semibold transition-colors {{ $biopsia->estado ? 'text-yellow-600 hover:text-yellow-700' : 'text-green-600 hover:text-green-700' }}">
                                         {{ $biopsia->estado ? 'Desactivar' : 'Activar' }}

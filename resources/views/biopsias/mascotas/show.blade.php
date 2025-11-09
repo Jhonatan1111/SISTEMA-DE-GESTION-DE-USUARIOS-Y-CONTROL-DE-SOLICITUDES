@@ -110,7 +110,7 @@
                 @if($biopsia->mascota->correo)
                 <div class="bg-white p-4 rounded-lg shadow-md">
                     <label class="block text-sm font-semibold text-gray-600 mb-1">Correo</label>
-                    <p class="text-lg font-semibold text-blue-600">{{ $biopsia->mascota->correo }}</p>
+                    <p class="text-lg font-semibold text-blue-600 break-all">{{ $biopsia->mascota->correo }}</p>
                 </div>
                 @endif
             </div>
@@ -139,7 +139,7 @@
                 @if($biopsia->doctor->correo)
                 <div class="bg-white p-4 rounded-lg shadow-md">
                     <label class="block text-sm font-semibold text-gray-600 mb-1">Correo</label>
-                    <p class="text-lg font-semibold text-blue-600">{{ $biopsia->doctor->correo }}</p>
+                    <p class="text-lg font-semibold text-blue-600 break-all">{{ $biopsia->doctor->correo }}</p>
                 </div>
                 @endif
 
@@ -230,10 +230,10 @@
                 class="px-6 py-2 bg-orange-700 hover:bg-orange-800 text-white rounded-lg font-semibold transition-transform hover:scale-105" target="_blank">
                 Imprimir
             </a>
-            <a href="{{ route('biopsias.mascotas.pdf', $biopsia) }}"
+            <!-- <a href="{{ route('biopsias.mascotas.pdf', $biopsia) }}"
                 class="px-6 py-2 bg-green-700 hover:bg-green-800 text-white rounded-lg font-semibold transition-transform hover:scale-105" target="_blank">
                 PDF
-            </a>
+            </a> -->
             @if(auth()->user()->role === 'admin')
             <a href="{{ route('biopsias.mascotas.edit', $biopsia) }}"
                 class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105">

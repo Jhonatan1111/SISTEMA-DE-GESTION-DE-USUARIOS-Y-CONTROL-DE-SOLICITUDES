@@ -42,9 +42,8 @@
                         <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Biopsia::count() }}</p>
                     </div>
                     <div class="text-blue-500">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
+                        <!-- Icono de personas y mascotas -->
+                        <img src="/image/pacientes.png" alt="Pacientes" class="w-8 h-8">
                     </div>
                 </div>
             </div>
@@ -349,9 +348,11 @@
                             <div class="text-gray-500">{{ $biopsia->doctor->jvpm ?? 'J.V.P.M N/A' }}</div>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900">
-                            <div class="max-w-xs truncate" title="{{ $biopsia->diagnostico_clinico }}">
-                                {{ Str::limit($biopsia->diagnostico_clinico, 50) }}
-                            </div>
+                            <textarea
+                                class="w-full text-sm bg-transparent border border-gray-200 rounded-md resize-y"
+                                rows="3"
+                                readonly
+                                title="{{ $biopsia->diagnostico_clinico }}">{{ $biopsia->diagnostico_clinico }}</textarea>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($biopsia->estado)

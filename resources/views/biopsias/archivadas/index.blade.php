@@ -20,8 +20,8 @@
             </a>
             <form method="POST" action="{{ route('biopsias.archivar-antiguas') }}" style="display: inline-block;">
                 @csrf
-                <button type="submit" class="btn btn-warning" 
-                        onclick="return confirm('¿Está seguro de archivar todas las biopsias de más de 6 meses?')">
+                <button type="submit" class="btn btn-warning"
+                    onclick="return confirm('¿Está seguro de archivar todas las biopsias de más de 6 meses?')">
                     <i class="fas fa-archive me-1"></i> Archivar Antiguas
                 </button>
             </form>
@@ -29,11 +29,11 @@
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle me-2"></i>
-            <strong>¡Éxito!</strong> {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <strong>¡Éxito!</strong> {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
     @endif
 
     <!-- Statistics Cards -->
@@ -116,9 +116,9 @@
                 </div>
                 <div class="col-md-6">
                     <label for="buscar" class="form-label">Búsqueda General</label>
-                    <input type="text" name="buscar" id="buscar" class="form-control" 
-                           placeholder="Buscar por número, diagnóstico, paciente o doctor..." 
-                           value="{{ request('buscar') }}">
+                    <input type="text" name="buscar" id="buscar" class="form-control"
+                        placeholder="Buscar por número, diagnóstico, paciente o doctor..."
+                        value="{{ request('buscar') }}">
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <button type="submit" class="btn btn-primary w-100">
@@ -192,52 +192,52 @@
                             </td>
                             <td>
                                 @if($biopsia->paciente_id)
-                                    <span class="badge bg-primary">
-                                        <i class="fas fa-user me-1"></i>Persona
-                                    </span>
+                                <span class="badge bg-primary">
+                                    <i class="fas fa-user me-1"></i>Persona
+                                </span>
                                 @else
-                                    <span class="badge bg-info">
-                                        <i class="fas fa-paw me-1"></i>Mascota
-                                    </span>
+                                <span class="badge bg-info">
+                                    <i class="fas fa-paw me-1"></i>Mascota
+                                </span>
                                 @endif
                             </td>
                             <td>
                                 @if($biopsia->paciente_id)
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-sm me-2">
-                                            <div class="avatar-title bg-primary rounded-circle">
-                                                <i class="fas fa-user text-white"></i>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold">{{ $biopsia->paciente->nombre }} {{ $biopsia->paciente->apellido }}</div>
-                                            <small class="text-muted">
-                                                <i class="fas fa-id-card me-1"></i>DUI: {{ $biopsia->paciente->DUI ?? 'N/A' }}
-                                            </small>
-                                            <br>
-                                            <small class="text-muted">
-                                                <i class="fas fa-birthday-cake me-1"></i>{{ $biopsia->paciente->edad }} años
-                                            </small>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm me-2">
+                                        <div class="avatar-title bg-primary rounded-circle">
+                                            <i class="fas fa-user text-white"></i>
                                         </div>
                                     </div>
+                                    <div>
+                                        <div class="fw-bold">{{ $biopsia->paciente->nombre }} {{ $biopsia->paciente->apellido }}</div>
+                                        <small class="text-muted">
+                                            <i class="fas fa-id-card me-1"></i>DUI: {{ $biopsia->paciente->DUI ?? 'N/A' }}
+                                        </small>
+                                        <br>
+                                        <small class="text-muted">
+                                            <i class="fas fa-birthday-cake me-1"></i>{{ $biopsia->paciente->edad }} años
+                                        </small>
+                                    </div>
+                                </div>
                                 @else
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-sm me-2">
-                                            <div class="avatar-title bg-info rounded-circle">
-                                                <i class="fas fa-paw text-white"></i>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold">{{ $biopsia->mascota->nombre }}</div>
-                                            <small class="text-muted">
-                                                <i class="fas fa-user me-1"></i>{{ $biopsia->mascota->propietario }}
-                                            </small>
-                                            <br>
-                                            <small class="text-muted">
-                                                <i class="fas fa-paw me-1"></i>{{ $biopsia->mascota->especie }}
-                                            </small>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm me-2">
+                                        <div class="avatar-title bg-info rounded-circle">
+                                            <i class="fas fa-paw text-white"></i>
                                         </div>
                                     </div>
+                                    <div>
+                                        <div class="fw-bold">{{ $biopsia->mascota->nombre }}</div>
+                                        <small class="text-muted">
+                                            <i class="fas fa-user me-1"></i>{{ $biopsia->mascota->propietario }}
+                                        </small>
+                                        <br>
+                                        <small class="text-muted">
+                                            <i class="fas fa-paw me-1"></i>{{ $biopsia->mascota->especie }}
+                                        </small>
+                                    </div>
+                                </div>
                                 @endif
                             </td>
                             <td>
@@ -250,14 +250,14 @@
                                     <div>
                                         <div class="fw-bold">Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}</div>
                                         @if(isset($biopsia->doctor->especialidad))
-                                            <small class="text-muted">{{ $biopsia->doctor->especialidad }}</small>
+                                        <small class="text-muted">{{ $biopsia->doctor->especialidad }}</small>
                                         @endif
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <div class="diagnosis-preview" data-bs-toggle="tooltip" 
-                                     title="{{ $biopsia->diagnostico_clinico }}">
+                                <div class="diagnosis-preview" data-bs-toggle="tooltip"
+                                    title="{{ $biopsia->diagnostico_clinico }}">
                                     {{ Str::limit($biopsia->diagnostico_clinico, 50) }}
                                 </div>
                             </td>
@@ -270,15 +270,15 @@
                             <td>
                                 <div class="btn-group" role="group">
                                     <a href="{{ route('biopsias.show', $biopsia->nbiopsia) }}"
-                                       class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Ver detalles">
+                                        class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Ver detalles">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <form method="POST" action="{{ route('biopsias.restaurar', $biopsia->nbiopsia) }}"
-                                          style="display: inline-block;"
-                                          onsubmit="return confirm('¿Está seguro de restaurar esta biopsia?')">
+                                        style="display: inline-block;"
+                                        onsubmit="return confirm('¿Está seguro de restaurar esta biopsia?')">
                                         @csrf
-                                        <button type="submit" class="btn btn-success btn-sm" 
-                                                data-bs-toggle="tooltip" title="Restaurar biopsia">
+                                        <button type="submit" class="btn btn-success btn-sm"
+                                            data-bs-toggle="tooltip" title="Restaurar biopsia">
                                             <i class="fas fa-undo"></i>
                                         </button>
                                     </form>
@@ -302,9 +302,9 @@
 
             <!-- Pagination -->
             @if($biopsias->hasPages())
-                <div class="d-flex justify-content-center mt-4">
-                    {{ $biopsias->links() }}
-                </div>
+            <div class="d-flex justify-content-center mt-4">
+                {{ $biopsias->links() }}
+            </div>
             @endif
         </div>
     </div>
@@ -314,18 +314,20 @@
     .border-left-secondary {
         border-left: 0.25rem solid #6c757d !important;
     }
+
     .border-left-dark {
         border-left: 0.25rem solid #343a40 !important;
     }
+
     .border-left-info {
         border-left: 0.25rem solid #36b9cc !important;
     }
-    
+
     .avatar-sm {
         width: 2rem;
         height: 2rem;
     }
-    
+
     .avatar-title {
         display: flex;
         align-items: center;
@@ -334,26 +336,26 @@
         height: 100%;
         font-size: 0.875rem;
     }
-    
+
     .table-row-hover:hover {
         background-color: rgba(108, 117, 125, 0.05);
         transform: translateY(-1px);
         transition: all 0.2s ease;
     }
-    
+
     .diagnosis-preview {
         cursor: help;
         max-width: 200px;
     }
-    
+
     .empty-state {
         padding: 2rem;
     }
-    
+
     .btn-group .btn {
         margin-right: 0.25rem;
     }
-    
+
     .btn-group .btn:last-child {
         margin-right: 0;
     }
@@ -363,7 +365,7 @@
     // Initialize tooltips
     document.addEventListener('DOMContentLoaded', function() {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
     });

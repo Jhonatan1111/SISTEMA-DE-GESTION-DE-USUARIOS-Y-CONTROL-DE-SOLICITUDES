@@ -165,7 +165,6 @@ Route::middleware('auth')->group(function () {
         Route::get('biopsias/mascotas/{nbiopsia}/edit', [BiopsiaMascotaController::class, 'edit'])->name('biopsias.mascotas.edit');
         Route::put('biopsias/mascotas/{nbiopsia}', [BiopsiaMascotaController::class, 'update'])->name('biopsias.mascotas.update');
         Route::patch('biopsias/mascotas/{nbiopsia}/toggle-estado', [BiopsiaMascotaController::class, 'toggleEstado'])->name('biopsias.mascotas.toggle-estado');
-        Route::get('biopsias/mascotas/{nbiopsia}/imprimir', [BiopsiaMascotaController::class, 'imprimir'])->name('biopsias.mascotas.imprimir');
 
         // LISTAS DE BIOPSIAS
         Route::get('listas/biopsias/{listaBiopsia}/edit', [ListaBiopsiaController::class, 'edit'])->name('listas.biopsias.edit');

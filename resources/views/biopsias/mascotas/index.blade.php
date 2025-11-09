@@ -54,7 +54,10 @@
                     </div>
                     <div class="text-blue-500">
                         <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H4a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z"></path>
+                            <path d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v2H4V6zm0 4h12v4H4v-4z" />
+                            <circle cx="6" cy="8" r="1" />
+                            <circle cx="10" cy="8" r="1" />
+                            <path d="M7 12a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" />
                         </svg>
                     </div>
                 </div>
@@ -275,9 +278,11 @@
                             <div class="text-gray-500">{{ $biopsia->doctor->jvpm ?? 'J.V.P.M N/A' }}</div>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900">
-                            <div class="max-w-xs truncate" title="{{ $biopsia->diagnostico_clinico }}">
-                                {{ Str::limit($biopsia->diagnostico_clinico, 50) }}
-                            </div>
+                            <textarea
+                                class="w-full text-sm bg-transparent border border-gray-200 rounded-md resize-y"
+                                rows="3"
+                                readonly
+                                title="{{ $biopsia->diagnostico_clinico }}">{{ $biopsia->diagnostico_clinico }}</textarea>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($biopsia->estado)
