@@ -29,7 +29,7 @@ class BiopsiaMascotaController extends Controller
                         $q->where('nombre', 'like', "%{$buscar}%")
                             ->orWhere('especie', 'like', "%{$buscar}%")
                             ->orWhere('raza', 'like', "%{$buscar}%")
-                            ->orWhere('dueno', 'like', "%{$buscar}%");
+                            ->orWhere('propietario', 'like', "%{$buscar}%");
                     })
                     ->orWhereHas('doctor', function ($q) use ($buscar) {
                         $q->where('nombre', 'like', "%{$buscar}%")
@@ -51,6 +51,13 @@ class BiopsiaMascotaController extends Controller
         // Filtro de doctor
         if ($request->filled('doctor')) {
             $query->where('doctor_id', $request->doctor);
+        }
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate('fecha_recibida', '>=', $request->fecha_desde);
+        }
+
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate('fecha_recibida', '<=', $request->fecha_hasta);
         }
 
         $biopsias = $query->orderBy('fecha_recibida', 'desc')
@@ -271,18 +278,18 @@ class BiopsiaMascotaController extends Controller
         $mascotas = Mascota::where('nombre', 'like', "%{$term}%")
             ->orWhere('especie', 'like', "%{$term}%")
             ->orWhere('raza', 'like', "%{$term}%")
-            ->orWhere('dueno', 'like', "%{$term}%")
-            ->select('id', 'nombre', 'especie', 'raza', 'dueno', 'edad', 'sexo')
+            ->orWhere('propietario', 'like', "%{$term}%")
+            ->select('id', 'nombre', 'especie', 'raza', 'propietario', 'edad', 'sexo')
             ->limit(10)
             ->get()
             ->map(function ($m) {
                 return [
                     'id' => $m->id,
-                    'text' => $m->nombre . ' - ' . $m->especie . ' (' . $m->dueno . ')',
+                    'text' => $m->nombre . ' - ' . $m->especie . ' (' . $m->propietario . ')',
                     'nombre' => $m->nombre,
                     'especie' => $m->especie,
                     'raza' => $m->raza,
-                    'dueno' => $m->dueno,
+                    'propietario' => $m->propietario,
                     'edad' => $m->edad,
                     'sexo' => $m->sexo === 'M' ? 'Macho' : 'Hembra'
                 ];
@@ -303,7 +310,7 @@ class BiopsiaMascotaController extends Controller
             'nombre' => $mascota->nombre,
             'especie' => $mascota->especie,
             'raza' => $mascota->raza,
-            'dueno' => $mascota->dueno,
+            'propietario' => $mascota->propietario,
             'edad' => $mascota->edad,
             'sexo' => $mascota->sexo === 'M' ? 'Macho' : 'Hembra',
             'total_biopsias' => $mascota->biopsias()->count()
@@ -347,5 +354,64 @@ class BiopsiaMascotaController extends Controller
             'numero' => $numero,
             'tipo' => $tipo
         ]);
+    }
+    // EXPORTAR BIOPSIAS DE MASCOTAS A PDF
+    public function exportarPdf(Request $request)
+    {
+        $query = Biopsia::with(['mascota', 'doctor'])
+            ->whereNotNull('mascota_id')
+            ->whereNull('paciente_id');
+
+        // Aplicar filtros
+        if ($request->filled('buscar')) {
+            $buscar = $request->buscar;
+            $query->where(function ($q) use ($buscar) {
+                $q->where('nbiopsia', 'like', "%{$buscar}%")
+                    ->orWhere('diagnostico_clinico', 'like', "%{$buscar}%")
+                    ->orWhereHas('mascota', function ($q) use ($buscar) {
+                        $q->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('especie', 'like', "%{$buscar}%")
+                            ->orWhere('raza', 'like', "%{$buscar}%")
+                            ->orWhere('dueno', 'like', "%{$buscar}%");
+                    })
+                    ->orWhereHas('doctor', function ($q) use ($buscar) {
+                        $q->where('nombre', 'like', "%{$buscar}%")
+                            ->orWhere('apellido', 'like', "%{$buscar}%")
+                            ->orWhere('jvpm', 'like', "%{$buscar}%");
+                    });
+            });
+        }
+
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
+        }
+
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        if ($request->filled('doctor')) {
+            $query->where('doctor_id', $request->doctor);
+        }
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate('fecha_recibida', '>=', $request->fecha_desde);
+        }
+
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate('fecha_recibida', '<=', $request->fecha_hasta);
+        }
+
+        $biopsias = $query->orderBy('fecha_recibida', 'desc')->get();
+
+        $data = [
+            'biopsias' => $biopsias,
+            'fecha' => now()->format('d/m/Y'),
+            'total' => $biopsias->count(),
+            'tipo' => 'Mascotas'
+        ];
+
+        $pdf = Pdf::loadView('biopsias.mascotas.pdf.reporte', $data);
+
+        return $pdf->download('reporte_biopsias_mascotas_' . now()->format('Y-m-d') . '.pdf');
     }
 }

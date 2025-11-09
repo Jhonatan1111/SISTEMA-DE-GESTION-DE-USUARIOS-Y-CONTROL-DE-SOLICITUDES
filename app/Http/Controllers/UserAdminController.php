@@ -12,8 +12,13 @@ class UserAdminController extends Controller
     // Mostrar lista de usuarios
     public function index()
     {
-        $usuarios = User::orderBy('created_at', 'desc')->get();
+        $usuarios = User::orderBy('created_at', 'desc')->paginate(10);
         return view('admin.usuarios.index', compact('usuarios'));
+    }
+
+    public function show(User $usuario)
+    {
+        return view('admin.usuarios.show', compact('usuario'));
     }
 
     // Mostrar formulario de creación

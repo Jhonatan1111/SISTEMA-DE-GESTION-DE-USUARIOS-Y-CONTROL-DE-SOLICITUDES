@@ -49,19 +49,28 @@ Route::middleware('auth')->group(function () {
 
     // BIOPSIAS
     Route::get('biopsias', [BiopsiaController::class, 'index'])->name('biopsias.index');
+    Route::get('biopsias/exportar-pdf', [BiopsiaController::class, 'exportarPdf'])->name('biopsias.exportar-pdf');
 
     // BIOPSIAS PERSONAS
     Route::get('biopsias/personas/obtener-numero-correlativo', [BiopsiaPacienteController::class, 'obtenerNumeroCorrelativo'])->name('biopsias.personas.obtener-numero-correlativo');
     Route::get('biopsias/personas', [BiopsiaPacienteController::class, 'index'])->name('biopsias.personas.index');
+    Route::get('biopsias/personas/exportar-pdf', [BiopsiaPacienteController::class, 'exportarPdf'])->name('biopsias.personas.exportar-pdf');
     Route::get('biopsias/personas/create', [BiopsiaPacienteController::class, 'create'])->name('biopsias.personas.create');
     Route::post('biopsias/personas', [BiopsiaPacienteController::class, 'store'])->name('biopsias.personas.store');
     Route::get('biopsias/personas/{nbiopsia}', [BiopsiaPacienteController::class, 'show'])->name('biopsias.personas.show');
     Route::get('biopsias/personas/{nbiopsia}/imprimir', [BiopsiaPacienteController::class, 'imprimir'])->name('biopsias.personas.imprimir'); // ← MOVER AQUÍ (fuera de admin)
     Route::get('biopsias/personas/{nbiopsia}/pdf', [BiopsiaPacienteController::class, 'descargarPdf'])->name('biopsias.personas.pdf');
 
-    // MASCOTAS
+    // BUSCADOR DE LISTAS PARA PERSONAS (AJAX)
+    Route::get('/biopsias-personas/buscar-lista/{id}', [BiopsiaPacienteController::class, 'buscarLista'])
+        ->name('biopsias.personas.buscar-lista');
+    Route::get('/biopsias-personas/buscar-lista-codigo/{codigo}', [BiopsiaPacienteController::class, 'buscarListaPorCodigo'])
+        ->name('biopsias.personas.buscar-lista-codigo');
+
+    // BIOPSIAS MASCOTAS
     Route::get('biopsias/mascotas/obtener-numero-correlativo', [BiopsiaMascotaController::class, 'obtenerNumeroCorrelativo'])->name('biopsias.mascotas.obtener-numero-correlativo');
     Route::get('biopsias/mascotas', [BiopsiaMascotaController::class, 'index'])->name('biopsias.mascotas.index');
+    Route::get('biopsias/mascotas/exportar-pdf', [BiopsiaMascotaController::class, 'exportarPdf'])->name('biopsias.mascotas.exportar-pdf');
     Route::get('biopsias/mascotas/create', [BiopsiaMascotaController::class, 'create'])->name('biopsias.mascotas.create');
     Route::post('biopsias/mascotas', [BiopsiaMascotaController::class, 'store'])->name('biopsias.mascotas.store');
     Route::get('biopsias/mascotas/{nbiopsia}', [BiopsiaMascotaController::class, 'show'])->name('biopsias.mascotas.show');
@@ -156,7 +165,6 @@ Route::middleware('auth')->group(function () {
         Route::get('biopsias/mascotas/{nbiopsia}/edit', [BiopsiaMascotaController::class, 'edit'])->name('biopsias.mascotas.edit');
         Route::put('biopsias/mascotas/{nbiopsia}', [BiopsiaMascotaController::class, 'update'])->name('biopsias.mascotas.update');
         Route::patch('biopsias/mascotas/{nbiopsia}/toggle-estado', [BiopsiaMascotaController::class, 'toggleEstado'])->name('biopsias.mascotas.toggle-estado');
-        Route::get('biopsias/mascotas/{nbiopsia}/imprimir', [BiopsiaMascotaController::class, 'imprimir'])->name('biopsias.mascotas.imprimir');
 
         // LISTAS DE BIOPSIAS
         Route::get('listas/biopsias/{listaBiopsia}/edit', [ListaBiopsiaController::class, 'edit'])->name('listas.biopsias.edit');
