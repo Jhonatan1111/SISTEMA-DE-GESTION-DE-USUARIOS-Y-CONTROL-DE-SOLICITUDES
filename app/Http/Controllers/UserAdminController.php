@@ -16,6 +16,11 @@ class UserAdminController extends Controller
         return view('admin.usuarios.index', compact('usuarios'));
     }
 
+    public function show(User $usuario)
+    {
+        return view('admin.usuarios.show', compact('usuario'));
+    }
+
     // Mostrar formulario de creación
     public function create()
     {
