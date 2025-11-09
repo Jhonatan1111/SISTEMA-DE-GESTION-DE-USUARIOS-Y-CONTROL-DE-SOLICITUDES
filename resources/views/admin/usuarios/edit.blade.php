@@ -80,7 +80,7 @@
             <!-- Credenciales y Acceso -->
             <div class="bg-gradient-to-r from-green-50 via-white to-green-50 p-6 rounded-2xl shadow-xl border border-green-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
                 <h2 class="text-xl font-bold text-green-700 mb-4 border-b-2 border-green-200 pb-2">Credenciales y Acceso</h2>
-                
+
                 <!-- Info contraseña -->
                 <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4 rounded">
                     <div class="flex">
@@ -135,11 +135,8 @@
                     </svg>
                     Información del Sistema
                 </h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-white p-4 rounded-lg border border-gray-200">
-                        <p class="text-xs text-gray-500 uppercase font-semibold mb-1">ID Usuario</p>
-                        <p class="text-lg font-bold text-gray-900">{{ $usuario->id }}</p>
-                    </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
                     <div class="bg-white p-4 rounded-lg border border-gray-200">
                         <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Fecha de Creación</p>
                         <p class="text-lg font-bold text-gray-900">{{ $usuario->created_at->format('d/m/Y') }}</p>

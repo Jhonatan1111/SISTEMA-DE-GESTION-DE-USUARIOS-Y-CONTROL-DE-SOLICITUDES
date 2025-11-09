@@ -59,8 +59,8 @@
             {{-- Tabla de usuarios --}}
             <div class="bg-white shadow-md rounded-lg overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-violet-200">
-                        <thead class="bg-blue-400">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                     Nombre
@@ -135,7 +135,15 @@
                         </tbody>
                     </table>
                 </div>
+                <!-- Paginación -->
+                @if($usuarios->hasPages())
+                <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+                    {{ $usuarios->links() }}
+                </div>
+                @endif
             </div>
         </div>
+
     </div>
+
 </x-app-layout>
