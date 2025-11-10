@@ -287,11 +287,9 @@
                             <div class="text-gray-500">{{ $biopsia->doctor->jvpm ?? 'J.V.P.M N/A' }}</div>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900">
-                            <textarea
-                                class="w-full text-sm bg-transparent border border-gray-200 rounded-md resize-y"
-                                rows="3"
-                                readonly
-                                title="{{ $biopsia->diagnostico_clinico }}">{{ $biopsia->diagnostico_clinico }}</textarea>
+                            <div class="max-w-[150px] truncate" title="{{ $biopsia->diagnostico_clinico }}">
+                                {{ $biopsia->diagnostico_clinico ?? 'Sin dirección' }}
+                            </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($biopsia->estado)

@@ -15,7 +15,11 @@ class DoctorController extends Controller
         $doctores = Doctor::orderBy('nombre')->paginate(10);
         return view('doctores.index', compact('doctores'));
     }
-    
+
+    public function show(Doctor $doctor)
+    {
+        return view('doctores.show', compact('doctor'));
+    }
 
 
     // crear doctor - Solo admin
@@ -32,7 +36,7 @@ class DoctorController extends Controller
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
             'direccion' => 'nullable|string|max:500',
-            'celular' => 'required|digits:8|unique:doctores',
+            'celular' => 'nullable|digits:8|unique:doctores',
             'fax' => 'nullable|digits:11|unique:doctores',
             'correo' => 'nullable|string|email|max:255|unique:doctores',
         ]);
@@ -68,7 +72,7 @@ class DoctorController extends Controller
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
             'direccion' => 'nullable|string|max:500',
-            'celular' => 'required|digits:8|unique:doctores,celular,' . $doctor->id,
+            'celular' => 'nullable|digits:8|unique:doctores,celular,' . $doctor->id,
             'fax' => 'nullable|digits:11|unique:doctores,fax,' . $doctor->id,
             'correo' => 'nullable|string|email|max:255|unique:doctores,correo,' . $doctor->id,
         ]);

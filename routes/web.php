@@ -32,6 +32,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     // DOCTORES
     Route::get('doctores', [DoctorController::class, 'index'])->name('doctores.index');
+    Route::get('doctores/create', [DoctorController::class, 'create'])->name('doctores.create');
+    Route::post('doctores', [DoctorController::class, 'store'])->name('doctores.store');
+
+    Route::get('doctores/{doctor}', [DoctorController::class, 'show'])->whereNumber('doctor')->name('doctores.show');
+
 
     // PACIENTES
     Route::get('pacientes', [PacienteController::class, 'index'])->name('pacientes.index');
@@ -139,8 +144,6 @@ Route::middleware('auth')->group(function () {
     // RUTA PARA ACCESO DE ADMINISTRADORES
     Route::middleware(['role:admin'])->group(function () {
         // DOCTORES
-        Route::get('doctores/create', [DoctorController::class, 'create'])->name('doctores.create');
-        Route::post('doctores', [DoctorController::class, 'store'])->name('doctores.store');
         Route::get('doctores/{doctor}/edit', [DoctorController::class, 'edit'])->name('doctores.edit');
         Route::put('doctores/{doctor}', [DoctorController::class, 'update'])->name('doctores.update');
         Route::delete('doctores/{doctor}', [DoctorController::class, 'destroy'])->name('doctores.destroy');
