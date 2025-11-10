@@ -117,6 +117,7 @@
                     <form method="GET" action="{{ route('biopsias.index') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 p-4 items-end">
                         <!-- Campo de búsqueda -->
                         <div class="lg:col-span-4 md:col-span-2 col-span-1">
+
                             <div class="relative">
                                 <input type="text"
                                     name="buscar"
@@ -347,12 +348,11 @@
                             <div class="font-medium">Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}</div>
                             <div class="text-gray-500">{{ $biopsia->doctor->jvpm ?? 'J.V.P.M N/A' }}</div>
                         </td>
+
                         <td class="px-6 py-4 text-sm text-gray-900">
-                            <textarea
-                                class="w-full text-sm bg-transparent border border-gray-200 rounded-md resize-y"
-                                rows="3"
-                                readonly
-                                title="{{ $biopsia->diagnostico_clinico }}">{{ $biopsia->diagnostico_clinico }}</textarea>
+                            <div class="max-w-[150px] truncate" title="{{ $biopsia->diagnostico_clinico }}">
+                                {{ $biopsia->diagnostico_clinico ?? 'Sin dirección' }}
+                            </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @if($biopsia->estado)
