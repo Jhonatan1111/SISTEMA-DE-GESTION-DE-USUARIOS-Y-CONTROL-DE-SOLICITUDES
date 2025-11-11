@@ -8,6 +8,7 @@
                     <h1 class="text-3xl font-bold text-gray-900">Administración de Doctores</h1>
                     <p class="text-gray-600 mt-1">Administra los doctores registrados en el sistema</p>
                 </div>
+                @if(auth()->user()->role == 'admin')
                 <a href="{{ route('doctores.create') }}"
                     class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:shadow-lg flex items-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,7 +16,7 @@
                     </svg>
                     AGREGAR
                 </a>
-
+                @endif
             </div>
 
             {{-- Estadísticas --}}
@@ -201,13 +202,14 @@
                         </tbody>
                     </table>
                 </div>
+                <!-- Paginación -->
+                @if($doctores->hasPages())
+                <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+                    {{ $doctores->links() }}
+                </div>
+                @endif
             </div>
-            {{-- Paginación --}}
-            @if ($doctores->hasPages())
-            <div class="mt-8">
-                {{ $doctores->links() }}
-            </div>
-            @endif
+
         </div>
     </div>
     <script>

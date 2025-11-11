@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::post('pacientes', [PacienteController::class, 'store'])->name('pacientes.store');
     Route::get('pacientes/{paciente}/edit', [PacienteController::class, 'edit'])->name('pacientes.edit');
     Route::put('pacientes/{paciente}', [PacienteController::class, 'update'])->name('pacientes.update');
+    Route::get('pacientes/{paciente}', [PacienteController::class, 'show'])->whereNumber('paciente')->name('pacientes.show');
 
     // MASCOTAS
     Route::get('mascotas', [MascotaController::class, 'index'])->name('mascotas.index');
@@ -148,9 +149,6 @@ Route::middleware('auth')->group(function () {
         Route::put('doctores/{doctor}', [DoctorController::class, 'update'])->name('doctores.update');
         Route::delete('doctores/{doctor}', [DoctorController::class, 'destroy'])->name('doctores.destroy');
         Route::patch('doctores/{doctor}/toggle-estado', [DoctorController::class, 'toggleEstado'])->name('doctores.toggle-estado');
-
-        //PACIENTES
-        Route::delete('pacientes/{paciente}', [PacienteController::class, 'destroy'])->name('pacientes.destroy');
 
         //MASCOTAS
         Route::delete('mascotas/{mascota}', [MascotaController::class, 'destroy'])->name('mascotas.destroy');
