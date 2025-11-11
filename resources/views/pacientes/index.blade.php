@@ -21,13 +21,13 @@
                 <p class="text-gray-600 mt-1">Administra los pacientes del sistema</p>
             </div>
             @if (auth()->user()->role === 'admin')
-                <a href="{{ route('pacientes.create') }}" 
-                   class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:shadow-lg flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    AGREGAR
-                </a>
+            <a href="{{ route('pacientes.create') }}"
+                class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:shadow-lg flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                AGREGAR
+            </a>
             @endif
         </div>
 
@@ -98,7 +98,36 @@
             </div>
         </div>
         @endif
-
+        <!-- Filtro de búsqueda -->
+        <div class="bg-white shadow-md rounded-lg p-4 mb-4">
+            <div class="flex items-center space-x-4">
+                <div class="flex-1">
+                    <label for="search" class="block text-sm font-medium text-gray-700 mb-2">
+                        Buscar en listas de pacientes
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text"
+                            id="search"
+                            name="search"
+                            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            placeholder="Buscar por DUI, nombre, apellido, correo, dirección, contacto..."
+                            onkeyup="filterTable()">
+                    </div>
+                </div>
+                <div class="flex-shrink-0 mt-6">
+                    <button type="button"
+                        onclick="clearSearch()"
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+                        Limpiar
+                    </button>
+                </div>
+            </div>
+        </div>
         <!-- Tabla de pacientes -->
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
             <div class="overflow-x-auto">
@@ -125,9 +154,9 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody id="pacientes-table-body" class="bg-white divide-y divide-gray-200">
                         @forelse($pacientes as $paciente)
-                        <tr class="hover:bg-blue-50">
+                        <tr class="table-row hover:bg-blue-50" data-searchable="{{ $paciente->dui }} {{ $paciente->nombre }} {{ $paciente->apellido }} {{ $paciente->edad }} {{ $paciente->sexo }} {{ strtoupper(substr($paciente->sexo, 0, 1)) == 'M' ? 'masculino' : 'femenino' }} {{ $paciente->celular }} {{ $paciente->correo }} {{ $paciente->direccion }} {{ $paciente->fecha_nacimiento ? date('d/m/Y', strtotime($paciente->fecha_nacimiento)) : '' }}">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">{{ $paciente->dui }}</div>
                             </td>
@@ -169,11 +198,11 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('pacientes.edit', $paciente) }}"
+
+                                    <a href="{{ route('pacientes.show', $paciente) }}"
                                         class="text-indigo-600 hover:text-indigo-900">
-                                        Editar
+                                        Ver
                                     </a>
-                                    
                                 </div>
                             </td>
                         </tr>
@@ -199,14 +228,75 @@
                         @endforelse
                     </tbody>
                 </table>
+                <!-- Paginación -->
+                @if($pacientes->hasPages())
+                <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+                    {{ $pacientes->links() }}
+                </div>
+                @endif
             </div>
 
-            <!-- Paginación -->
-            @if($pacientes->hasPages())
-            <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-                {{ $pacientes->links() }}
-            </div>
-            @endif
+
         </div>
     </div>
+    <script>
+        function normalizeText(str) {
+            return (str || '')
+                .toString()
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, ''); // quitar acentos
+        }
+
+        function filterTable() {
+            const searchInput = document.getElementById('search');
+            const searchTerm = normalizeText(searchInput.value);
+            const tbody = document.getElementById('pacientes-table-body');
+            const tableRows = tbody ? tbody.querySelectorAll('tr.table-row') : [];
+            let visibleRows = 0;
+
+            tableRows.forEach(row => {
+                const rawText = row.getAttribute('data-searchable') || row.textContent;
+                const searchableText = normalizeText(rawText);
+                const matches = !searchTerm || searchableText.includes(searchTerm);
+                row.style.display = matches ? '' : 'none';
+                if (matches) visibleRows++;
+            });
+
+            // Quitar mensaje previo
+            const existingNoResults = document.getElementById('no-results-row');
+            if (existingNoResults) existingNoResults.remove();
+
+            // Crear mensaje de "no se encontraron resultados"
+            if (searchTerm && visibleRows === 0) {
+                const noResultsRow = document.createElement('tr');
+                noResultsRow.id = 'no-results-row';
+                noResultsRow.innerHTML = `
+                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                        <div class="py-8">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">No se encontraron resultados</h3>
+                            <p class="mt-1 text-sm text-gray-500">Intenta con otros términos de búsqueda.</p>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(noResultsRow);
+            }
+        }
+
+        function clearSearch() {
+            const searchInput = document.getElementById('search');
+            searchInput.value = '';
+            filterTable();
+        }
+
+        // Agregar evento para limpiar búsqueda con Escape
+        document.getElementById('search').addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                clearSearch();
+            }
+        });
+    </script>
 </x-app-layout>

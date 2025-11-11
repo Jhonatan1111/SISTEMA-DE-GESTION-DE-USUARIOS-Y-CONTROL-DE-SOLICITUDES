@@ -14,6 +14,11 @@ class PacienteController extends Controller
         $pacientes = Paciente::orderBy('nombre')->paginate(10);
         return view('pacientes.index', compact('pacientes'));
     }
+
+    public function show(Paciente $paciente)
+    {
+        return view('pacientes.show', compact('paciente'));
+    }
     // CREANDO PACIENTE
     public function create()
     {
@@ -27,14 +32,14 @@ class PacienteController extends Controller
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
             'dui' => 'string|unique:pacientes',
-            'edad' => 'required|integer',
-            'sexo' => 'required|string|in:masculino,femenino',
+            'edad' => 'nullable|integer',
+            'sexo' => 'nullable|string|in:masculino,femenino',
             'fecha_nacimiento' => 'date',
             'estado_civil' => 'string',
             'ocupacion' => 'string',
             'correo' => 'nullable|string|email|max:255',
             'direccion' => 'nullable|string|max:500',
-            'celular' => 'required|digits:8|unique:pacientes',
+            'celular' => 'nullable|digits:8|unique:pacientes',
         ]);
 
         Paciente::create([
@@ -95,19 +100,5 @@ class PacienteController extends Controller
         ]);
 
         return redirect()->route('pacientes.index')->with('success', 'Paciente actualizado exitosamente.');
-    }
-
-    // ELIMINAR PACIENTE
-    public function destroy($id)
-    {
-        $paciente = Paciente::findOrFail($id);
-        try {
-            $paciente->delete();
-            return redirect()->route('pacientes.index')
-                ->with('success', 'Paciente eliminado exitosamente');
-        } catch (\Exception $e) {
-            return redirect()->route('pacientes.index')
-                ->with('error', 'No se puede eliminar el paciente porque tiene registros asociados');
-        }
     }
 }
