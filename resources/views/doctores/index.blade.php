@@ -59,33 +59,23 @@
             @endif
             <!-- Filtro de búsqueda -->
             <div class="bg-white shadow-md rounded-lg p-4 mb-4">
-                <div class="flex items-center space-x-4">
+                <form id="search-form" method="GET" action="{{ route('doctores.index') }}" class="flex items-center space-x-4">
                     <div class="flex-1">
-                        <label for="search" class="block text-sm font-medium text-gray-700 mb-2">
-                            Buscar en listas de doctores
-                        </label>
+                        <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Buscar en listas de doctores</label>   
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                 </svg>
                             </div>
-                            <input type="text"
-                                id="search"
-                                name="search"
-                                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                placeholder="Buscar por nombre, apellido, fax, correo, dirección, contacto..."
-                                onkeyup="filterTable()">
+                            <input type="text" id="search" name="q" value="{{ request('q') }}" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Buscar por nombre, apellido, DUI, correo, dirección, contacto...">
                         </div>
                     </div>
-                    <div class="flex-shrink-0 mt-6">
-                        <button type="button"
-                            onclick="clearSearch()"
-                            class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
-                            Limpiar
-                        </button>
+                    <div class="flex-shrink-0 mt-6 flex items-center gap-2">
+                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">Buscar</button>
+                        <a href="{{ route('pacientes.index') }}" class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">Limpiar</a>
                     </div>
-                </div>
+                </form>
             </div>
 
             {{-- Tabla de doctores --}}
@@ -115,7 +105,7 @@
                         </thead>
                         <tbody id="doctores-table-body" class="bg-white divide-y divide-gray-200">
                             @forelse($doctores as $doctor)
-                            <tr class="table-row hover:bg-blue-50" data-searchable="{{ $doctor->nombre }} {{ $doctor->apellido }} {{ $doctor->jvpm }} {{ $doctor->celular }} {{ $doctor->correo }} {{ $doctor->direccion }} {{ $doctor->estado_servicio ? 'activo' : 'inactivo' }} {{ $doctor->fax }}">
+                            <tr class="table-row hover:bg-blue-50" data-searchable="{{ $doctor->nombre }} {{ $doctor->apellido }} {{ $doctor->jvpm }} {{ $doctor->celular }} {{ $doctor->correo }} {{ $doctor->direccion }} {{ $doctor->estado_servicio ? 'activo' : 'inactivo' }} {{ $doctor->fax }} ">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">
                                         {{ $doctor->nombre }} {{ $doctor->apellido }}
@@ -213,63 +203,27 @@
         </div>
     </div>
     <script>
-        function normalizeText(str) {
-            return (str || '')
-                .toString()
-                .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, ''); // quitar acentos
-        }
+        // Auto-enviar el formulario con debounce para búsqueda server-side
+        const searchInput = document.getElementById('search');
+        const searchForm = document.getElementById('search-form');
+        const pacientesIndexUrl = "{{ route('pacientes.index') }}";
 
-        function filterTable() {
-            const searchInput = document.getElementById('search');
-            const searchTerm = normalizeText(searchInput.value);
-            const tbody = document.getElementById('doctores-table-body');
-            const tableRows = tbody.querySelectorAll('tr.table-row');
-            let visibleRows = 0;
-
-            tableRows.forEach(row => {
-                const rawText = row.getAttribute('data-searchable') || row.textContent;
-                const searchableText = normalizeText(rawText);
-                const matches = !searchTerm || searchableText.includes(searchTerm);
-                row.style.display = matches ? '' : 'none';
-                if (matches) visibleRows++;
-            });
-
-            // Quitar mensaje previo
-            const existingNoResults = document.getElementById('no-results-row');
-            if (existingNoResults) existingNoResults.remove();
-
-            // Crear mensaje de "no se encontraron resultados"
-            if (searchTerm && visibleRows === 0) {
-                const noResultsRow = document.createElement('tr');
-                noResultsRow.id = 'no-results-row';
-                noResultsRow.innerHTML = `
-                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                        <div class="py-8">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            <h3 class="mt-2 text-sm font-medium text-gray-900">No se encontraron resultados</h3>
-                            <p class="mt-1 text-sm text-gray-500">Intenta con otros términos de búsqueda.</p>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(noResultsRow);
+        // Enviar sólo con Enter; limpiar con Escape
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
+            } else if (e.key === 'Escape') {
+                window.location = pacientesIndexUrl;
             }
-        }
+        });
 
-        function clearSearch() {
-            const searchInput = document.getElementById('search');
-            searchInput.value = '';
-            filterTable();
-        }
-
-        // Agregar evento para limpiar búsqueda con Escape
-        document.getElementById('search').addEventListener('keydown', function(e) {
+        searchInput.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                clearSearch();
+                window.location = pacientesIndexUrl;
             }
         });
     </script>
+
+
 </x-app-layout>

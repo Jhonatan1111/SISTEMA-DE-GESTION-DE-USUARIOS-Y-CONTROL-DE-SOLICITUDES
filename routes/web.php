@@ -30,13 +30,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
     // DOCTORES
     Route::get('doctores', [DoctorController::class, 'index'])->name('doctores.index');
     Route::get('doctores/create', [DoctorController::class, 'create'])->name('doctores.create');
     Route::post('doctores', [DoctorController::class, 'store'])->name('doctores.store');
-
     Route::get('doctores/{doctor}', [DoctorController::class, 'show'])->whereNumber('doctor')->name('doctores.show');
-
 
     // PACIENTES
     Route::get('pacientes', [PacienteController::class, 'index'])->name('pacientes.index');
@@ -52,6 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::post('mascotas', [MascotaController::class, 'store'])->name('mascotas.store');
     Route::get('mascotas/{mascota}/edit', [MascotaController::class, 'edit'])->name('mascotas.edit');
     Route::put('mascotas/{mascota}', [MascotaController::class, 'update'])->name('mascotas.update');
+    Route::get('mascotas/{mascota}', [MascotaController::class, 'show'])->whereNumber('mascota')->name('mascotas.show');
 
     // BIOPSIAS
     Route::get('biopsias', [BiopsiaController::class, 'index'])->name('biopsias.index');
@@ -128,13 +128,7 @@ Route::middleware('auth')->group(function () {
     Route::get('listas/biopsias/create', [ListaBiopsiaController::class, 'create'])->name('listas.biopsias.create');
     Route::post('listas/biopsias', [ListaBiopsiaController::class, 'store'])->name('listas.biopsias.store');
 
-
-
-
     // LISTAS DE CITOLOGÍAS
-    Route::get('listas/citologias', [ListaCitologiaController::class, 'index'])->name('listas.citologias.index');
-    Route::get('listas/citologias/create', [ListaCitologiaController::class, 'create'])->name('listas.citologias.create');
-    Route::post('listas/citologias', [ListaCitologiaController::class, 'store'])->name('listas.citologias.store');
     Route::get('listas/citologias', [ListaCitologiaController::class, 'index'])->name('listas.citologias.index');
     Route::get('listas/citologias/create', [ListaCitologiaController::class, 'create'])->name('listas.citologias.create');
     Route::post('listas/citologias', [ListaCitologiaController::class, 'store'])->name('listas.citologias.store');
@@ -142,16 +136,20 @@ Route::middleware('auth')->group(function () {
     Route::put('listas/citologias/{listaCitologia}', [ListaCitologiaController::class, 'update'])->name('listas.citologias.update');
     Route::delete('listas/citologias/{listaCitologia}', [ListaCitologiaController::class, 'destroy'])->name('listas.citologias.destroy');
 
+
     // RUTA PARA ACCESO DE ADMINISTRADORES
     Route::middleware(['role:admin'])->group(function () {
         // DOCTORES
         Route::get('doctores/{doctor}/edit', [DoctorController::class, 'edit'])->name('doctores.edit');
         Route::put('doctores/{doctor}', [DoctorController::class, 'update'])->name('doctores.update');
         Route::delete('doctores/{doctor}', [DoctorController::class, 'destroy'])->name('doctores.destroy');
-        Route::patch('doctores/{doctor}/toggle-estado', [DoctorController::class, 'toggleEstado'])->name('doctores.toggle-estado');
+        Route::patch('doctores/{doctor}/toggle-estado', action: [DoctorController::class, 'toggleEstado'])->name('doctores.toggle-estado');
+
+        // PERSONAS
+        Route::patch('personas/{persona}/toggle-estado', action: [PacienteController::class, 'toggleEstado'])->name('pacientes.toggle-estado');
 
         //MASCOTAS
-        Route::delete('mascotas/{mascota}', [MascotaController::class, 'destroy'])->name('mascotas.destroy');
+        Route::patch('mascotas/{mascota}/toggle-estado', action: [MascotaController::class, 'toggleEstado'])->name('mascotas.toggle-estado');
 
         // BIOPSIAS
         Route::get('biopsias/{nbiopsia}/edit', [BiopsiaController::class, 'edit'])->name('biopsias.edit');
