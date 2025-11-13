@@ -57,8 +57,8 @@
                     </div>
 
                     <div>
-                        <label for="dui" class="block text-sm font-semibold text-gray-700 mb-1">DUI <span class="text-red-500">*</span></label>
-                        <input type="text" id="dui" name="dui" value="{{ old('dui', $paciente->dui) }}" placeholder="DUI" class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
+                        <label for="dui" class="block text-sm font-semibold text-gray-700 mb-1">DUI</label>
+                        <input type="text" id="dui" name="dui" value="{{ old('dui', $paciente->dui) }}" placeholder="DUI" class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" >
                     </div>
 
                    
@@ -88,8 +88,8 @@
                     </div>
 
                     <div>
-                        <label for="celular" class="block text-sm font-semibold text-gray-700 mb-1">Celular <span class="text-red-500">*</span></label>
-                        <input type="text" id="celular" name="celular" value="{{ old('celular', $paciente->celular) }}" placeholder="Ej: 78901234" maxlength="8" class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
+                        <label for="celular" class="block text-sm font-semibold text-gray-700 mb-1">Celular </label>
+                        <input type="text" id="celular" name="celular" value="{{ old('celular', $paciente->celular) }}" placeholder="Ej: 78901234" maxlength="8" class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" >
                     </div>
                 </div>
             </div>

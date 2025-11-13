@@ -48,11 +48,11 @@ class PacienteController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
-            'dui' => 'string|unique:pacientes',
+            'dui' => 'nullable|string|digits:9|unique:pacientes',
             'sexo' => 'nullable|string|in:masculino,femenino',
-            'fecha_nacimiento' => 'date',
-            'estado_civil' => 'string',
-            'ocupacion' => 'string',
+            'fecha_nacimiento' => 'nullable|date',
+            'estado_civil' => 'nullable|string',
+            'ocupacion' => 'nullable|string',
             'correo' => 'nullable|string|email|max:255',
             'direccion' => 'nullable|string|max:500',
             'celular' => 'nullable|digits:8|unique:pacientes',
@@ -85,21 +85,6 @@ class PacienteController extends Controller
     public function update(Request $request, $id)
     {
         $paciente = Paciente::findOrFail($id);
-
-        // VALIDANDO INFORMACION ANTES DE ACTUALIZAR
-        // $request->validate([
-        //     'nombre' => 'required|string|max:255',
-        //     'apellido' => 'required|string|max:255',
-        //     'dui' => 'digits:9|unique:pacientes,dui,' . $paciente->id,
-        //     'estado' => 'required|boolean',
-        //     'sexo' => 'required|string|in:masculino,femenino',
-        //     'fecha_nacimiento' => 'date',
-        //     'estado_civil' => 'string',
-        //     'ocupacion' => 'string',
-        //     'correo' => 'nullable|string|email|max:255|unique:pacientes,correo,' . $paciente->id,
-        //     'direccion' => 'nullable|string|max:500',
-        //     'celular' => 'required|digits:8|unique:pacientes,celular,' . $paciente->id,
-        // ]);
 
         $paciente->update([
             'nombre' => $request->nombre,

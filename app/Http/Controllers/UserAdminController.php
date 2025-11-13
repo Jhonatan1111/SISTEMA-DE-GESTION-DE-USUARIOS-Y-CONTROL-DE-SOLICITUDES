@@ -10,9 +10,23 @@ use Illuminate\Validation\Rule;
 class UserAdminController extends Controller
 {
     // Mostrar lista de usuarios
-    public function index()
+    public function index(Request $request)
     {
-        $usuarios = User::orderBy('created_at', 'desc')->paginate(10);
+        $q = trim($request->input('q', ''));
+
+        $query = User::query();
+
+        if ($q !== '') {
+            $term = "%{$q}%";
+            $query->where(function ($builder) use ($term) {
+                $builder->where('nombre', 'like', $term)
+                    ->orWhere('apellido', 'like', $term)
+                    ->orWhere('celular', 'like', $term)
+                    ->orWhere('email', 'like', $term);
+            });
+        }
+
+        $usuarios = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         return view('admin.usuarios.index', compact('usuarios'));
     }
 

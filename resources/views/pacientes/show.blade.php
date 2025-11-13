@@ -67,9 +67,10 @@
                     <div class="bg-white p-4 rounded-lg border border-gray-200 ">
 
                         <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Correo Electrónico</p>
-                        <p class="text-lg font-bold text-gray-900">{{ $paciente->correo ?? 'No registrado' }}</p>
+                        <p class="text-lg font-bold text-blue-600 break-all">{{ $paciente->correo ?? 'No registrado' }}</p>
 
                     </div>
+
                     <div class="bg-white p-4 rounded-lg border border-gray-200 sm:col-span-2">
                         <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Dirección</p>
                         <p class="text-lg font-bold text-gray-900">{{ $paciente->direccion ?? 'No registrada' }}</p>

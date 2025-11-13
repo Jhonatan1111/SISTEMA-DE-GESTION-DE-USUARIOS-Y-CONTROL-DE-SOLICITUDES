@@ -9,12 +9,31 @@ class MascotaController extends Controller
 {
 
     // MOSTRANDO PACIENTES
-    public function index()
+    public function index(Request $request)
     {
-        $mascotas = Mascota::orderBy('nombre')->paginate(10);
+        $q = trim($request->input('q', ''));
+
+        $query = Mascota::query();
+
+        if ($q !== '') {
+            $term = "%{$q}%";
+            $query->where(function ($builder) use ($term) {
+                $builder->where('propietario', 'like', $term)
+                    ->orWhere('nombre', 'like', $term)
+                    ->orWhere('sexo', 'like', $term)
+                    ->orWhere('especie', 'like', $term)
+                    ->orWhere('correo', 'like', $term)
+                    ->orWhere('raza', 'like', $term)
+                    ->orWhere('edad', 'like', $term)
+                    ->orWhere('celular', 'like', $term);
+            });
+        }
+
+
+        $mascotas = $query->orderBy('nombre')->paginate(10)->withQueryString();
         return view('mascotas.index', compact('mascotas'));
     }
-    // CREANDO PACIENTE
+    // CREANDO MASCOTA
     public function create()
     {
         return view('mascotas.create');
@@ -29,13 +48,13 @@ class MascotaController extends Controller
         // VALIDANDO INFORMACION ANTES DE CREAR
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'edad' => 'required|integer',
+            'edad' => 'nullable|integer',
             'sexo' => 'required|string|in:macho,hembra',
-            'especie' => 'string|max:255',
-            'raza' => 'string|max:255',
-            'propietario' => 'string|max:255',
-            'correo' => 'string|email|unique:mascotas,correo',
-            'celular' => 'required|digits:8|unique:mascotas,celular',
+            'especie' => 'nullable|string|max:255',
+            'raza' => 'nullable|string|max:255',
+            'propietario' => 'nullable|string|max:255',
+            'correo' => 'nullable|string|email|max:255|unique:mascotas,correo',
+            'celular' => 'nullable|digits:8|unique:mascotas,celular',
 
         ]);
 
@@ -64,21 +83,6 @@ class MascotaController extends Controller
     {
         $mascota = Mascota::findOrFail($id);
 
-        // VALIDANDO INFORMACION ANTES DE ACTUALIZAR
-        // $request->validate([
-        //     'nombre' => 'required|string|max:255',
-        //     'apellido' => 'required|string|max:255',
-        //     'dui' => 'digits:9|unique:pacientes,dui,' . $paciente->id,
-        //     'edad' => 'required|integer',
-        //     'sexo' => 'required|string|in:masculino,femenino',
-        //     'fecha_nacimiento' => 'date',
-        //     'estado_civil' => 'string',
-        //     'ocupacion' => 'string',
-        //     'correo' => 'nullable|string|email|max:255|unique:pacientes,correo,' . $paciente->id,
-        //     'direccion' => 'nullable|string|max:500',
-        //     'celular' => 'required|digits:8|unique:pacientes,celular,' . $paciente->id,
-        // ]);
-
         $mascota->update([
             'nombre' => $request->nombre,
             'edad' => $request->edad,
@@ -91,5 +95,14 @@ class MascotaController extends Controller
         ]);
 
         return redirect()->route('mascotas.index')->with('success', 'Mascota actualizada exitosamente.');
+    }
+    public function toggleEstado(Request $request, $id)
+    {
+        $mascota = Mascota::findOrFail($id);
+        $mascota->estado = !$mascota->estado;
+        $mascota->save();
+        $estado = $mascota->estado ? 'activado' : 'desactivado';
+        return redirect()->back()
+            ->with('success', "Mascota {$estado} exitosamente");
     }
 }

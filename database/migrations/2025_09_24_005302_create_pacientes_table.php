@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('apellido')->comment('Apellido del paciente');
             $table->string('dui')->unique()->nullable()->comment('DUI del paciente');
             $table->enum('sexo', ['masculino', 'femenino'])->comment('Sexo del paciente');
+            $table->boolean('estado')->default(true)->comment('Estado del paciente');
             $table->date('fecha_nacimiento')->nullable()->comment('Fecha de nacimiento del paciente');
             $table->string('estado_civil')->nullable()->comment('Estado civil del paciente');
             $table->string('ocupacion')->nullable()->comment('Ocupación del paciente');

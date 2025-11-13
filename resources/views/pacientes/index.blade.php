@@ -20,7 +20,6 @@
                 <h1 class="text-3xl font-bold text-gray-900">Gestión de Personas</h1>
                 <p class="text-gray-600 mt-1">Administra los pacientes del sistema</p>
             </div>
-            @if (auth()->user()->role === 'admin')
             <a href="{{ route('pacientes.create') }}"
                 class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:shadow-lg flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -28,7 +27,6 @@
                 </svg>
                 AGREGAR
             </a>
-            @endif
         </div>
 
         <!-- Estadísticas -->
@@ -47,7 +45,7 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
+            <div  iv class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
                 <div class="flex items-center">
                     <div class="flex-1">
                         <h3 class="text-sm font-medium text-gray-500 uppercase">Masculino</h3>
@@ -125,11 +123,12 @@
                     <thead class="bg-blue-400">
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
-                                DUI
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Paciente
                             </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                DUI
+                            </th>
+
                             <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Edad/SEXO
                             </th>
@@ -150,9 +149,7 @@
                     <tbody id="pacientes-table-body" class="bg-white divide-y divide-gray-200">
                         @forelse($pacientes as $paciente)
                         <tr class="table-row hover:bg-blue-50" data-searchable="{{ $paciente->dui }} {{ $paciente->nombre }} {{ $paciente->apellido }} {{ $paciente->fecha_nacimiento }} {{ $paciente->sexo }} {{ $paciente->celular }} {{ $paciente->correo }} {{ $paciente->direccion }}">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">{{ $paciente->dui }}</div>
-                            </td>
+
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">
                                     {{ $paciente->nombre }} {{ $paciente->apellido }}
@@ -162,6 +159,9 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-gray-900">{{ $paciente->dui }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">{{ $paciente->fecha_nacimiento ? $paciente->fecha_nacimiento->age . ' años' : 'N/A' }}</div>
                                 <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full {{ strtoupper(substr($paciente->sexo ?? '', 0, 1)) == 'M' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800' }}">
                                     {{ ucfirst($paciente->sexo) }}
@@ -169,18 +169,12 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 <div class="flex items-center">
-                                    <svg class="w-4 h-4 mr-1 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
-                                    </svg>
+
                                     {{ $paciente->celular }}
                                 </div>
                                 @if($paciente->correo)
-                                <div class="flex items-center text-blue-600 text-xs mt-1">
-                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                                    </svg>
-                                    {{ $paciente->correo }}
+                                <div class="max-w-[160px] truncate text-blue-600" title="{{ $paciente->correo }}">
+                                    {{ $paciente->correo ?? 'Sin correo' }}
                                 </div>
                                 @endif
                             </td>
@@ -263,7 +257,7 @@
         const pacientesIndexUrl = "{{ route('pacientes.index') }}";
 
         // Enviar sólo con Enter; limpiar con Escape
-        searchInput.addEventListener('keydown', function (e) {
+        searchInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 searchForm.submit();
@@ -272,7 +266,7 @@
             }
         });
 
-        searchInput.addEventListener('keydown', function (e) {
+        searchInput.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 window.location = pacientesIndexUrl;
             }
