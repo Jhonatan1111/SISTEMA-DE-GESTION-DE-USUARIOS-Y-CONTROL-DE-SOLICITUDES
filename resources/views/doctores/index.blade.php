@@ -61,7 +61,7 @@
             <div class="bg-white shadow-md rounded-lg p-4 mb-4">
                 <form id="search-form" method="GET" action="{{ route('doctores.index') }}" class="flex items-center space-x-4">
                     <div class="flex-1">
-                        <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Buscar en listas de doctores</label>   
+                        <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Buscar en listas de doctores</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -116,17 +116,12 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     <div class="flex items-center">
-                                        <svg class="w-4 h-4 mr-1 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
-                                        </svg>
+
                                         {{ $doctor->celular }}
                                     </div>
                                     @if($doctor->correo)
-                                    <div class="flex items-center text-blue-600 text-xs mt-1">
-                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                                        </svg>
+                                    <div class="flex items-center text-blue-600 text-xs mt-1 max-w-[160px] truncate">
+
                                         {{ $doctor->correo }}
                                     </div>
                                     @endif
