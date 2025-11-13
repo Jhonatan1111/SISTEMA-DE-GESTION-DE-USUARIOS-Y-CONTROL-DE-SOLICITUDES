@@ -98,65 +98,58 @@
             </div>
         </div>
         @endif
-        <!-- Filtro de búsqueda -->
+        <!-- Filtro de búsqueda (server-side, compatible con paginación) -->
         <div class="bg-white shadow-md rounded-lg p-4 mb-4">
-            <div class="flex items-center space-x-4">
+            <form id="search-form" method="GET" action="{{ route('pacientes.index') }}" class="flex items-center space-x-4">
                 <div class="flex-1">
-                    <label for="search" class="block text-sm font-medium text-gray-700 mb-2">
-                        Buscar en listas de pacientes
-                    </label>
+                    <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Buscar en listas de pacientes</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </div>
-                        <input type="text"
-                            id="search"
-                            name="search"
-                            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            placeholder="Buscar por DUI, nombre, apellido, correo, dirección, contacto..."
-                            onkeyup="filterTable()">
+                        <input type="text" id="search" name="q" value="{{ request('q') }}" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Buscar por nombre, apellido, DUI, correo, dirección, contacto...">
                     </div>
                 </div>
-                <div class="flex-shrink-0 mt-6">
-                    <button type="button"
-                        onclick="clearSearch()"
-                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
-                        Limpiar
-                    </button>
+                <div class="flex-shrink-0 mt-6 flex items-center gap-2">
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">Buscar</button>
+                    <a href="{{ route('pacientes.index') }}" class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">Limpiar</a>
                 </div>
-            </div>
+            </form>
         </div>
         <!-- Tabla de pacientes -->
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-violet-200">
+                <table class="min-w-full table-fixed divide-y divide-violet-200">
                     <thead class="bg-blue-400">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 DUI
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Paciente
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                Edad/Sexo
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Edad/SEXO
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Contacto
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Dirección
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Estado
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Acciones
                             </th>
                         </tr>
                     </thead>
                     <tbody id="pacientes-table-body" class="bg-white divide-y divide-gray-200">
                         @forelse($pacientes as $paciente)
-                        <tr class="table-row hover:bg-blue-50" data-searchable="{{ $paciente->dui }} {{ $paciente->nombre }} {{ $paciente->apellido }} {{ $paciente->edad }} {{ $paciente->sexo }} {{ strtoupper(substr($paciente->sexo, 0, 1)) == 'M' ? 'masculino' : 'femenino' }} {{ $paciente->celular }} {{ $paciente->correo }} {{ $paciente->direccion }} {{ $paciente->fecha_nacimiento ? date('d/m/Y', strtotime($paciente->fecha_nacimiento)) : '' }}">
+                        <tr class="table-row hover:bg-blue-50" data-searchable="{{ $paciente->dui }} {{ $paciente->nombre }} {{ $paciente->apellido }} {{ $paciente->fecha_nacimiento }} {{ $paciente->sexo }} {{ $paciente->celular }} {{ $paciente->correo }} {{ $paciente->direccion }}">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">{{ $paciente->dui }}</div>
                             </td>
@@ -169,9 +162,9 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $paciente->edad }} años</div>
-                                <span class="inline-flex px-0 py-1 text-xs {{ strtoupper(substr($paciente->sexo, 0, 1)) == 'M' ? ' text-gray-500' : 'bg-pink-50 text-pink-500' }}">
-                                    {{ $paciente->sexo }}
+                                <div class="text-sm text-gray-900">{{ $paciente->fecha_nacimiento ? $paciente->fecha_nacimiento->age . ' años' : 'N/A' }}</div>
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full {{ strtoupper(substr($paciente->sexo ?? '', 0, 1)) == 'M' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800' }}">
+                                    {{ ucfirst($paciente->sexo) }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -191,24 +184,48 @@
                                 </div>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-900">
-                                <div class="max-w-xs truncate" title="{{ $paciente->direccion }}">
+                            <td class="px-3 py-3 text-sm text-gray-900">
+                                <div class="max-w-[160px] truncate" title="{{ $paciente->direccion }}">
                                     {{ $paciente->direccion ?? 'Sin dirección' }}
                                 </div>
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($paciente->estado)
+                                <span class="inline-flex items-center gap-1 bg-green-100 text-green-800 px-4 py-2 rounded-full text-xs font-bold">
+                                    <span></span> Activo
+                                </span>
+                                @else
+                                <span class="inline-flex items-center gap-1 bg-red-100 text-red-800 px-4 py-2 rounded-full text-xs font-bold">
+                                    <span></span> Inactivo
+                                </span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-
                                     <a href="{{ route('pacientes.show', $paciente) }}"
                                         class="text-indigo-600 hover:text-indigo-900">
                                         Ver
                                     </a>
+                                    <!-- Botón Activar / Desactivar -->
+                                    @if (auth()->user()->role === 'admin')
+
+                                    <form action="{{ route('pacientes.toggle-estado', $paciente) }}" method="POST"
+                                        onsubmit="return confirm('¿Está seguro de cambiar el estado de este paciente?')" class="inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                            class="{{ $paciente->estado ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900' }}">
+                                            {{ $paciente->estado ? 'Desactivar' : 'Activar' }}
+                                        </button>
+                                    </form>
+                                    @endif
+
                                 </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                            <td colspan="7" class="px-6 py-4 text-center text-gray-500">
                                 <div class="py-8">
                                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -240,63 +257,26 @@
         </div>
     </div>
     <script>
-        function normalizeText(str) {
-            return (str || '')
-                .toString()
-                .toLowerCase()
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, ''); // quitar acentos
-        }
+        // Auto-enviar el formulario con debounce para búsqueda server-side
+        const searchInput = document.getElementById('search');
+        const searchForm = document.getElementById('search-form');
+        const pacientesIndexUrl = "{{ route('pacientes.index') }}";
 
-        function filterTable() {
-            const searchInput = document.getElementById('search');
-            const searchTerm = normalizeText(searchInput.value);
-            const tbody = document.getElementById('pacientes-table-body');
-            const tableRows = tbody ? tbody.querySelectorAll('tr.table-row') : [];
-            let visibleRows = 0;
-
-            tableRows.forEach(row => {
-                const rawText = row.getAttribute('data-searchable') || row.textContent;
-                const searchableText = normalizeText(rawText);
-                const matches = !searchTerm || searchableText.includes(searchTerm);
-                row.style.display = matches ? '' : 'none';
-                if (matches) visibleRows++;
-            });
-
-            // Quitar mensaje previo
-            const existingNoResults = document.getElementById('no-results-row');
-            if (existingNoResults) existingNoResults.remove();
-
-            // Crear mensaje de "no se encontraron resultados"
-            if (searchTerm && visibleRows === 0) {
-                const noResultsRow = document.createElement('tr');
-                noResultsRow.id = 'no-results-row';
-                noResultsRow.innerHTML = `
-                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                        <div class="py-8">
-                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            <h3 class="mt-2 text-sm font-medium text-gray-900">No se encontraron resultados</h3>
-                            <p class="mt-1 text-sm text-gray-500">Intenta con otros términos de búsqueda.</p>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(noResultsRow);
+        // Enviar sólo con Enter; limpiar con Escape
+        searchInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
+            } else if (e.key === 'Escape') {
+                window.location = pacientesIndexUrl;
             }
-        }
+        });
 
-        function clearSearch() {
-            const searchInput = document.getElementById('search');
-            searchInput.value = '';
-            filterTable();
-        }
-
-        // Agregar evento para limpiar búsqueda con Escape
-        document.getElementById('search').addEventListener('keydown', function(e) {
+        searchInput.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
-                clearSearch();
+                window.location = pacientesIndexUrl;
             }
         });
     </script>
+
 </x-app-layout>

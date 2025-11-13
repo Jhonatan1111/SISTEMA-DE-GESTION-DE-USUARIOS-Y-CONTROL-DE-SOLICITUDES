@@ -195,9 +195,9 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('mascotas.edit', $mascota) }}"
+                                    <a href="{{ route('mascotas.show', $mascota) }}"
                                         class="text-indigo-600 hover:text-indigo-900">
-                                        Editar
+                                        Ver
                                     </a>
                                 </div>
                             </td>
@@ -224,14 +224,14 @@
                         @endforelse
                     </tbody>
                 </table>
-            </div>
+                <!-- Paginación -->
+                @if($mascotas->hasPages())
+                <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+                    {{ $mascotas->links() }}
 
-            <!-- Paginación -->
-            @if($mascotas->hasPages())
-            <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-                {{ $mascotas->links() }}
+                </div>
+                @endif
             </div>
-            @endif
         </div>
     </div>
     <script>

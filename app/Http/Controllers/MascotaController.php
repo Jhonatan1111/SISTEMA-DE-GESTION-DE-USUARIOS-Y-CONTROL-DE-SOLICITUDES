@@ -19,6 +19,10 @@ class MascotaController extends Controller
     {
         return view('mascotas.create');
     }
+    public function show(Mascota $mascota)
+    {
+        return view('mascotas.show', compact('mascota'));
+    }
     // GUARDANDO MASCOTA
     public function store(Request $request)
     {
@@ -88,19 +92,4 @@ class MascotaController extends Controller
 
         return redirect()->route('mascotas.index')->with('success', 'Mascota actualizada exitosamente.');
     }
-
-    // ELIMINAR MASCOTA
-    public function destroy($id)
-    {
-        $mascota = Mascota::findOrFail($id);
-        try {
-            $mascota->delete();
-            return redirect()->route('mascotas.index')
-                ->with('success', 'Mascota eliminada exitosamente');
-        } catch (\Exception $e) {
-            return redirect()->route('mascotas.index')
-                ->with('error', 'No se puede eliminar la mascota porque tiene registros asociados');
-        }
-    }
-    
 }
