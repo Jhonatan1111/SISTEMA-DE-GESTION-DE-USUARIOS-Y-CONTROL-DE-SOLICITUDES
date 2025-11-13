@@ -46,7 +46,6 @@
                         @if($paciente->estado)
                         <span class="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full text-xs font-bold">Activo</span>
                         @else
-                        <span class="inline-flex items-center gap-2 bg-red-100 text-red-800 px-4 py-2 rounded-full text-xs font-bold">Inactivo</span>
                         @endif
                     </div>
                     <div class="bg-white p-4 rounded-lg border border-gray-200">

@@ -183,10 +183,16 @@
                                 </div>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <span class="inline-flex px-2 py-1 text-xs font-medium rounded-full {{ $mascota->estado ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                    {{ $mascota->estado ? 'Activo' : 'Inactivo' }}
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($mascota->estado)
+                                <span class="inline-flex items-center gap-1 bg-green-100 text-green-800 px-4 py-2 rounded-full text-xs font-bold">
+                                    <span></span> Activo
                                 </span>
+                                @else
+                                <span class="inline-flex items-center gap-1 bg-red-100 text-red-800 px-4 py-2 rounded-full text-xs font-bold">
+                                    <span></span> Inactivo
+                                </span>
+                                @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
