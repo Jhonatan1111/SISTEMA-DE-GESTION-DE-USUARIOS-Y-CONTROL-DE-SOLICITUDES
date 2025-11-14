@@ -50,9 +50,9 @@ class MascotaController extends Controller
             'nombre' => 'required|string|max:255',
             'edad' => 'nullable|integer',
             'sexo' => 'required|string|in:macho,hembra',
-            'especie' => 'nullable|string|max:255',
-            'raza' => 'nullable|string|max:255',
-            'propietario' => 'nullable|string|max:255',
+            'especie' => 'required|string|max:255',
+            'raza' => 'required|string|max:255',
+            'propietario' => 'required|string|max:255',
             'correo' => 'nullable|string|email|max:255|unique:mascotas,correo',
             'celular' => 'nullable|digits:8|unique:mascotas,celular',
 
@@ -67,6 +67,7 @@ class MascotaController extends Controller
             'propietario' => $request->propietario,
             'correo' => $request->correo,
             'celular' => $request->celular,
+            'estado' => true,
         ]);
 
         return redirect()->route('mascotas.index')->with('success', 'Mascota creada exitosamente.');
