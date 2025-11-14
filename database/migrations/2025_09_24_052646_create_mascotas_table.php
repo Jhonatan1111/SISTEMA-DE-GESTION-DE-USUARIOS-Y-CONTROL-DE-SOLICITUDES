@@ -16,11 +16,12 @@ return new class extends Migration
             $table->string('nombre')->comment('Nombre de la mascota');
             $table->integer('edad')->comment('Edad de la mascota');
             $table->enum('sexo', ['macho', 'hembra'])->comment('Sexo de la mascota');
-            $table->string('especie')->nullable()->comment('Especie de la mascota');
-            $table->string('raza')->nullable()->comment('Raza de la mascota');
-            $table->string('propietario')->nullable()->comment('Propietario de la mascota');
+            $table->string('especie')->comment('Especie de la mascota');
+            $table->string('raza')->comment('Raza de la mascota');
+            $table->string('propietario')->comment('Propietario de la mascota');
             $table->string('correo')->unique()->nullable()->comment('Correo electrónico del propietario');
             $table->integer('celular')->unique()->nullable()->comment('Número de celular del propietario');
+            $table->boolean('estado')->default(true)->comment('Estado de la mascota (activo/inactivo)');
             $table->timestamps();
         });
     }
