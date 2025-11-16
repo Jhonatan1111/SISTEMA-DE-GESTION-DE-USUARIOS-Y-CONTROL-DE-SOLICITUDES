@@ -102,7 +102,6 @@ class DoctorController extends Controller
             'celular' => $request->celular,
             'fax' => $request->fax,
             'correo' => $request->correo,
-            'estado_servicio' => $request->input('estado_servicio') == '1',
         ]);
 
         return redirect()->route('doctores.index')->with('success', 'Doctor actualizado exitosamente.');
