@@ -15,6 +15,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserAdminController;
 use App\Models\Biopsia;
 use App\Http\Controllers\SobreController;
+use App\Http\Controllers\UtilController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -26,11 +27,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    // PERFIL
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
+    // CENTRO DE APOYO
+    Route::get('/utils/credits', [UtilController::class, 'credits'])->name('utils.credits');
     // DOCTORES
     Route::get('doctores', [DoctorController::class, 'index'])->name('doctores.index');
     Route::get('doctores/create', [DoctorController::class, 'create'])->name('doctores.create');
