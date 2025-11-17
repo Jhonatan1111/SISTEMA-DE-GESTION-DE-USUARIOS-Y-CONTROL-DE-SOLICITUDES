@@ -1,84 +1,69 @@
-<x-guest-layout>
-    <style>
-        body {
-            background: #e6f2ff; /* Fondo celeste suave */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        h2 {
-            font-size: 22px;
-            font-weight: bold;
-            color: #004d80;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .text-info {
-            font-size: 15px;
-            color: #333;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .form-box {
-            max-width: 420px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        .btn-primary-custom {
-            background: #0077cc;
-            color: white;
-            font-weight: bold;
-            padding: 10px 18px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .btn-primary-custom:hover {
-            background: #005fa3;
-        }
-    </style>
+<!DOCTYPE html>
+<html lang="es">
 
-    <div class="form-box">
-        <h2>Restablecer Contraseña</h2>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restablecer Contraseña</title>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="icon" type="image/png" href="{{ asset('image/logo.png') }}">
+</head>
 
-        <p class="text-info">
-            Ingresa tu correo y tu nueva contraseña para actualizar tu cuenta.
-        </p>
+<body>
+    <main class="auth-card fade-in">
+        <img src="{{ asset('image/logo.png') }}" alt="Logo" class="logo" style="max-width:100px; display:block; margin:0 auto 15px;">
+        <h2 class="auth-title">Restablecer Contraseña</h2>
+        <p class="auth-info">Ingresa tu correo y tu nueva contraseña para actualizar tu cuenta.</p>
+
+        @if($errors->any())
+        <div class="auth-info" style="color:red;">
+            <ul class="mb-0">
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
 
         <form method="POST" action="{{ route('password.store') }}">
             @csrf
-
-            <!-- Password Reset Token -->
             <input type="hidden" name="token" value="{{ $request->route('token') }}">
-
-            <!-- Email Address -->
-            <div class="mb-3">
-                <x-input-label for="email" :value="__('Correo electrónico')" />
-                <x-text-input id="email" class="block mt-1 w-full" type="email"
-                              name="email" :value="old('email', $request->email)" required autofocus autocomplete="username" />
-                <x-input-error :messages="$errors->get('email')" class="mt-2" />
-            </div>
-
-            <!-- Password -->
-            <div class="mb-3">
-                <x-input-label for="password" :value="__('Nueva contraseña')" />
-                <x-text-input id="password" class="block mt-1 w-full" type="password"
-                              name="password" required autocomplete="new-password" />
-                <x-input-error :messages="$errors->get('password')" class="mt-2" />
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="mb-3">
-                <x-input-label for="password_confirmation" :value="__('Confirmar contraseña')" />
-                <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                              type="password" name="password_confirmation" required autocomplete="new-password" />
-                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-            </div>
-
-            <div class="flex items-center justify-center mt-4">
-                <button type="submit" class="btn-primary-custom">
-                    {{ __('Restablecer contraseña.') }}
-                </button>
-            </div>
+            <input type="email"  name="email" placeholder="Correo electrónico" autofocus value="{{ old('email', $request->email) }}">
+            <input type="password" name="password" placeholder="Nueva contraseña" required autocomplete="new-password">
+            <input type="password" name="password_confirmation" placeholder="Confirmar contraseña" required autocomplete="new-password">
+            <button type="submit" class="btn-gradient w-100">Restablecer contraseña</button>
         </form>
-    </div>
-</x-guest-layout>
+
+        <div style="text-align:center; margin-top:10px;">
+            <a href="{{ route('login') }}" style="color:var(--color-primary); text-decoration:none;">← Volver al inicio de sesión</a>
+        </div>
+    </main>
+</body>
+
+</html>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const emailInput = document.querySelector('input[name="email"]');
+        const passwordInput = document.querySelector('input[name="password"]');
+        const confirmInput = document.querySelector('input[name="password_confirmation"]');
+
+        if (emailInput) {
+            emailInput.addEventListener('input', function() {
+                this.value = this.value.trimStart();
+            });
+            emailInput.addEventListener('paste', function() {
+                setTimeout(() => {
+                    this.value = this.value.trimStart();
+                }, 10);
+            });
+        }
+
+        function trimOnSubmit() {
+            if (emailInput) emailInput.value = emailInput.value.trim();
+            if (passwordInput) passwordInput.value = passwordInput.value.trim();
+            if (confirmInput) confirmInput.value = confirmInput.value.trim();
+        }
+        const form = document.querySelector('form');
+        if (form) form.addEventListener('submit', trimOnSubmit);
+    });
+</script>
