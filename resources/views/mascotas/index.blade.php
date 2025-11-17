@@ -18,7 +18,7 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900">Gestión de Mascotas</h1>
-                <p class="text-gray-600 mt-1">Administra los pacientes del sistema</p>
+                <p class="text-gray-600 mt-1">Administra las mascotas del sistema</p>
             </div>
             <a href="{{ route('mascotas.create') }}"
                 class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:shadow-lg flex items-center gap-2">
@@ -96,6 +96,26 @@
             </div>
         </div>
         @endif
+        <!-- Filtro de búsqueda (server-side, compatible con paginación) -->
+        <div class="bg-white shadow-md rounded-lg p-4 mb-4">
+            <form id="search-form" method="GET" action="{{ route('mascotas.index') }}" class="flex items-center space-x-4">
+                <div class="flex-1">
+                    <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Buscar en listas de mascotas</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text" id="search" name="q" value="{{ request('q') }}" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Buscar por nombre, apellido, DUI, correo, dirección, contacto...">
+                    </div>
+                </div>
+                <div class="flex-shrink-0 mt-6 flex items-center gap-2">
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">Buscar</button>
+                    <a href="{{ route('mascotas.index') }}" class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">Limpiar</a>
+                </div>
+            </form>
+        </div>
 
         <!-- Tabla de mascotas -->
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
@@ -119,13 +139,16 @@
                                 Contacto
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                                Estado
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
                                 Acciones
                             </th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody id="mascotas-table-body" class="bg-white divide-y divide-gray-200">
                         @forelse($mascotas as $mascota)
-                        <tr class="hover:bg-blue-50">
+                        <tr class="table-row hover:bg-blue-50" data-searchable="{{ $mascota->nombre }} {{ $mascota->especie }} {{ $mascota->raza }} {{ $mascota->edad }} {{ $mascota->sexo }} {{ $mascota->propietario }} {{ $mascota->contacto }} {{ $mascota->correo }}">
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">{{ $mascota->nombre }}</div>
                             </td>
@@ -139,7 +162,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">{{ $mascota->edad }} años</div>
-                                <span class="inline-flex px-0 py-1 text-xs  {{ strtoupper(substr($mascota->sexo, 0, 1)) == 'M' ? ' text-gray-500' : 'bg-pink-100 text-pink-800' }}">
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full {{ strtoupper(substr($mascota->sexo ?? '', 0, 1)) == 'M' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800' }}">
                                     {{ ucfirst($mascota->sexo) }}
                                 </span>
                             </td>
@@ -148,27 +171,47 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 <div class="flex items-center">
-                                    <svg class="w-4 h-4 mr-1 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
-                                    </svg>
+                                   
                                     {{ $mascota->celular }}
                                 </div>
                                 @if($mascota->correo)
-                                <div class="flex items-center text-blue-600 text-xs mt-1">
-                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                                    </svg>
+                                <div class="max-w-[160px] truncate text-blue-600 ">
+
                                     {{ $mascota->correo }}
                                 </div>
                                 @endif
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($mascota->estado)
+                                <span class="inline-flex items-center gap-1 bg-green-100 text-green-800 px-4 py-2 rounded-full text-xs font-bold">
+                                    <span></span> Activo
+                                </span>
+                                @else
+                                <span class="inline-flex items-center gap-1 bg-red-100 text-red-800 px-4 py-2 rounded-full text-xs font-bold">
+                                    <span></span> Inactivo
+                                </span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('mascotas.edit', $mascota) }}"
+                                    <a href="{{ route('mascotas.show', $mascota) }}"
                                         class="text-indigo-600 hover:text-indigo-900">
-                                        Editar
+                                        Ver
                                     </a>
+                                    <!-- Botón Activar / Desactivar -->
+                                    @if (auth()->user()->role === 'admin')
+
+                                    <form action="{{ route('mascotas.toggle-estado', $mascota) }}" method="POST"
+                                        onsubmit="return confirm('¿Está seguro de cambiar el estado de esta mascota?')" class="inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                            class="{{ $mascota->estado ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900' }}">
+                                            {{ $mascota->estado ? 'Desactivar' : 'Activar' }}
+                                        </button>
+                                    </form>
+                                    @endif
+
                                 </div>
                             </td>
                         </tr>
@@ -194,14 +237,37 @@
                         @endforelse
                     </tbody>
                 </table>
-            </div>
+                <!-- Paginación -->
+                @if($mascotas->hasPages())
+                <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+                    {{ $mascotas->links() }}
 
-            <!-- Paginación -->
-            @if($mascotas->hasPages())
-            <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-                {{ $mascotas->links() }}
+                </div>
+                @endif
             </div>
-            @endif
         </div>
     </div>
+    <script>
+        // Auto-enviar el formulario con debounce para búsqueda server-side
+        const searchInput = document.getElementById('search');
+        const searchForm = document.getElementById('search-form');
+        const mascotasIndexUrl = "{{ route('mascotas.index') }}";
+
+        // Enviar sólo con Enter; limpiar con Escape
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
+            } else if (e.key === 'Escape') {
+                window.location = mascotasIndexUrl;
+            }
+        });
+
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                window.location = mascotasIndexUrl;
+            }
+        });
+    </script>
+
 </x-app-layout>

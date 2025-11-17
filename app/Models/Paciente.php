@@ -11,7 +11,7 @@ class Paciente extends Model
         "nombre",
         "apellido",
         "dui",
-        "edad",
+        "estado",
         "sexo",
         "fecha_nacimiento",
         "estado_civil",
@@ -22,7 +22,7 @@ class Paciente extends Model
     ];
 
     protected $casts = [
-        "edad" => "integer",
+        "estado" => "boolean",
         "sexo" => "string",
         "fecha_nacimiento" => "date",
         "celular" => "integer",

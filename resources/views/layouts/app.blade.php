@@ -14,7 +14,7 @@
 
     <!-- Scripts y CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+
 </head>
 
 <body class="font-sans antialiased">
@@ -33,10 +33,40 @@
 
             <!-- Usuario y botón cerrar sesión -->
             @auth
-            <div class="flex items-center gap-4">
-                <span class="text-gray-500 dark:text-gray-300 font-medium">
-                    {{ Auth::user()->nombre . ' ' . Auth::user()->apellido }}
-                </span>
+            <div class="flex items-center ">
+                <x-dropdown align="right" width="48">
+                    <x-slot name="trigger">
+                        <button
+                            class="text-gray-500 dark:text-gray-300  font-medium inline-flex items-center text-size-10 px-3 py-2 border border-transparent text-sm leading-4 rounded-md dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                            <div>{{ Auth::user()->nombre ?? Auth::user()->name }} {{ Auth::user()->apellido ?? '' }}</div>
+                            <div class="ms-1">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </button>
+                    </x-slot>
+
+                    <x-slot name="content">
+
+                        <x-dropdown-link :href="route('utils.credits')">
+                            <span class="inline-flex items-center">
+                                <svg class="h-4 w-4 mr-2 text-gray-500 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 110 20 10 10 0 010-20z" />
+                                </svg>
+                                Créditos del sistema
+                            </span>
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('utils.help')">
+                            <span class="inline-flex items-center">
+                                <svg class="h-4 w-4 mr-2 text-gray-500 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 110 20 10 10 0 010-20z" />
+                                </svg>
+                                Centro de ayuda
+                            </span>
+                        </x-dropdown-link>
+                    </x-slot>
+                </x-dropdown>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="btn-logout text-blue-700 font-medium">Cerrar sesión</button>

@@ -28,12 +28,12 @@
                         <p class="text-lg font-bold text-gray-900">{{ $doctor->jvpm }}</p>
                     </div>
                     <div class="bg-white p-4 rounded-lg border border-gray-200">
-                        <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Celular</p>
                         @if($doctor->celular)
-                        <div class="bg-white p-4 rounded-lg shadow-md">
-                            <label class="block text-sm font-semibold text-gray-600 mb-1">Celular</label>
-                            <p class="text-lg font-semibold text-blue-600 break-all">{{ $doctor->celular }}</p>
-                        </div>
+
+                        <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Celular</p>
+                        <p class="text-lg font-semibold text-blue-600 break-all">{{ $doctor->celular }}</p>
+
+
                         @else
                         <p class="text-lg font-bold text-gray-700">No registrado</p>
                         @endif
@@ -59,12 +59,11 @@
                     </div>
 
                     <div class="bg-white p-4 rounded-lg border border-gray-200 sm:col-span-2">
-                        <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Correo Electrónico</p>
                         @if($doctor->correo)
-                        <div class="bg-white p-4 rounded-lg shadow-md">
-                            <label class="block text-sm font-semibold text-gray-600 mb-1">Correo Electrónico</label>
-                            <p class="text-lg font-semibold text-blue-600 break-all">{{ $doctor->correo }}</p>
-                        </div>
+
+                        <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Correo Electrónico</p>
+                        <p class="text-lg font-semibold text-blue-600 break-all">{{ $doctor->correo }}</p>
+
                         @else
                         <p class="text-lg font-bold text-gray-700">No registrado</p>
                         @endif
@@ -82,13 +81,13 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="bg-white p-4 rounded-lg border border-gray-200">
                         <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Fecha de Creación</p>
-                        <p class="text-lg font-bold text-gray-900">{{ $doctor->created_at->format('d/m/Y') }}</p>
-                        <p class="text-xs text-gray-500">{{ $doctor->created_at->format('H:i') }}</p>
+                        <p class="text-lg font-bold text-gray-900">{{ $doctor->created_at ? $doctor->created_at->format('d/m/Y') : 'N/A' }}</p>
+                        <p class="text-xs text-gray-500">{{ $doctor->created_at ? $doctor->created_at->format('H:i') : '' }}</p>
                     </div>
                     <div class="bg-white p-4 rounded-lg border border-gray-200">
                         <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Última Actualización</p>
-                        <p class="text-lg font-bold text-gray-900">{{ $doctor->updated_at->format('d/m/Y') }}</p>
-                        <p class="text-xs text-gray-500">{{ $doctor->updated_at->format('H:i') }}</p>
+                        <p class="text-lg font-bold text-gray-900">{{ $doctor->updated_at ? $doctor->updated_at->format('d/m/Y') : 'N/A' }}</p>
+                        <p class="text-xs text-gray-500">{{ $doctor->updated_at ? $doctor->updated_at->format('H:i') : '' }}</p>
                     </div>
                 </div>
             </div>
@@ -98,11 +97,6 @@
             <a href="{{ route('doctores.index') }}" class="px-6 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-semibold transition-transform hover:scale-105">Volver</a>
             @if(auth()->user()->role === 'admin')
             <a href="{{ route('doctores.edit', $doctor) }}" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105">Editar</a>
-            <form action="{{ route('doctores.destroy', $doctor) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este doctor?')" class="inline m-0 p-0">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-transform hover:scale-105">Eliminar</button>
-            </form>
             @endif
         </div>
     </div>

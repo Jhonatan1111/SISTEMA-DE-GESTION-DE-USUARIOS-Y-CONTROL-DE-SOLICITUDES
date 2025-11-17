@@ -10,9 +10,26 @@ class DoctorController extends Controller
 
 
     // listar doctores - Tanto admin como empleado pueden ver
-    public function index()
+    public function index(Request $request)
     {
-        $doctores = Doctor::orderBy('nombre')->paginate(10);
+        $q = trim($request->input('q', ''));
+
+        $query = Doctor::query();
+
+        if ($q !== '') {
+            $term = "%{$q}%";
+            $query->where(function ($builder) use ($term) {
+                $builder->where('jvpm', 'like', $term)
+                    ->orWhere('nombre', 'like', $term)
+                    ->orWhere('apellido', 'like', $term)
+                    ->orWhere('fax', 'like', $term)
+                    ->orWhere('celular', 'like', $term)
+                    ->orWhere('correo', 'like', $term)
+                    ->orWhere('direccion', 'like', $term);
+            });
+        }
+
+        $doctores = $query->orderBy('nombre')->paginate(10)->withQueryString();
         return view('doctores.index', compact('doctores'));
     }
 
@@ -85,25 +102,11 @@ class DoctorController extends Controller
             'celular' => $request->celular,
             'fax' => $request->fax,
             'correo' => $request->correo,
-            'estado_servicio' => $request->input('estado_servicio') == '1',
         ]);
 
         return redirect()->route('doctores.index')->with('success', 'Doctor actualizado exitosamente.');
     }
 
-    // Eliminar doctor de manera protegida - Solo admin
-    public function destroy($id)
-    {
-        $doctor = Doctor::findOrFail($id);
-        try {
-            $doctor->delete();
-            return redirect()->route('doctores.index')
-                ->with('success', 'Doctor eliminado exitosamente');
-        } catch (\Exception $e) {
-            return redirect()->route('doctores.index')
-                ->with('error', 'No se puede eliminar el doctor porque tiene registros asociados');
-        }
-    }
 
     // Cambiar estado del doctor (activar/desactivar) - Solo admin
     public function toggleEstado(Request $request, $id)

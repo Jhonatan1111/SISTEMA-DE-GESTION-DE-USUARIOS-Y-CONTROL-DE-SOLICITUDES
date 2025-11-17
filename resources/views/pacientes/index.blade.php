@@ -20,15 +20,13 @@
                 <h1 class="text-3xl font-bold text-gray-900">Gestión de Personas</h1>
                 <p class="text-gray-600 mt-1">Administra los pacientes del sistema</p>
             </div>
-            @if (auth()->user()->role === 'admin')
-                <a href="{{ route('pacientes.create') }}" 
-                   class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:shadow-lg flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    AGREGAR
-                </a>
-            @endif
+            <a href="{{ route('pacientes.create') }}"
+                class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-5 rounded-lg transition-all duration-300 hover:shadow-lg flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                AGREGAR
+            </a>
         </div>
 
         <!-- Estadísticas -->
@@ -47,7 +45,7 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
+            <div  iv class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
                 <div class="flex items-center">
                     <div class="flex-1">
                         <h3 class="text-sm font-medium text-gray-500 uppercase">Masculino</h3>
@@ -98,39 +96,60 @@
             </div>
         </div>
         @endif
-
+        <!-- Filtro de búsqueda (server-side, compatible con paginación) -->
+        <div class="bg-white shadow-md rounded-lg p-4 mb-4">
+            <form id="search-form" method="GET" action="{{ route('pacientes.index') }}" class="flex items-center space-x-4">
+                <div class="flex-1">
+                    <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Buscar en listas de pacientes</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input type="text" id="search" name="q" value="{{ request('q') }}" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Buscar por nombre, apellido, DUI, correo, dirección, contacto...">
+                    </div>
+                </div>
+                <div class="flex-shrink-0 mt-6 flex items-center gap-2">
+                    <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">Buscar</button>
+                    <a href="{{ route('pacientes.index') }}" class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">Limpiar</a>
+                </div>
+            </form>
+        </div>
         <!-- Tabla de pacientes -->
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-violet-200">
+                <table class="min-w-full table-fixed divide-y divide-violet-200">
                     <thead class="bg-blue-400">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                DUI
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Paciente
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
-                                Edad/Sexo
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                DUI
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Edad/SEXO
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Contacto
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Dirección
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-900 uppercase tracking-wider">
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
+                                Estado
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium  uppercase tracking-wider">
                                 Acciones
                             </th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody id="pacientes-table-body" class="bg-white divide-y divide-gray-200">
                         @forelse($pacientes as $paciente)
-                        <tr class="hover:bg-blue-50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">{{ $paciente->dui }}</div>
-                            </td>
+                        <tr class="table-row hover:bg-blue-50" data-searchable="{{ $paciente->dui }} {{ $paciente->nombre }} {{ $paciente->apellido }} {{ $paciente->fecha_nacimiento }} {{ $paciente->sexo }} {{ $paciente->celular }} {{ $paciente->correo }} {{ $paciente->direccion }}">
+
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">
                                     {{ $paciente->nombre }} {{ $paciente->apellido }}
@@ -140,46 +159,67 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ $paciente->edad }} años</div>
-                                <span class="inline-flex px-0 py-1 text-xs {{ strtoupper(substr($paciente->sexo, 0, 1)) == 'M' ? ' text-gray-500' : 'bg-pink-50 text-pink-500' }}">
-                                    {{ $paciente->sexo }}
+                                <div class="text-sm font-medium text-gray-900">{{ $paciente->dui }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ $paciente->fecha_nacimiento ? $paciente->fecha_nacimiento->age . ' años' : 'N/A' }}</div>
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full {{ strtoupper(substr($paciente->sexo ?? '', 0, 1)) == 'M' ? 'bg-blue-100 text-blue-800' : 'bg-pink-100 text-pink-800' }}">
+                                    {{ ucfirst($paciente->sexo) }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 <div class="flex items-center">
-                                    <svg class="w-4 h-4 mr-1 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
-                                    </svg>
+
                                     {{ $paciente->celular }}
                                 </div>
                                 @if($paciente->correo)
-                                <div class="flex items-center text-blue-600 text-xs mt-1">
-                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                                    </svg>
-                                    {{ $paciente->correo }}
+                                <div class="max-w-[160px] truncate text-blue-600" title="{{ $paciente->correo }}">
+                                    {{ $paciente->correo ?? 'Sin correo' }}
                                 </div>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-900">
-                                <div class="max-w-xs truncate" title="{{ $paciente->direccion }}">
+                            <td class="px-3 py-3 text-sm text-gray-900">
+                                <div class="max-w-[160px] truncate" title="{{ $paciente->direccion }}">
                                     {{ $paciente->direccion ?? 'Sin dirección' }}
                                 </div>
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($paciente->estado)
+                                <span class="inline-flex items-center gap-1 bg-green-100 text-green-800 px-4 py-2 rounded-full text-xs font-bold">
+                                    <span></span> Activo
+                                </span>
+                                @else
+                                <span class="inline-flex items-center gap-1 bg-red-100 text-red-800 px-4 py-2 rounded-full text-xs font-bold">
+                                    <span></span> Inactivo
+                                </span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex space-x-2">
-                                    <a href="{{ route('pacientes.edit', $paciente) }}"
+                                    <a href="{{ route('pacientes.show', $paciente) }}"
                                         class="text-indigo-600 hover:text-indigo-900">
-                                        Editar
+                                        Ver
                                     </a>
-                                    
+                                    <!-- Botón Activar / Desactivar -->
+                                    @if (auth()->user()->role === 'admin')
+
+                                    <form action="{{ route('pacientes.toggle-estado', $paciente) }}" method="POST"
+                                        onsubmit="return confirm('¿Está seguro de cambiar el estado de este paciente?')" class="inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                            class="{{ $paciente->estado ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900' }}">
+                                            {{ $paciente->estado ? 'Desactivar' : 'Activar' }}
+                                        </button>
+                                    </form>
+                                    @endif
+
                                 </div>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                            <td colspan="7" class="px-6 py-4 text-center text-gray-500">
                                 <div class="py-8">
                                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -199,14 +239,38 @@
                         @endforelse
                     </tbody>
                 </table>
+                <!-- Paginación -->
+                @if($pacientes->hasPages())
+                <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+                    {{ $pacientes->links() }}
+                </div>
+                @endif
             </div>
 
-            <!-- Paginación -->
-            @if($pacientes->hasPages())
-            <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-                {{ $pacientes->links() }}
-            </div>
-            @endif
+
         </div>
     </div>
+    <script>
+        // Auto-enviar el formulario con debounce para búsqueda server-side
+        const searchInput = document.getElementById('search');
+        const searchForm = document.getElementById('search-form');
+        const pacientesIndexUrl = "{{ route('pacientes.index') }}";
+
+        // Enviar sólo con Enter; limpiar con Escape
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                searchForm.submit();
+            } else if (e.key === 'Escape') {
+                window.location = pacientesIndexUrl;
+            }
+        });
+
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                window.location = pacientesIndexUrl;
+            }
+        });
+    </script>
+
 </x-app-layout>

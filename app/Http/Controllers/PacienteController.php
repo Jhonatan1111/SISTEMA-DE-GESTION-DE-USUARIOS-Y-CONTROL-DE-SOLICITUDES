@@ -9,10 +9,32 @@ class PacienteController extends Controller
 {
 
     // MOSTRANDO PACIENTES
-    public function index()
+    public function index(Request $request)
     {
-        $pacientes = Paciente::orderBy('nombre')->paginate(10);
+        $q = trim($request->input('q', ''));
+
+        $query = Paciente::query();
+
+        if ($q !== '') {
+            $term = "%{$q}%";
+            $query->where(function ($builder) use ($term) {
+                $builder->where('dui', 'like', $term)
+                    ->orWhere('nombre', 'like', $term)
+                    ->orWhere('apellido', 'like', $term)
+                    ->orWhere('sexo', 'like', $term)
+                    ->orWhere('celular', 'like', $term)
+                    ->orWhere('correo', 'like', $term)
+                    ->orWhere('direccion', 'like', $term);
+            });
+        }
+
+        $pacientes = $query->orderBy('nombre')->paginate(10)->withQueryString();
         return view('pacientes.index', compact('pacientes'));
+    }
+
+    public function show(Paciente $paciente)
+    {
+        return view('pacientes.show', compact('paciente'));
     }
     // CREANDO PACIENTE
     public function create()
@@ -26,22 +48,21 @@ class PacienteController extends Controller
         $request->validate([
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
-            'dui' => 'string|unique:pacientes',
-            'edad' => 'required|integer',
-            'sexo' => 'required|string|in:masculino,femenino',
-            'fecha_nacimiento' => 'date',
-            'estado_civil' => 'string',
-            'ocupacion' => 'string',
+            'dui' => 'nullable|string|digits:9|unique:pacientes',
+            'sexo' => 'nullable|string|in:masculino,femenino',
+            'fecha_nacimiento' => 'nullable|date',
+            'estado_civil' => 'nullable|string',
+            'ocupacion' => 'nullable|string',
             'correo' => 'nullable|string|email|max:255',
             'direccion' => 'nullable|string|max:500',
-            'celular' => 'required|digits:8|unique:pacientes',
+            'celular' => 'nullable|digits:8|unique:pacientes',
         ]);
 
         Paciente::create([
             'nombre' => $request->nombre,
             'apellido' => $request->apellido,
             'dui' => $request->dui,
-            'edad' => $request->edad,
+            'estado' => true,
             'sexo' => $request->sexo,
             'fecha_nacimiento' => $request->fecha_nacimiento,
             'estado_civil' => $request->estado_civil,
@@ -65,26 +86,10 @@ class PacienteController extends Controller
     {
         $paciente = Paciente::findOrFail($id);
 
-        // VALIDANDO INFORMACION ANTES DE ACTUALIZAR
-        // $request->validate([
-        //     'nombre' => 'required|string|max:255',
-        //     'apellido' => 'required|string|max:255',
-        //     'dui' => 'digits:9|unique:pacientes,dui,' . $paciente->id,
-        //     'edad' => 'required|integer',
-        //     'sexo' => 'required|string|in:masculino,femenino',
-        //     'fecha_nacimiento' => 'date',
-        //     'estado_civil' => 'string',
-        //     'ocupacion' => 'string',
-        //     'correo' => 'nullable|string|email|max:255|unique:pacientes,correo,' . $paciente->id,
-        //     'direccion' => 'nullable|string|max:500',
-        //     'celular' => 'required|digits:8|unique:pacientes,celular,' . $paciente->id,
-        // ]);
-
         $paciente->update([
             'nombre' => $request->nombre,
             'apellido' => $request->apellido,
-            'dui' => $request->dui, // Asegúrate de que el DUI sea único
-            'edad' => $request->edad,
+            'dui' => $request->dui, // Asegúrate de que el DUI sea único
             'sexo' => $request->sexo,
             'fecha_nacimiento' => $request->fecha_nacimiento,
             'estado_civil' => $request->estado_civil,
@@ -96,18 +101,13 @@ class PacienteController extends Controller
 
         return redirect()->route('pacientes.index')->with('success', 'Paciente actualizado exitosamente.');
     }
-
-    // ELIMINAR PACIENTE
-    public function destroy($id)
+    public function toggleEstado(Request $request, $id)
     {
         $paciente = Paciente::findOrFail($id);
-        try {
-            $paciente->delete();
-            return redirect()->route('pacientes.index')
-                ->with('success', 'Paciente eliminado exitosamente');
-        } catch (\Exception $e) {
-            return redirect()->route('pacientes.index')
-                ->with('error', 'No se puede eliminar el paciente porque tiene registros asociados');
-        }
+        $paciente->estado = !$paciente->estado;
+        $paciente->save();
+        $estado = $paciente->estado ? 'activado' : 'desactivado';
+        return redirect()->back()
+            ->with('success', "Paciente {$estado} exitosamente");
     }
 }
