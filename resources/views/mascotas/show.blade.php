@@ -40,14 +40,8 @@
                         <p class="text-lg font-bold text-gray-900">{{ $mascota->propietario ?? 'No registrado' }}</p>
                     </div>
                     <div class="bg-white p-4 rounded-lg border border-gray-200">
-                        @if($mascota->celular)
-
                         <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Celular</p>
-                        <p class="text-lg font-semibold text-blue-600 break-all">{{ $mascota->celular }}</p>
-
-                        @else
-                        <p class="text-lg font-bold text-gray-700">No registrado</p>
-                        @endif
+                        <p class="text-lg font-bold text-gray-900">{{ $mascota->celular ?? 'No registrado' }}</p>
                     </div>
                     <div class="bg-white p-4 rounded-lg border border-gray-200 ">
                         <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Correo Electrónico</p>
