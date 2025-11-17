@@ -48,13 +48,21 @@
                     </x-slot>
 
                     <x-slot name="content">
-                      
+
                         <x-dropdown-link :href="route('utils.credits')">
                             <span class="inline-flex items-center">
                                 <svg class="h-4 w-4 mr-2 text-gray-500 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 110 20 10 10 0 010-20z" />
                                 </svg>
                                 Créditos del sistema
+                            </span>
+                        </x-dropdown-link>
+                        <x-dropdown-link :href="route('utils.help')">
+                            <span class="inline-flex items-center">
+                                <svg class="h-4 w-4 mr-2 text-gray-500 dark:text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 110 20 10 10 0 010-20z" />
+                                </svg>
+                                Centro de ayuda
                             </span>
                         </x-dropdown-link>
                     </x-slot>

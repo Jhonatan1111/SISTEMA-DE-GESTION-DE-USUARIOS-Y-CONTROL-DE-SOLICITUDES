@@ -27,8 +27,18 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    // CENTRO DE APOYO
+    // CREDITOS DEL SISTEMA
     Route::get('/utils/credits', [UtilController::class, 'credits'])->name('utils.credits');
+
+    // MANUALES DEL SISTEMA
+    Route::prefix('utils/manuales')->name('utils.manuales.')->group(function () {
+        Route::get('capacitacion', [UtilController::class, 'descargarCapacitacion'])->name('capacitacion');
+        Route::get('usuario', [UtilController::class, 'descargarUsuario'])->name('usuario');
+        Route::get('administrador', [UtilController::class, 'descargarAdministrador'])->name('administrador');
+        Route::get('implementacion', [UtilController::class, 'descargarImplementacion'])->name('implementacion');
+    });
+    // CENTRO DE APOYO
+    Route::get('/utils/help', [UtilController::class, 'help'])->name('utils.help');
     // DOCTORES
     Route::get('doctores', [DoctorController::class, 'index'])->name('doctores.index');
     Route::get('doctores/create', [DoctorController::class, 'create'])->name('doctores.create');
