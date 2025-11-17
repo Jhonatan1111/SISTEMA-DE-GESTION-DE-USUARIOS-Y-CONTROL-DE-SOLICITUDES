@@ -4,7 +4,6 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h1 class="text-3xl font-extrabold text-blue-700">Editar Mascota</h1>
-                <p class="text-sm text-gray-500 mt-1">Mascota: <span class="font-semibold text-green-600">{{ $mascota->nombre }} {{ $mascota->apellido }}</span></p>
             </div>
             <a href="{{ route('mascotas.index') }}" class="text-gray-600 hover:text-gray-900">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,23 +46,23 @@
                     <div>
                         <label for="nombre" class="block text-sm font-semibold text-gray-700 mb-1">Nombre <span class="text-red-500">*</span></label>
                         <input type="text" id="nombre" name="nombre"
-                               value="{{ old('nombre', $mascota->nombre) }}"
-                               placeholder="Nombre de la mascota" maxlength="255"
-                               class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
+                            value="{{ old('nombre', $mascota->nombre) }}"
+                            placeholder="Nombre de la mascota" maxlength="255"
+                            class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
                     </div>
 
                     <div>
                         <label for="edad" class="block text-sm font-semibold text-gray-700 mb-1">Edad <span class="text-red-500">*</span></label>
                         <input type="number" id="edad" name="edad"
-                               value="{{ old('edad', $mascota->edad) }}"
-                               placeholder="Edad"
-                               class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
+                            value="{{ old('edad', $mascota->edad) }}"
+                            placeholder="Edad"
+                            class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
                     </div>
 
                     <div>
                         <label for="sexo" class="block text-sm font-semibold text-gray-700 mb-1">Sexo <span class="text-red-500">*</span></label>
                         <select id="sexo" name="sexo"
-                                class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
+                            class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
                             <option value="">Seleccionar sexo...</option>
                             <option value="macho" {{ old('sexo', $mascota->sexo) == 'macho' ? 'selected' : '' }}>Macho</option>
                             <option value="hembra" {{ old('sexo', $mascota->sexo) == 'hembra' ? 'selected' : '' }}>Hembra</option>
@@ -73,34 +72,28 @@
                     <div>
                         <label for="especie" class="block text-sm font-semibold text-gray-700 mb-1">Especie <span class="text-red-500">*</span></label>
                         <input type="text" id="especie" name="especie"
-                               value="{{ old('especie', $mascota->especie) }}"
-                               placeholder="Especie" maxlength="255"
-                               class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
+                            value="{{ old('especie', $mascota->especie) }}"
+                            placeholder="Especie" maxlength="255"
+                            class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
                     </div>
 
                     <div>
                         <label for="raza" class="block text-sm font-semibold text-gray-700 mb-1">Raza <span class="text-red-500">*</span></label>
                         <input type="text" id="raza" name="raza"
-                               value="{{ old('raza', $mascota->raza) }}"
-                               placeholder="Raza" maxlength="255"
-                               class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
+                            value="{{ old('raza', $mascota->raza) }}"
+                            placeholder="Raza" maxlength="255"
+                            class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
                     </div>
 
                     <div>
                         <label for="propietario" class="block text-sm font-semibold text-gray-700 mb-1">Propietario <span class="text-red-500">*</span></label>
                         <input type="text" id="propietario" name="propietario"
-                               value="{{ old('propietario', $mascota->propietario) }}"
-                               placeholder="Nombre del propietario" maxlength="255"
-                               class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
+                            value="{{ old('propietario', $mascota->propietario) }}"
+                            placeholder="Nombre del propietario" maxlength="255"
+                            class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
                     </div>
 
-                    <div>
-                        <label for="celular" class="block text-sm font-semibold text-gray-700 mb-1">Celular <span class="text-red-500">*</span></label>
-                        <input type="text" id="celular" name="celular"
-                               value="{{ old('celular', $mascota->celular) }}"
-                               placeholder="Ej: 78901234" maxlength="8"
-                               class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>
-                    </div>
+
                 </div>
             </div>
 
@@ -113,21 +106,31 @@
                     <div class="md:col-span-2">
                         <label for="correo" class="block text-sm font-semibold text-gray-700 mb-1">Correo</label>
                         <input type="email" id="correo" name="correo"
-                               value="{{ old('correo', $mascota->correo) }}"
-                               placeholder="Correo electrónico" maxlength="255"
-                               class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all">
+                            value="{{ old('correo', $mascota->correo) }}"
+                            placeholder="Correo electrónico" maxlength="255"
+                            class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all">
                     </div>
                 </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2">
+                        <label for="celular" class="block text-sm font-semibold text-gray-700 mb-1">Celular</label>
+                        <input type="text" id="celular" name="celular"
+                            value="{{ old('celular', $mascota->celular) }}"
+                            placeholder="Ej: 78901234" maxlength="8"
+                            class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all">
+                    </div>
+                </div>
+
             </div>
 
             <!-- Botones -->
             <div class="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-end gap-3 shadow-lg rounded-lg">
                 <a href="{{ route('mascotas.index') }}"
-                   class="px-6 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-semibold transition-transform hover:scale-105">
+                    class="px-6 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-semibold transition-transform hover:scale-105">
                     Cancelar
                 </a>
                 <button type="submit"
-                   class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105">
+                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105">
                     Actualizar Mascota
                 </button>
             </div>
