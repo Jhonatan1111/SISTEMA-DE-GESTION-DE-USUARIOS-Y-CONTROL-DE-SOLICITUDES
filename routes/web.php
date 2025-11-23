@@ -113,6 +113,7 @@ Route::middleware('auth')->group(function () {
 
     // CITOLOGÍAS 
     Route::get('citologias', [CitolgiaController::class, 'index'])->name('citologias.index');
+    Route::get('citologias/exportar-pdf', [CitolgiaController::class, 'exportarPdf'])->name('citologias.exportar-pdf');
     Route::get('citologias/personas', [CitolgiaPersonaController::class, 'index'])->name('citologias.personas.index');
     Route::get('citologias/personas/create', [CitolgiaPersonaController::class, 'create'])->name('citologias.personas.create');
     Route::post('citologias/personas', [CitolgiaPersonaController::class, 'store'])->name('citologias.personas.store');

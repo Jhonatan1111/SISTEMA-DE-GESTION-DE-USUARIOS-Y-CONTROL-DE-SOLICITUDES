@@ -94,7 +94,7 @@
             </a>
 
             <!-- Gestión de Citologías -->
-            <a href="{{ route('citologias.personas.index') }}" class="group">
+            <a href="{{ route('citologias.index') }}" class="group">
                 <div class="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden h-full">
                     <div class="bg-gradient-to-r from-pink-500 to-pink-600 px-6 py-8 flex justify-center">
                         <img src="/image/normal.png" alt="Biopsias" class="w-16 h-16 mb-2">

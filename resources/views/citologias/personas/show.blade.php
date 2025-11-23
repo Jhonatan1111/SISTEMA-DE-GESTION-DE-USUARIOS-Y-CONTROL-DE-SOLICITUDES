@@ -68,7 +68,7 @@
                         </span>
                         @else
                         <span class="inline-flex items-center bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-semibold">
-                            📁 Archivada
+                            ◦ Inactiva
                         </span>
                         @endif
                     </p>

@@ -364,22 +364,7 @@
         </div>
         @endif
     </div>
-    <script>
-        function toggleFiltros() {
-            const content = document.getElementById('filtros-content');
-            const icon = document.getElementById('icon-filtros');
-            if (!content || !icon) return;
-            content.classList.toggle('hidden');
-            icon.classList.toggle('rotate-180');
-        }
-        document.getElementById('busqueda-rapida').addEventListener('input', function(e) {
-            const valor = e.target.value.toLowerCase();
-            document.querySelectorAll('tbody tr').forEach(fila => {
-                const texto = fila.textContent.toLowerCase();
-                fila.style.display = texto.includes(valor) ? '' : 'none';
-            });
-        });
-    </script>
+  
 
 
 </x-app-layout>

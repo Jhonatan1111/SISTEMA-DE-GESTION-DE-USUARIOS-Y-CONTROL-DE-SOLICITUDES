@@ -371,13 +371,5 @@
         @endif
     </div>
 
-    <script>
-        document.getElementById('busqueda-rapida').addEventListener('input', function(e) {
-            const valor = e.target.value.toLowerCase();
-            document.querySelectorAll('tbody tr').forEach(fila => {
-                const texto = fila.textContent.toLowerCase();
-                fila.style.display = texto.includes(valor) ? '' : 'none';
-            });
-        });
-    </script>
+   
 </x-app-layout>

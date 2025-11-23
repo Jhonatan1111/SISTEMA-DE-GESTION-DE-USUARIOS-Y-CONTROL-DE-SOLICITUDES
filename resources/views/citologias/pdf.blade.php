@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,7 +35,8 @@
             width: 100%;
         }
 
-        .logo-section, .report-info {
+        .logo-section,
+        .report-info {
             display: table-cell;
             vertical-align: top;
         }
@@ -197,8 +199,46 @@
             color: #9ca3af;
             font-size: 11px;
         }
+
+        .info {
+            display: table;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            display: table-cell;
+            width: 50%;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .detalle-box {
+            border: 1px solid #e5e7eb;
+            border-left: 3px solid #10b981;
+            background: #f9fafb;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+
+        .detalle-grid {
+            display: table;
+            width: 100%;
+            margin-top: 6px;
+        }
+
+        .detalle-item {
+            display: table-cell;
+            width: 33.33%;
+            vertical-align: top;
+            font-size: 9px;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
@@ -217,23 +257,43 @@
             </div>
         </div>
 
-        <!-- Statistics -->
-        <div class="statistics">
-            <div class="stat-card">
-                <h3>{{ $citologias->count() }}</h3>
-                <p>Total</p>
+        <div class="info">
+            <div class="info-item">
+                <span class="info-label">Fecha de generación:</span> {{ $fecha ?? now()->format('d/m/Y') }}
+                <br>
+                <span class="info-label">Hora:</span> {{ $hora ?? now()->format('H:i') }}
             </div>
-            <div class="stat-card">
-                <h3>{{ $citologias->where('estado', true)->count() }}</h3>
-                <p>Activas</p>
+            <div class="info-item" style="text-align: right;">
+                <span class="info-label">Total de registros:</span> {{ $total ?? $citologias->count() }}
             </div>
-            <div class="stat-card">
-                <h3>{{ $citologias->where('estado', false)->count() }}</h3>
-                <p>Inactivas</p>
-            </div>
-            <div class="stat-card">
-                <h3>{{ $citologias->unique('paciente_id')->count() }}</h3>
-                <p>Pacientes</p>
+        </div>
+
+        @php
+        $categoriaTexto = isset($filtros['categoria'])
+        ? ($filtros['categoria'] === 'persona' ? 'Personas' : ($filtros['categoria'] === 'mascota' ? 'Mascotas' : 'Todas'))
+        : 'Todas';
+        $tipoTexto = $filtros['tipo'] ?? 'Todos';
+        $estadoTexto = isset($filtros['estado'])
+        ? ($filtros['estado'] == '1' ? 'Activas' : ($filtros['estado'] == '0' ? 'Inactivas' : 'Todos'))
+        : 'Todos';
+        $doctorTexto = $doctorNombre ?? 'Todos';
+        $buscarTexto = $filtros['buscar'] ?? '—';
+        @endphp
+
+        <div class="detalle-box">
+            <span class="info-label">Detalle del reporte</span>
+            <div class="detalle-grid">
+                <div class="detalle-item">
+                    <span class="info-label">Categoría:</span> {{ $categoriaTexto }}<br>
+                    <span class="info-label">Tipo:</span> {{ ucfirst($tipoTexto) }}
+                </div>
+                <div class="detalle-item">
+                    <span class="info-label">Estado:</span> {{ $estadoTexto }}<br>
+                    <span class="info-label">Doctor:</span> {{ $doctorTexto }}
+                </div>
+                <div class="detalle-item">
+                    <span class="info-label">Búsqueda:</span> {{ $buscarTexto }}
+                </div>
             </div>
         </div>
 
@@ -251,40 +311,40 @@
             </thead>
             <tbody>
                 @forelse($citologias as $c)
-                    <tr>
-                        <td><strong>{{ $c->ncitologia }}</strong></td>
-                        <td>
-                            {{ $c->paciente ? $c->paciente->nombre . ' ' . $c->paciente->apellido : 'N/A' }}
-                            @if($c->paciente && $c->paciente->DUI)
-                                <br><small>DUI: {{ $c->paciente->DUI }}</small>
-                            @endif
-                        </td>
-                        <td>
-                            @if($c->doctor)
-                                {{ $c->doctor->nombre }} {{ $c->doctor->apellido }}
-                            @elseif($c->remitente_especial)
-                                {{ $c->remitente_especial }}
-                                <br><small>Especial</small>
-                            @else
-                                N/A
-                            @endif
-                        </td>
-                        <td>{{ $c->fecha_recibida->format('d/m/Y') }}</td>
-                        <td>
-                            <span class="tipo-badge">{{ ucfirst($c->tipo) }}</span>
-                        </td>
-                        <td>
-                            <span class="badge {{ $c->estado ? 'badge-active' : 'badge-archived' }}">
-                                {{ $c->estado ? 'Activa' : 'Inactiva' }}
-                            </span>
-                        </td>
-                    </tr>
+                <tr>
+                    <td><strong>{{ $c->ncitologia }}</strong></td>
+                    <td>
+                        {{ $c->paciente ? $c->paciente->nombre . ' ' . $c->paciente->apellido : 'N/A' }}
+                        @if($c->paciente && $c->paciente->DUI)
+                        <br><small>DUI: {{ $c->paciente->DUI }}</small>
+                        @endif
+                    </td>
+                    <td>
+                        @if($c->doctor)
+                        {{ $c->doctor->nombre }} {{ $c->doctor->apellido }}
+                        @elseif($c->remitente_especial)
+                        {{ $c->remitente_especial }}
+                        <br><small>Especial</small>
+                        @else
+                        N/A
+                        @endif
+                    </td>
+                    <td>{{ $c->fecha_recibida->format('d/m/Y') }}</td>
+                    <td>
+                        <span class="tipo-badge">{{ ucfirst($c->tipo) }}</span>
+                    </td>
+                    <td>
+                        <span class="badge {{ $c->estado ? 'badge-active' : 'badge-archived' }}">
+                            {{ $c->estado ? 'Activa' : 'Inactiva' }}
+                        </span>
+                    </td>
+                </tr>
                 @empty
-                    <tr>
-                        <td colspan="6" class="no-data">
-                            No se encontraron citologías para este reporte
-                        </td>
-                    </tr>
+                <tr>
+                    <td colspan="6" class="no-data">
+                        No se encontraron citologías para este reporte
+                    </td>
+                </tr>
                 @endforelse
             </tbody>
         </table>
@@ -295,4 +355,5 @@
         </div>
     </div>
 </body>
+
 </html>

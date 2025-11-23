@@ -121,7 +121,6 @@
                             <div class="relative">
                                 <input type="text"
                                     name="buscar"
-                                    id="busqueda-rapida"
                                     value="{{ request('buscar') }}"
                                     placeholder="Buscar por paciente, mascota, doctor o diagnóstico..."
                                     class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-400">
@@ -326,7 +325,7 @@
                                     {{ $biopsia->paciente->nombre ?? 'N/A' }} {{ $biopsia->paciente->apellido ?? '' }}
                                 </div>
                                 <div class="text-gray-500">
-                                    {{ $biopsia->paciente->edad ?? 'N/A' }} años
+                                    {{ $biopsia->paciente->fecha_nacimiento ? $biopsia->paciente->fecha_nacimiento->age . ' años' : 'N/A' }}
                                 </div>
                                 <div class="text-gray-400 text-xs">
                                     DUI: {{ $biopsia->paciente->dui ?? 'N/A' }}
@@ -412,13 +411,5 @@
         </div>
         @endif
     </div>
-    <script>
-        document.getElementById('busqueda-rapida').addEventListener('input', function(e) {
-            const valor = e.target.value.toLowerCase();
-            document.querySelectorAll('tbody tr').forEach(fila => {
-                const texto = fila.textContent.toLowerCase();
-                fila.style.display = texto.includes(valor) ? '' : 'none';
-            });
-        });
-    </script>
+
 </x-app-layout>
