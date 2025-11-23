@@ -196,6 +196,12 @@ Route::middleware('auth')->group(function () {
     // Rutas de administración de usuarios - solo para administradores
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::resource('usuarios', UserAdminController::class);
+        Route::get('backups', [UtilController::class, 'backupsIndex'])->name('backups.index');
+        Route::post('backups', [UtilController::class, 'backupsStore'])->name('backups.store');
+        Route::post('backups/datos', [UtilController::class, 'backupsStoreDatos'])->name('backups.store.datos');
+        Route::post('backups/restaurar', [UtilController::class, 'backupsRestore'])->name('backups.restore');
+        Route::get('backups/descargar/{filename}', [UtilController::class, 'backupsDownload'])->where('filename', '.*')->name('backups.download');
+        Route::delete('backups/{filename}', [UtilController::class, 'backupsDestroy'])->where('filename', '.*')->name('backups.destroy');
     });
 });
 
