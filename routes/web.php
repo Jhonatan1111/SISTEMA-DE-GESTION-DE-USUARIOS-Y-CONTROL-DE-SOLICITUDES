@@ -115,6 +115,8 @@ Route::middleware('auth')->group(function () {
     Route::get('citologias', [CitolgiaController::class, 'index'])->name('citologias.index');
     Route::get('citologias/exportar-pdf', [CitolgiaController::class, 'exportarPdf'])->name('citologias.exportar-pdf');
     Route::get('citologias/personas', [CitolgiaPersonaController::class, 'index'])->name('citologias.personas.index');
+    // Exportaciones deben declararse ANTES de las rutas con {ncitologia} para evitar colisiones
+    Route::get('citologias/personas/exportar-pdf', [CitolgiaPersonaController::class, 'exportarPdf'])->name('citologias.personas.exportar-pdf');
     Route::get('citologias/personas/create', [CitolgiaPersonaController::class, 'create'])->name('citologias.personas.create');
     Route::post('citologias/personas', [CitolgiaPersonaController::class, 'store'])->name('citologias.personas.store');
     Route::get('citologias/personas/obtener-numero-correlativo', [CitolgiaPersonaController::class, 'obtenerNumeroCorrelativo'])->name('citologias.personas.obtener-numero-correlativo');
@@ -129,7 +131,6 @@ Route::middleware('auth')->group(function () {
     Route::get('citologias/personas/obtener-paciente/{id}', [CitolgiaPersonaController::class, 'obtenerPaciente'])->name('citologias.personas.obtener-paciente');
     Route::get('citologias/personas/buscar-lista/{id}', [CitolgiaPersonaController::class, 'buscarLista'])->name('citologias.personas.buscar-lista');
     Route::get('citologias/personas/buscar-lista-codigo/{codigo}', [CitolgiaPersonaController::class, 'buscarListaPorCodigo'])->name('citologias.personas.buscar-lista-codigo');
-    Route::get('citologias/personas/exportar-csv', [CitolgiaPersonaController::class, 'exportarCsv'])->name('citologias.personas.exportar-csv');
     Route::get('citologias/personas/reporte-paciente/{pacienteId}', [CitolgiaPersonaController::class, 'reportePaciente'])->name('citologias.personas.reporte-paciente');
 
     // LISTAS DE BIOPSIAS

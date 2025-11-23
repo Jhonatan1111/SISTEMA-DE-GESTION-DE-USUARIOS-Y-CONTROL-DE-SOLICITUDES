@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte de Biopsias - Personas</title>
+    <title>Reporte de Citologías - Personas</title>
     <script>
         window.onload = function() {
             window.print();
@@ -27,13 +27,15 @@
         .header {
             text-align: center;
             margin-bottom: 20px;
-            border-bottom: 2px solid #10b981; /* Verde, igual que Mascotas */
+            border-bottom: 2px solid #10b981;
+            /* Verde, igual que Mascotas */
             padding-bottom: 10px;
         }
 
         .header h1 {
             font-size: 18px;
-            color: #047857; /* Verde oscuro, igual que Mascotas */
+            color: #047857;
+            /* Verde oscuro, igual que Mascotas */
             margin-bottom: 5px;
         }
 
@@ -65,7 +67,8 @@
         }
 
         th {
-            background-color: #10b981; /* Verde, igual que Mascotas */
+            background-color: #10b981;
+            /* Verde, igual que Mascotas */
             color: white;
             padding: 8px 4px;
             text-align: left;
@@ -99,6 +102,11 @@
         .badge-liquida {
             background-color: #e9d5ff;
             color: #6b21a8;
+        }
+
+        .badge-especial {
+            background-color: #e5e7eb;
+            color: #374151;
         }
 
         .badge-activa {
@@ -149,7 +157,7 @@
         </div>
     </div>
 
-    <!-- Tabla de biopsias -->
+    <!-- Tabla de citologías -->
     <table>
         <thead>
             <tr>
@@ -163,34 +171,39 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($biopsias as $biopsia)
+            @forelse($citologias as $citologia)
             <tr>
-                <td><strong>{{ $biopsia->nbiopsia }}</strong></td>
+                <td><strong>{{ $citologia->ncitologia }}</strong></td>
                 <td>
-                    <span class="badge badge-{{ $biopsia->tipo }}">
-                        {{ ucfirst($biopsia->tipo) }}
+                    <span class="badge badge-{{ $citologia->tipo }}">
+                        {{ ucfirst($citologia->tipo) }}
                     </span>
                 </td>
-                <td>{{ $biopsia->fecha_recibida->format('d/m/Y') }}</td>
+                <td>{{ $citologia->fecha_recibida->format('d/m/Y') }}</td>
                 <td>
-                    <strong>{{ $biopsia->paciente->nombre }} {{ $biopsia->paciente->apellido }}</strong><br>
-                    <small>{{ $biopsia->paciente->edad }} años - {{ $biopsia->paciente->sexo === 'M' ? 'Masculino' : 'Femenino' }}</small>
+                    <strong>{{ $citologia->paciente->nombre }} {{ $citologia->paciente->apellido }}</strong><br>
+                    <small>{{ $citologia->paciente->edad }} años - {{ $citologia->paciente->sexo === 'M' ? 'Masculino' : 'Femenino' }}</small>
                 </td>
-                <td>{{ $biopsia->paciente->dui }}</td>
+                <td>{{ $citologia->paciente->dui }}</td>
                 <td>
-                    Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}<br>
-                    <small>{{ $biopsia->doctor->jvpm ?? 'N/A' }}</small>
+                    @if($citologia->doctor)
+                    Dr. {{ $citologia->doctor->nombre }} {{ $citologia->doctor->apellido }}
+                    @elseif($citologia->remitente_especial)
+                    {{ $citologia->remitente_especial }}
+                    @else
+                    N/A
+                    @endif
                 </td>
                 <td>
-                    <span class="badge badge-{{ $biopsia->estado ? 'activa' : 'inactiva' }}">
-                        {{ $biopsia->estado ? 'Activa' : 'Inactiva' }}
+                    <span class="badge badge-{{ $citologia->estado ? 'activa' : 'inactiva' }}">
+                        {{ $citologia->estado ? 'Activa' : 'Inactiva' }}
                     </span>
                 </td>
             </tr>
             @empty
             <tr>
                 <td colspan="7" class="no-data">
-                    No se encontraron biopsias de personas con los filtros aplicados
+                    No se encontraron citologías de personas con los filtros aplicados
                 </td>
             </tr>
             @endforelse

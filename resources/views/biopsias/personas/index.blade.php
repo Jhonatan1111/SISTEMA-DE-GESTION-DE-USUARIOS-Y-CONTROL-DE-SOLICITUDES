@@ -281,8 +281,9 @@
                                     {{ $biopsia->paciente->nombre ?? 'N/A' }} {{ $biopsia->paciente->apellido ?? '' }}
                                 </div>
                                 <div class="text-gray-500">
-                                    {{ $biopsia->paciente->edad ?? 'N/A' }} años
+                                    {{ $biopsia->paciente->fecha_nacimiento ? $biopsia->paciente->fecha_nacimiento->age . ' años' : 'N/A' }}
                                 </div>
+
                                 <div class="text-gray-400 text-xs">
                                     DUI: {{ $biopsia->paciente->dui ?? 'N/A' }}
                                 </div>
@@ -371,5 +372,5 @@
         @endif
     </div>
 
-   
+
 </x-app-layout>

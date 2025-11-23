@@ -6,6 +6,7 @@ use App\Models\Citolgia;
 use App\Models\Paciente;
 use App\Models\Doctor;
 use App\Models\ListaCitologia;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 use Illuminate\Http\Request;
 
@@ -16,17 +17,19 @@ class CitolgiaPersonaController extends Controller
     {
         $query = Citolgia::with(['paciente', 'doctor', 'lista_citologia']);
 
-        //Filtro por búsqueda (nombre paciente o doctor)
+        //Filtro por búsqueda (número, diagnóstico, paciente o doctor)
         if ($request->filled('buscar')) {
             $search = $request->buscar;
             $query->where(function ($q) use ($search) {
-                $q->whereHas('paciente', function ($p) use ($search) {
-                    $p->where('nombre', 'like', "%{$search}%")
-                    ->orWhere('apellido', 'like', "%{$search}%");
-                })->orWhereHas('doctor', function ($d) use ($search) {
-                    $d->where('nombre', 'like', "%{$search}%")
-                    ->orWhere('apellido', 'like', "%{$search}%");
-                });
+                $q->where('ncitologia', 'like', "%{$search}%")
+                ->orWhere('diagnostico_clinico', 'like', "%{$search}%")
+                ->orWhereHas('paciente', function ($p) use ($search) {
+                        $p->where('nombre', 'like', "%{$search}%")
+                        ->orWhere('apellido', 'like', "%{$search}%");
+                    })->orWhereHas('doctor', function ($d) use ($search) {
+                        $d->where('nombre', 'like', "%{$search}%")
+                        ->orWhere('apellido', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -40,12 +43,85 @@ class CitolgiaPersonaController extends Controller
             $query->where('estado', $request->estado);
         }
 
+        // Filtro por tipo
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
+        }
+
+        // Filtros por rango de fechas
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate('fecha_recibida', '>=', $request->fecha_desde);
+        }
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate('fecha_recibida', '<=', $request->fecha_hasta);
+        }
+
         // Orden y paginación
         $citologias = $query->orderBy('fecha_recibida', 'desc')
             ->paginate(10)
             ->withQueryString();
 
-        return view('citologias.personas.index', compact('citologias'));
+        $estadisticas = [
+            'total' => Citolgia::personas()->count(),
+            'activas' => Citolgia::personas()->activas()->count(),
+            'inactivas' => Citolgia::personas()->where('estado', 0)->count(),
+            'este_mes' => Citolgia::personas()->whereDate('fecha_recibida', '>=', now()->startOfMonth())->count(),
+        ];
+
+        return view('citologias.personas.index', compact('citologias', 'estadisticas'));
+    }
+
+    public function exportarPdf(Request $request)
+    {
+        $query = Citolgia::with(['paciente', 'doctor'])->personas();
+
+        if ($request->filled('buscar')) {
+            $search = $request->buscar;
+            $query->where(function ($q) use ($search) {
+                $q->where('ncitologia', 'like', "%{$search}%")
+                    ->orWhere('diagnostico_clinico', 'like', "%{$search}%")
+                    ->orWhereHas('paciente', function ($p) use ($search) {
+                        $p->where('nombre', 'like', "%{$search}%")
+                            ->orWhere('apellido', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('doctor', function ($d) use ($search) {
+                        $d->where('nombre', 'like', "%{$search}%")
+                            ->orWhere('apellido', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if ($request->filled('doctor')) {
+            $query->where('doctor_id', $request->doctor);
+        }
+
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
+        }
+
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate('fecha_recibida', '>=', $request->fecha_desde);
+        }
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate('fecha_recibida', '<=', $request->fecha_hasta);
+        }
+
+        $citologias = $query->orderBy('fecha_recibida', 'desc')->get();
+
+        $data = [
+            'citologias' => $citologias,
+            'fecha' => now()->format('d/m/Y'),
+            'total' => $citologias->count(),
+            'tipo' => 'Personas'
+        ];
+
+        $pdf = Pdf::loadView('citologias.personas.pdf.reporte', $data);
+
+        return $pdf->download('reporte_citologias_personas_' . now()->format('Y-m-d') . '.pdf');
     }
 
     // Mostrar formulario para crear citología de paciente humano
@@ -384,68 +460,6 @@ class CitolgiaPersonaController extends Controller
             ->get();
 
         return view('citologias.pacientes.reporte-pdf', compact('paciente', 'citologias'));
-    }
-
-    // Exportar lista de citologías de pacientes a CSV
-    public function exportarCsv(Request $request)
-    {
-        $query = Citolgia::with(['paciente', 'doctor'])->personas();
-
-        // Aplicar filtros si vienen en la request
-        if ($request->fecha_desde) {
-            $query->where('fecha_recibida', '>=', $request->fecha_desde);
-        }
-        if ($request->fecha_hasta) {
-            $query->where('fecha_recibida', '<=', $request->fecha_hasta);
-        }
-        if ($request->doctor_id) {
-            $query->where('doctor_id', $request->doctor_id);
-        }
-
-        $citologias = $query->orderBy('fecha_recibida', 'desc')->get();
-
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="citologias_pacientes_' . now()->format('Y-m-d') . '.csv"',
-        ];
-
-        $callback = function () use ($citologias) {
-            $file = fopen('php://output', 'w');
-
-            // Encabezados CSV
-            fputcsv($file, [
-                'Número Citología',
-                'Fecha Recibida',
-                'Paciente',
-                'DUI',
-                'Edad',
-                'Sexo',
-                'Doctor',
-                'Diagnóstico Clínico',
-                'Estado',
-                'Fecha Registro'
-            ]);
-
-            // Datos
-            foreach ($citologias as $citologia) {
-                fputcsv($file, [
-                    $citologia->ncitologia,
-                    $citologia->fecha_recibida->format('d/m/Y'),
-                    $citologia->paciente->nombre . ' ' . $citologia->paciente->apellido,
-                    $citologia->paciente->DUI,
-                    $citologia->paciente->edad,
-                    $citologia->paciente->sexo === 'M' ? 'Masculino' : 'Femenino',
-                    $citologia->doctor->nombre . ' ' . $citologia->doctor->apellido,
-                    substr($citologia->diagnostico_clinico, 0, 100) . '...',
-                    $citologia->estado ? 'Activa' : 'Archivada',
-                    $citologia->created_at->format('d/m/Y H:i')
-                ]);
-            }
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
     }
 
     public function toggleEstado(Request $request, $ncitologia)

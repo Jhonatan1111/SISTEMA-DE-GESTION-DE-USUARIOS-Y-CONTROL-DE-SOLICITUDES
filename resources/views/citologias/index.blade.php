@@ -37,9 +37,9 @@
                         <h3 class="text-sm font-medium text-gray-500 uppercase">Total Citologías</h3>
                         <p class="text-2xl font-bold text-gray-900">{{ \App\Models\Citolgia::count() }}</p>
                     </div>
-                    <div class="text-blue-500">
-                        <img src="/image/pacientes.png" alt="Pacientes" class="w-8 h-8">
-                    </div>
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                    </svg>
                 </div>
             </div>
 
