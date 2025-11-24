@@ -140,6 +140,12 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="md:col-span-2">
+                            <label for="diagnostico_clinico" class="block text-sm font-semibold text-gray-700 mb-1">Diagnóstico Clínico <span class="text-red-500">*</span></label>
+                            <textarea id="diagnostico_clinico" name="diagnostico_clinico" rows="3"
+                                class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all"
+                                placeholder="Describa el diagnóstico clínico..." required>{{ old('diagnostico_clinico') }}</textarea>
+                        </div>
 
                         <div id="campo-remitente" class="md:col-span-2" style="display: none;">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -166,6 +172,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -239,12 +246,12 @@
 
                         <!-- Diagnóstico -->
                         <div>
-                            <label for="diagnostico_clinico" class="block text-sm font-semibold text-gray-700 mb-1">
+                            <label for="diagnostico" class="block text-sm font-semibold text-gray-700 mb-1">
                                 Diagnóstico <span class="text-red-500">*</span>
                             </label>
-                            <textarea id="diagnostico_clinico" name="diagnostico_clinico" rows="4"
+                            <textarea id="diagnostico" name="diagnostico" rows="4"
                                 class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all"
-                                placeholder="Diagnóstico de la muestra..." required>{{ old('diagnostico_clinico') }}</textarea>
+                                placeholder="Diagnóstico de la muestra..." required>{{ old('diagnostico') }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -311,11 +318,11 @@
                     </div>
 
                     @foreach($listas as $lista)
-                    <div class="template-item bg-white border border-gray-200 rounded-lg p-2 mb-2 hover:bg-yellow-50 hover:border-yellow-300 hover:shadow-md cursor-pointer transition-all duration-200"
+                    <div class="template-item bg-white border border-gray-200 rounded-lg p-2 mb-2 hover:bg-yellow-50 hover:border-yellow-300 hover:shadow-md cursor-pointer transition-all duración-200"
                         data-codigo="{{ $lista->codigo }}"
-                        data-diagnostico="{{ $lista->descripcion }}"
-                        data-macroscopico="{{ $lista->macroscopico }}"
-                        onclick="selectTemplate('{{ $lista->id }}', '{{ $lista->codigo }}', '{{ addslashes($lista->descripcion) }}', '{{ addslashes($lista->macroscopico) }}')">
+                        data-descripcion="{{ $lista->descripcion }}"
+                        data-diagnostico="{{ $lista->diagnostico }}"
+                        onclick="selectTemplate('{{ $lista->id }}', '{{ $lista->codigo }}', '{{ addslashes($lista->descripcion) }}', '{{ addslashes($lista->diagnostico) }}')">
 
                         <h4 class="font-semibold text-gray-900 mb-1 text-xs">{{ $lista->descripcion }}</h4>
 
@@ -324,9 +331,9 @@
                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
-                                Descripción Macroscópica:
+                                Diagnóstico:
                             </strong>
-                            <p class="mt-1 leading-relaxed">{{ Str::limit($lista->macroscopico, 100) }}</p>
+                            <p class="mt-1 leading-relaxed">{{ Str::limit($lista->diagnostico, 100) }}</p>
                         </div>
                     </div>
                     @endforeach
@@ -414,13 +421,24 @@
                 return;
             }
 
-            fetch(`{{ url('/citologias-personas/buscar-lista-codigo') }}/${codigo}`)
-                .then(response => response.json())
+            fetch(`{{ url('/citologias/personas/buscar-lista-codigo') }}/${encodeURIComponent(codigo)}`)
+                .then(async (response) => {
+                    if (!response.ok) {
+                        const text = await response.text();
+                        throw new Error(text || `HTTP ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
                         document.getElementById('lista_id').value = data.data.id;
                         document.getElementById('selected_template').value = data.data.codigo + ' - ' + data.data.descripcion;
-                        document.getElementById('macroscopico').value = data.data.macroscopico || '';
+                        const descField = document.getElementById('descripcion');
+                        const diagField = document.getElementById('diagnostico');
+                        const diagClinicoField = document.getElementById('diagnostico_clinico');
+                        if (descField) descField.value = data.data.descripcion || '';
+                        if (diagField) diagField.value = data.data.diagnostico || '';
+                        if (diagClinicoField && !diagClinicoField.value) diagClinicoField.value = data.data.diagnostico || '';
 
                         if (document.getElementById('analisis-content').classList.contains('hidden')) {
                             toggleAnalisis();
@@ -431,7 +449,7 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Error al buscar la plantilla');
+                    alert('Código no encontrado');
                 });
         });
 
@@ -441,24 +459,30 @@
         }
 
         function closeTemplateModal() {
-            document.getElementById('template-modal').style.display = 'none';
+            const modals = document.querySelectorAll('#template-modal');
+            modals.forEach(m => m.style.display = 'none');
         }
 
-        function selectTemplate(id, codigo, descripcion, macroscopico) {
+        function selectTemplate(id, codigo, descripcion, diagnostico) {
             document.getElementById('lista_id').value = id;
             document.getElementById('selected_template').value = codigo + ' - ' + descripcion;
+            const descField = document.getElementById('descripcion');
+            const diagField = document.getElementById('diagnostico');
+            const diagClinicoField = document.getElementById('diagnostico_clinico');
+            if (descField) descField.value = (descripcion || '').trim();
+            if (diagField) diagField.value = (diagnostico || '').trim();
+            if (diagClinicoField && !diagClinicoField.value) diagClinicoField.value = (diagnostico || '').trim();
 
-            const macroscopicoTextarea = document.getElementById('macroscopico');
-            const contenidoActual = macroscopicoTextarea.value.trim();
-
-            if (contenidoActual === '') {
-                macroscopicoTextarea.value = macroscopico || '';
-            } else {
-                macroscopicoTextarea.value = contenidoActual + ' ' + (macroscopico || '');
+            const plantillaContent = document.getElementById('plantilla-content');
+            const iconPlantilla = document.getElementById('icon-plantilla');
+            if (plantillaContent && plantillaContent.classList.contains('hidden')) {
+                plantillaContent.classList.remove('hidden');
+                if (iconPlantilla) iconPlantilla.classList.add('rotate-180');
             }
 
             closeTemplateModal();
-            if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
+            const analisis = document.getElementById('analisis-content');
+            if (analisis && analisis.classList.contains('hidden')) toggleAnalisis();
         }
 
         function clearTemplate() {
@@ -466,31 +490,7 @@
             document.getElementById('selected_template').value = '';
         }
 
-        function filterTemplates() {
-            const searchTerm = document.getElementById('template-search').value.toLowerCase();
-            const items = document.querySelectorAll('.template-item');
-            let visibleCount = 0;
 
-            items.forEach(item => {
-                const codigo = item.getAttribute('data-codigo').toLowerCase();
-                const diagnostico = item.getAttribute('data-diagnostico').toLowerCase();
-                const macroscopico = item.getAttribute('data-macroscopico').toLowerCase();
-
-                if (codigo.includes(searchTerm) || diagnostico.includes(searchTerm) || macroscopico.includes(searchTerm)) {
-                    item.style.display = 'block';
-                    visibleCount++;
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-
-            const noResultsMsg = document.getElementById('no-results-message');
-            if (visibleCount === 0 && searchTerm !== '') {
-                noResultsMsg.style.display = 'block';
-            } else {
-                noResultsMsg.style.display = 'none';
-            }
-        }
 
         function filterTemplates() {
             const searchTerm = document.getElementById('template-search').value.toLowerCase().trim();
@@ -498,9 +498,9 @@
             let visibleCount = 0;
 
             templateItems.forEach(item => {
-                const codigo = item.dataset.codigo.toLowerCase();
-                const descripcion = item.dataset.diagnostico.toLowerCase(); // Nota: el data-attribute se llama diagnostico pero contiene descripcion
-                const macroscopico = item.dataset.macroscopico.toLowerCase();
+                const codigo = (item.dataset.codigo || '').toLowerCase();
+                const descripcion = (item.dataset.descripcion || '').toLowerCase();
+                const diagnostico = (item.dataset.diagnostico || '').toLowerCase();
 
                 // Solo mostrar resultados si hay texto de búsqueda
                 let matches = false;
@@ -513,7 +513,7 @@
                     matches = searchWords.every(word =>
                         codigo.includes(word) ||
                         descripcion.includes(word) ||
-                        macroscopico.includes(word)
+                        diagnostico.includes(word)
                     );
                 }
 
@@ -627,11 +627,11 @@
                     </div>
 
                     @foreach($listas as $lista)
-                    <div class="template-item bg-white border border-gray-200 rounded-lg p-2 mb-2 hover:bg-yellow-50 hover:border-yellow-300 hover:shadow-md cursor-pointer transition-all duration-200"
+                    <div class="template-item bg-white border border-gray-200 rounded-lg p-2 mb-2 hover:bg-yellow-50 hover:border-yellow-300 hover:shadow-md cursor-pointer transition-all duración-200"
                         data-codigo="{{ $lista->codigo }}"
-                        data-diagnostico="{{ $lista->descripcion }}"
-                        data-macroscopico="{{ $lista->macroscopico }}"
-                        onclick="selectTemplate('{{ $lista->id }}', '{{ $lista->codigo }}', '{{ addslashes($lista->descripcion) }}', '{{ addslashes($lista->macroscopico) }}')">
+                        data-descripcion="{{ $lista->descripcion }}"
+                        data-diagnostico="{{ $lista->diagnostico }}"
+                        onclick="selectTemplate('{{ $lista->id }}', '{{ $lista->codigo }}', '{{ addslashes($lista->descripcion) }}', '{{ addslashes($lista->diagnostico) }}')">
 
                         <h4 class="font-semibold text-gray-900 mb-1 text-xs">{{ $lista->descripcion }}</h4>
 
@@ -640,9 +640,9 @@
                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                 </svg>
-                                Descripción Macroscópica:
+                                Diagnóstico:
                             </strong>
-                            <p class="mt-1 leading-relaxed">{{ Str::limit($lista->macroscopico, 100) }}</p>
+                            <p class="mt-1 leading-relaxed">{{ Str::limit($lista->diagnostico, 100) }}</p>
                         </div>
                     </div>
                     @endforeach

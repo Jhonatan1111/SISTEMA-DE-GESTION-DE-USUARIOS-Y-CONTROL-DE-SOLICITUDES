@@ -57,7 +57,7 @@ class CitolgiaPersonaController extends Controller
         }
 
         // Orden y paginación
-        $citologias = $query->orderBy('fecha_recibida', 'desc')
+        $citologias = $query->orderBy('created_at', 'desc')
             ->paginate(10)
             ->withQueryString();
 
@@ -507,12 +507,18 @@ class CitolgiaPersonaController extends Controller
     // Método AJAX para buscar por código
     public function buscarListaPorCodigo($codigo)
     {
-        $lista = ListaCitologia::where('codigo', $codigo)->first();
+        $codigoNormalizado = strtolower(trim($codigo));
+        $lista = ListaCitologia::whereRaw('LOWER(codigo) = ?', [$codigoNormalizado])->first();
 
         if ($lista) {
             return response()->json([
                 'success' => true,
-                'data' => $lista
+                'data' => [
+                    'id' => $lista->id,
+                    'codigo' => $lista->codigo,
+                    'descripcion' => $lista->descripcion,
+                    'diagnostico' => $lista->diagnostico,
+                ]
             ]);
         }
 

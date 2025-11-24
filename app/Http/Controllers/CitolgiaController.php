@@ -62,7 +62,9 @@ class CitolgiaController extends Controller
             $query->whereDate('fecha_recibida', '<=', $request->fecha_hasta);
         }
 
-        $citologias = $query->paginate(10);
+        $citologias = $query->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
 
         // Estadísticas generales
         $totalActivas = Citolgia::activas()->count();
