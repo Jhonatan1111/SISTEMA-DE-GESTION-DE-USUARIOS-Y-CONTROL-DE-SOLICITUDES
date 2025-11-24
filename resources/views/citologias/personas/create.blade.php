@@ -435,12 +435,12 @@
                         document.getElementById('selected_template').value = data.data.codigo + ' - ' + data.data.descripcion;
                         const descField = document.getElementById('descripcion');
                         const diagField = document.getElementById('diagnostico');
-                        const diagClinicoField = document.getElementById('diagnostico_clinico');
                         if (descField) descField.value = data.data.descripcion || '';
                         if (diagField) diagField.value = data.data.diagnostico || '';
-                        if (diagClinicoField && !diagClinicoField.value) diagClinicoField.value = data.data.diagnostico || '';
 
-                        if (document.getElementById('analisis-content').classList.contains('hidden')) {
+
+                        const analisisEl = document.getElementById('analisis-content');
+                        if (analisisEl && analisisEl.classList.contains('hidden')) {
                             toggleAnalisis();
                         }
                     } else {
@@ -449,7 +449,6 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Código no encontrado');
                 });
         });
 
@@ -468,10 +467,8 @@
             document.getElementById('selected_template').value = codigo + ' - ' + descripcion;
             const descField = document.getElementById('descripcion');
             const diagField = document.getElementById('diagnostico');
-            const diagClinicoField = document.getElementById('diagnostico_clinico');
             if (descField) descField.value = (descripcion || '').trim();
             if (diagField) diagField.value = (diagnostico || '').trim();
-            if (diagClinicoField && !diagClinicoField.value) diagClinicoField.value = (diagnostico || '').trim();
 
             const plantillaContent = document.getElementById('plantilla-content');
             const iconPlantilla = document.getElementById('icon-plantilla');
