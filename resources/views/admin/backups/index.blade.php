@@ -85,7 +85,6 @@
                         Restaurar
                     </button>
                 </form>
-                <p class="text-xs text-gray-500 mt-3">Se restaurará el contenido de <code>storage/app</code> y la base de datos (SQLite copiará el archivo; MySQL importará datos del JSON incluido).</p>
             </div>
         </div>
     </div>

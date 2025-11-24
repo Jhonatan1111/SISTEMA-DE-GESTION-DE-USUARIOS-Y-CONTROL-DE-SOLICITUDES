@@ -329,7 +329,7 @@
         </div>
     </div>
 
-
+    <!-- script modal plantilla -->
     <script>
         // Función para seleccionar tipo y obtener número
         async function seleccionarTipo(tipo) {

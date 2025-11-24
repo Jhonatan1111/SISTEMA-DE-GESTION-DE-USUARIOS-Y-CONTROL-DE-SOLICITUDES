@@ -92,7 +92,7 @@
 
                 <div class="bg-white p-4 rounded-lg shadow-md">
                     <label class="block text-sm font-semibold text-gray-600 mb-1">DUI</label>
-                    <p class="text-lg font-semibold text-gray-900">{{ $citologia->paciente->DUI }}</p>
+                    <p class="text-lg font-semibold text-gray-900">{{ $citologia->paciente->dui }}</p>
                 </div>
 
                 <div class="bg-white p-4 rounded-lg shadow-md">
