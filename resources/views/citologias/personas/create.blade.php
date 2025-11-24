@@ -155,7 +155,7 @@
 
                                 <div>
                                     <label for="celular_remitente_especial" class="block text-sm font-semibold text-gray-700 mb-1">
-                                        Celular del Remitente <span class="text-red-500">*</span>
+                                        Celular del Remitente
                                     </label>
                                     <input type="text" id="celular_remitente_especial" name="celular_remitente_especial"
                                         value="{{ old('celular_remitente_especial') }}"
@@ -353,6 +353,35 @@
                     // Ocultar modal y mostrar formulario
                     document.getElementById('modal-tipo').style.display = 'none';
                     document.getElementById('formulario-container').style.display = 'block';
+
+                    const campoDoctor = document.getElementById('campo-doctor');
+                    const campoRemitente = document.getElementById('campo-remitente');
+                    const doctorSelect = document.getElementById('doctor_id');
+                    const remitenteInput = document.getElementById('remitente_especial');
+                    const celularInput = document.getElementById('celular_remitente_especial');
+
+                    if (tipo === 'especial') {
+                        if (campoDoctor) campoDoctor.style.display = 'none';
+                        if (doctorSelect) {
+                            doctorSelect.removeAttribute('required');
+                            doctorSelect.value = '';
+                        }
+                        if (campoRemitente) campoRemitente.style.display = '';
+                        if (remitenteInput) remitenteInput.setAttribute('required', 'required');
+                        if (celularInput) celularInput.removeAttribute('required');
+                    } else {
+                        if (campoDoctor) campoDoctor.style.display = '';
+                        if (doctorSelect) doctorSelect.setAttribute('required', 'required');
+                        if (campoRemitente) campoRemitente.style.display = 'none';
+                        if (remitenteInput) {
+                            remitenteInput.removeAttribute('required');
+                            remitenteInput.value = '';
+                        }
+                        if (celularInput) {
+                            celularInput.removeAttribute('required');
+                            celularInput.value = '';
+                        }
+                    }
                 } else {
                     alert('Error al generar número: ' + (data.message || 'Error desconocido'));
                 }

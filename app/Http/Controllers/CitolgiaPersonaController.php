@@ -22,13 +22,13 @@ class CitolgiaPersonaController extends Controller
             $search = $request->buscar;
             $query->where(function ($q) use ($search) {
                 $q->where('ncitologia', 'like', "%{$search}%")
-                ->orWhere('diagnostico_clinico', 'like', "%{$search}%")
-                ->orWhereHas('paciente', function ($p) use ($search) {
+                    ->orWhere('diagnostico_clinico', 'like', "%{$search}%")
+                    ->orWhereHas('paciente', function ($p) use ($search) {
                         $p->where('nombre', 'like', "%{$search}%")
-                        ->orWhere('apellido', 'like', "%{$search}%");
+                            ->orWhere('apellido', 'like', "%{$search}%");
                     })->orWhereHas('doctor', function ($d) use ($search) {
                         $d->where('nombre', 'like', "%{$search}%")
-                        ->orWhere('apellido', 'like', "%{$search}%");
+                            ->orWhere('apellido', 'like', "%{$search}%");
                     });
             });
         }
@@ -150,7 +150,7 @@ class CitolgiaPersonaController extends Controller
         // Si es especial, requiere remitente_especial en lugar de doctor_id
         if ($request->tipo === 'especial') {
             $rules['remitente_especial'] = 'required|string|max:255';
-            $rules['celular_remitente_especial'] = 'required|digits:8';
+            $rules['celular_remitente_especial'] = 'nullable|digits:8';
         } else {
             $rules['doctor_id'] = 'required|exists:doctores,id';
         }
@@ -162,7 +162,6 @@ class CitolgiaPersonaController extends Controller
             'paciente_id.required' => 'Debe seleccionar un paciente',
             'tipo.required' => 'Debe seleccionar el tipo de citología',
             'remitente_especial.required' => 'Debe ingresar el remitente especial',
-            'celular_remitente_especial.required' => 'Debe ingresar el celular del remitente especial',
             'celular_remitente_especial.digits' => 'El celular debe tener exactamente 8 dígitos'
         ]);
 
