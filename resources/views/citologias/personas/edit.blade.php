@@ -1,67 +1,4 @@
 <x-app-layout>
-    <!-- Modal de Cambio de Tipo -->
-    <div id="modal-cambio-tipo" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-2xl w-full mx-4">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4 text-center">
-                ¿Cambiar tipo de citología?
-            </h2>
-            <p class="text-gray-600 mb-2 text-center">
-                Al cambiar el tipo se generará un nuevo número correlativo
-            </p>
-            <p class="text-sm text-orange-600 mb-6 text-center font-semibold">
-                ⚠️ El número actual <span id="numero-actual"></span> será reemplazado
-            </p>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Opción Normal -->
-                <button type="button"
-                    onclick="cambiarTipoConfirmado('normal')"
-                    class="p-6 bg-gradient-to-br from-blue-100 to-blue-50 hover:from-blue-200 hover:to-blue-100 border-2 border-blue-300 hover:border-blue-400 rounded-lg transition-all transform hover:scale-105">
-                    <div class="text-center">
-                        <span class="text-5xl mb-3 block">
-                            <img src="/image/normal.png" alt="Normal" class="mx-auto w-12 h-12">
-                        </span>
-                        <h3 class="text-lg font-bold text-blue-900 mb-1">Normal</h3>
-                        <p class="text-sm text-blue-600">CN2025XXXXX</p>
-                    </div>
-                </button>
-
-                <!-- Opción Líquida -->
-                <button type="button"
-                    onclick="cambiarTipoConfirmado('liquida')"
-                    class="p-6 bg-gradient-to-br from-purple-100 to-purple-50 hover:from-purple-200 hover:to-purple-100 border-2 border-purple-300 hover:border-purple-400 rounded-lg transition-all transform hover:scale-105">
-                    <div class="text-center">
-                        <span class="text-5xl mb-3 block">
-                            <img src="/image/liquida.png" alt="Líquida" class="mx-auto w-12 h-12">
-                        </span>
-                        <h3 class="text-lg font-bold text-purple-900 mb-1">Líquida</h3>
-                        <p class="text-sm text-purple-600">CL2025XXXXX</p>
-                    </div>
-                </button>
-
-                <!-- Opción Especial -->
-                <button type="button"
-                    onclick="cambiarTipoConfirmado('especial')"
-                    class="p-6 bg-gradient-to-br from-green-100 to-green-50 hover:from-green-200 hover:to-green-100 border-2 border-green-300 hover:border-green-400 rounded-lg transition-all transform hover:scale-105">
-                    <div class="text-center">
-                        <span class="text-5xl mb-3 block">
-                            <img src="/image/especial.png" alt="Especial" class="mx-auto w-12 h-12">
-                        </span>
-                        <h3 class="text-lg font-bold text-green-900 mb-1">Especial</h3>
-                        <p class="text-sm text-green-600">CE2025XXXXX</p>
-                    </div>
-                </button>
-            </div>
-
-            <div class="mt-6 text-center">
-                <button type="button"
-                        onclick="cerrarModalCambioTipo()"
-                        class="text-1xl text-blue-700 hover:text-blue-800 font-semibold">
-                    ← Cancelar y volver
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal de Búsqueda de Plantillas -->
     <div id="modal-plantillas" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
@@ -86,8 +23,8 @@
                     <div class="flex items-center mb-2">
                         <h4 class="font-semibold text-blue-800 text-sm">Buscador</h4>
                     </div>
-                    <input type="text" 
-                        id="buscar_plantilla_modal" 
+                    <input type="text"
+                        id="buscar_plantilla_modal"
                         placeholder="Buscar por código o diagnóstico..."
                         class="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 text-base shadow-sm transition-all"
                         oninput="filtrarPlantillas()">
@@ -122,7 +59,6 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h1 class="text-3xl font-extrabold text-blue-700">Editar Citología - Persona</h1>
-                <p class="text-sm text-gray-500 mt-1">Número: <span class="font-semibold text-green-600" id="numero_display_header">{{ $citologia->ncitologia }}</span></p>
             </div>
             <a href="{{ route('citologias.personas.index') }}" class="text-gray-600 hover:text-gray-900">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,14 +102,10 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Tipo de Citología -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo de Citología</label>
-                        <div id="tipo_badge" class="w-full px-4 py-1 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Número de Citología</label>
+                        <div class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg bg-blue-50 flex items-center">
+                            <span class="font-semibold text-green-600" id="numero_display_header">{{ $citologia->ncitologia }}</span>
                         </div>
-                        <button type="button"
-                                onclick="abrirModalCambioTipo()"
-                                class="mt-2 text-sm text-blue-600 hover:underline">
-                            Cambiar tipo
-                        </button>
                     </div>
 
                     <div>
@@ -231,6 +163,14 @@
                             </div>
                         </div>
                     </div>
+                    <!-- diagnostico clinicos -->
+                    <div class="md:col-span-2">
+                        <label for="diagnostico_clinico" class="block text-sm font-semibold text-gray-700 mb-1">Diagnóstico Clinico <span class="text-red-500">*</span></label>
+                        <textarea id="diagnostico_clinico" name="diagnostico_clinico" rows="4" class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>{{ old('diagnostico_clinico', $citologia->diagnostico_clinico) }}</textarea>
+                        @error('diagnostico_clinico')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
             </div>
 
@@ -257,13 +197,13 @@
                                 Buscar por Código
                             </label>
                             <div class="flex gap-2">
-                                <input type="text" 
-                                       id="codigo_plantilla" 
-                                       placeholder="EJ: L001"
-                                       class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500 transition-all">
-                                <button type="button" 
-                                        onclick="buscarPorCodigo()"
-                                        class="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-semibold transition-all hover:scale-105">
+                                <input type="text"
+                                    id="codigo_plantilla"
+                                    placeholder="EJ: L001"
+                                    class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500 transition-all">
+                                <button type="button"
+                                    onclick="buscarPorCodigo()"
+                                    class="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-semibold transition-all hover:scale-105">
                                     Buscar
                                 </button>
                             </div>
@@ -276,28 +216,28 @@
                             </label>
                             <div class="flex gap-2">
                                 <select id="lista_id" name="lista_id_select"
-                                        class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500 transition-all">
+                                    class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500 transition-all">
                                     <option value="">-- Sin plantilla seleccionada --</option>
                                     @foreach($listas as $lista)
-                                        <option value="{{ $lista->id }}" 
-                                                data-codigo="{{ $lista->codigo }}"
-                                                {{ old('lista_id', $citologia->lista_id) == $lista->id ? 'selected' : '' }}>
-                                            {{ $lista->codigo }} - {{ $lista->diagnostico }}
-                                        </option>
+                                    <option value="{{ $lista->id }}"
+                                        data-codigo="{{ $lista->codigo }}"
+                                        {{ old('lista_id', $citologia->lista_id) == $lista->id ? 'selected' : '' }}>
+                                        {{ $lista->codigo }} - {{ $lista->diagnostico }}
+                                    </option>
                                     @endforeach
                                 </select>
-                                <button type="button" 
-                                        onclick="abrirModalPlantillas()"
-                                        class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-all hover:scale-105"
-                                        title="Buscar plantilla">
+                                <button type="button"
+                                    onclick="abrirModalPlantillas()"
+                                    class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-all hover:scale-105"
+                                    title="Buscar plantilla">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                     </svg>
                                 </button>
-                                <button type="button" 
-                                        onclick="limpiarPlantillaSeleccionada()"
-                                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all hover:scale-105"
-                                        title="Limpiar selección">
+                                <button type="button"
+                                    onclick="limpiarPlantillaSeleccionada()"
+                                    class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all hover:scale-105"
+                                    title="Limpiar selección">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                     </svg>
@@ -323,9 +263,9 @@
 
                     <!-- Diagnóstico -->
                     <div>
-                        <label for="diagnostico_clinico" class="block text-sm font-semibold text-gray-700 mb-1">Diagnóstico <span class="text-red-500">*</span></label>
-                        <textarea id="diagnostico_clinico" name="diagnostico_clinico" rows="4" class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all" placeholder="Diagnóstico de la muestra..." required>{{ old('diagnostico_clinico', $citologia->diagnostico_clinico) }}</textarea>
-                        @error('diagnostico_clinico')
+                        <label for="diagnostico" class="block text-sm font-semibold text-gray-700 mb-1">Diagnóstico <span class="text-red-500">*</span></label>
+                        <textarea id="diagnostico" name="diagnostico" rows="4" class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all" placeholder="Diagnóstico de la muestra..." required>{{ old('diagnostico', $citologia->diagnostico) }}</textarea>
+                        @error('diagnostico')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -371,9 +311,6 @@
                     // Actualizar tipo seleccionado
                     document.getElementById('tipo_seleccionado').value = nuevoTipo;
                     document.getElementById('ncitologia_nuevo').value = data.numero;
-                    
-                    // Actualizar número en header
-                    document.getElementById('numero_display_header').textContent = data.numero;
 
                     // Actualizar badge del tipo
                     const tipoBadge = document.getElementById('tipo_badge');
@@ -437,14 +374,14 @@
 
         function buscarPorCodigo() {
             const codigo = document.getElementById('codigo_plantilla').value.trim().toUpperCase();
-            
+
             if (!codigo) {
                 alert('Por favor ingrese un código');
                 return;
             }
-            
+
             const plantilla = listas.find(p => p.codigo.toUpperCase() === codigo);
-            
+
             if (plantilla) {
                 document.getElementById('lista_id').value = plantilla.id;
                 document.getElementById('lista_id').dispatchEvent(new Event('change'));
@@ -456,7 +393,7 @@
         function renderizarPlantillas() {
             const container = document.getElementById('lista-plantillas-modal');
             const noResultados = document.getElementById('no-resultados');
-            
+
             if (plantillasFiltradas.length === 0) {
                 container.innerHTML = '';
                 noResultados.classList.remove('hidden');
@@ -480,41 +417,41 @@
 
         function filtrarPlantillas() {
             const termino = document.getElementById('buscar_plantilla_modal').value.toLowerCase();
-            
+
             plantillasFiltradas = listas.filter(plantilla => {
                 return plantilla.codigo.toLowerCase().includes(termino) ||
-                       (plantilla.diagnostico && plantilla.diagnostico.toLowerCase().includes(termino)) ||
-                       (plantilla.descripcion && plantilla.descripcion.toLowerCase().includes(termino));
+                    (plantilla.diagnostico && plantilla.diagnostico.toLowerCase().includes(termino)) ||
+                    (plantilla.descripcion && plantilla.descripcion.toLowerCase().includes(termino));
             });
-            
+
             renderizarPlantillas();
         }
 
         function seleccionarPlantilla(id) {
             const plantilla = listas.find(p => p.id == id);
-            
+
             if (plantilla) {
                 // Seleccionar en el dropdown
                 document.getElementById('lista_id').value = plantilla.id;
-                
+
                 // Guardar ID en campo oculto
                 document.getElementById('lista_id_hidden').value = plantilla.id;
-                
+
                 // Llenar campos del formulario
                 document.getElementById('descripcion').value = plantilla.descripcion || '';
                 document.getElementById('diagnostico_clinico').value = plantilla.diagnostico || '';
-                
+
                 // Actualizar campo de código
                 document.getElementById('codigo_plantilla').value = plantilla.codigo;
-                
+
                 // Mostrar plantilla seleccionada
                 document.getElementById('plantilla-codigo-sel').textContent = plantilla.codigo;
                 document.getElementById('plantilla-diag-sel').textContent = plantilla.diagnostico || 'N/A';
                 document.getElementById('plantilla-seleccionada').classList.remove('hidden');
-                
+
                 // Cerrar modal
                 cerrarModalPlantillas();
-                
+
                 // Notificación
                 mostrarNotificacion('✓ Plantilla aplicada: ' + plantilla.codigo, 'success');
             }
@@ -525,13 +462,13 @@
             document.getElementById('lista_id_hidden').value = '';
             document.getElementById('codigo_plantilla').value = '';
             document.getElementById('plantilla-seleccionada').classList.add('hidden');
-            
+
             // Opcional: limpiar los campos si deseas
             if (confirm('¿Desea también limpiar los campos de descripción?')) {
                 document.getElementById('descripcion').value = '';
                 document.getElementById('diagnostico_clinico').value = '';
             }
-            
+
             mostrarNotificacion('Plantilla removida', 'info');
         }
 
@@ -570,7 +507,7 @@
             // Mostrar tipo actual
             const tipoActual = tipoActualCitologia;
             const tipoBadge = document.getElementById('tipo_badge');
-            
+
             if (tipoActual === 'liquida') {
                 tipoBadge.innerHTML = '<span class="inline-flex text-gray-700 px-4 py-2 text-sm">Citología Líquida</span>';
                 mostrarCampoDoctor();
@@ -585,25 +522,25 @@
             // Al cambiar el select, aplicar plantilla
             document.getElementById('lista_id').addEventListener('change', function() {
                 const selectedId = this.value;
-                
+
                 if (selectedId) {
                     const plantilla = listas.find(p => p.id == selectedId);
                     if (plantilla) {
                         // Guardar ID
                         document.getElementById('lista_id_hidden').value = plantilla.id;
-                        
+
                         // Llenar campos
                         document.getElementById('descripcion').value = plantilla.descripcion || '';
                         document.getElementById('diagnostico_clinico').value = plantilla.diagnostico || '';
-                        
+
                         // Actualizar código
                         document.getElementById('codigo_plantilla').value = plantilla.codigo;
-                        
+
                         // Mostrar banner
                         document.getElementById('plantilla-codigo-sel').textContent = plantilla.codigo;
                         document.getElementById('plantilla-diag-sel').textContent = plantilla.diagnostico || 'N/A';
                         document.getElementById('plantilla-seleccionada').classList.remove('hidden');
-                        
+
                         mostrarNotificacion('✓ Plantilla aplicada', 'success');
                     }
                 } else {
@@ -639,12 +576,13 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
         .animate-fade-in {
             animation: fade-in 0.3s ease-out;
         }

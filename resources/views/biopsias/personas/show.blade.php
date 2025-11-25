@@ -44,9 +44,19 @@
                     </p>
                 </div>
 
-                <div class="bg-white p-4 rounded-lg shadow-md border-l-1">
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Fecha de Registro</label>
-                    <p class="text-lg font-semibold text-gray-900">{{ $biopsia->created_at->format('d/m/Y') }}</p>
+             <div class="bg-white p-4 rounded-lg shadow-md border-l-1 ">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Tipo de Citología</label>
+                    <p class="text-lg">
+                        @if($biopsia->tipo == 'liquida')
+                        <span class="inline-flex items-center bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-semibold">
+                            Líquida
+                        </span>
+                        @else
+                        <span class="inline-flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
+                            Normal
+                        </span>
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>
@@ -72,7 +82,7 @@
 
                 <div class="bg-white p-4 rounded-lg shadow-md">
                     <label class="block text-sm font-semibold text-gray-600 mb-1">Edad</label>
-                    <p class="text-lg font-semibold text-gray-900">{{ $biopsia->paciente->edad }} años</p>
+                    <p class="text-lg font-semibold text-gray-900"> {{ $biopsia->paciente->fecha_nacimiento ? $biopsia->paciente->fecha_nacimiento->age . ' años' : 'N/A' }}</p>
                 </div>
 
                 <div class="bg-white p-4 rounded-lg shadow-md">

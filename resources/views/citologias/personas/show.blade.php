@@ -3,38 +3,46 @@
         <!-- Header -->
         <div class="mb-6 flex justify-between items-center">
             <div>
-                <h1 class="text-3xl font-extrabold text-blue-700">Detalles de Citología</h1>
-                <p class="text-gray-600 mt-1">Número: <span class="font-semibold text-green-600">{{ $citologia->ncitologia }}</span></p>
+                <h1 class="text-2xl font-extrabold text-blue-700">Detalle de Citología Persona</h1>
             </div>
-            <div class="flex gap-3">
-                <a href="{{ route('citologias.personas.edit', $citologia->ncitologia) }}"
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-5 rounded-lg transition-transform hover:scale-105 shadow-lg">
-                    Editar
-                </a>
-                <a href="{{ route('citologias.personas.imprimir', $citologia->ncitologia) }}"
-                    class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-5 rounded-lg transition-transform hover:scale-105 shadow-lg"
-                    target="_blank">
-                    Imprimir
-                </a>
-                <a href="{{ route('citologias.personas.index') }}"
-                    class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-5 rounded-lg transition-transform hover:scale-105 shadow-lg">
-                    Volver
-                </a>
-            </div>
+            <a href="{{ route('citologias.personas.index') }}" class="text-gray-600 hover:text-gray-900">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </a>
         </div>
 
         <!-- Información Básica -->
         <div class="bg-gradient-to-r from-blue-50 via-white to-blue-50 rounded-2xl shadow-xl p-6 mb-6 border border-blue-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
             <h2 class="text-xl font-bold text-blue-700 mb-4 border-b-2 border-blue-200 pb-2">
-                📋 Información Básica
+                Información Básica
             </h2>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white p-4 rounded-lg shadow-md border-l-1 ">
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-1">
                     <label class="block text-sm font-semibold text-gray-600 mb-1">Número de Citología</label>
                     <p class="text-lg font-bold text-blue-700">{{ $citologia->ncitologia }}</p>
                 </div>
 
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-1">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Fecha Recibida</label>
+                    <p class="text-lg font-semibold text-gray-900">{{ $citologia->fecha_recibida->format('d/m/Y') }}</p>
+                </div>
+
+                <div class="bg-white p-4 rounded-lg shadow-md border-l-1">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Estado</label>
+                    <p class="text-lg">
+                        @if($citologia->estado)
+                        <span class="inline-flex items-center bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
+                            Activo
+                        </span>
+                        @else
+                        <span class="inline-flex items-center bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-semibold">
+                            Inactivo
+                        </span>
+                        @endif
+                    </p>
+                </div>
                 <div class="bg-white p-4 rounded-lg shadow-md border-l-1 ">
                     <label class="block text-sm font-semibold text-gray-600 mb-1">Tipo de Citología</label>
                     <p class="text-lg">
@@ -53,35 +61,16 @@
                         @endif
                     </p>
                 </div>
-
-                <div class="bg-white p-4 rounded-lg shadow-md border-l-1 ">
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Fecha Recibida</label>
-                    <p class="text-lg font-semibold text-gray-900">{{ $citologia->fecha_recibida->format('d/m/Y') }}</p>
-                </div>
-
-                <div class="bg-white p-4 rounded-lg shadow-md border-l-1 ">
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Estado</label>
-                    <p class="text-lg">
-                        @if($citologia->estado)
-                        <span class="inline-flex items-center bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-semibold">
-                            ✓ Activa
-                        </span>
-                        @else
-                        <span class="inline-flex items-center bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-semibold">
-                            ◦ Inactiva
-                        </span>
-                        @endif
-                    </p>
-                </div>
             </div>
         </div>
 
         <!-- Información del Paciente -->
         <div class="bg-gradient-to-r from-green-50 via-white to-green-50 rounded-2xl shadow-xl p-6 mb-6 border border-green-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
             <h2 class="text-xl font-bold text-green-700 mb-4 border-b-2 border-green-200 pb-2">
-                👤 Información del Paciente
+                Información del Paciente
             </h2>
 
+            @if($citologia->paciente)
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="bg-white p-4 rounded-lg shadow-md">
                     <label class="block text-sm font-semibold text-gray-600 mb-1">Nombre Completo</label>
@@ -97,7 +86,7 @@
 
                 <div class="bg-white p-4 rounded-lg shadow-md">
                     <label class="block text-sm font-semibold text-gray-600 mb-1">Edad</label>
-                    <p class="text-lg font-semibold text-gray-900">{{ $citologia->paciente->edad }} años</p>
+                    {{ $citologia->paciente->fecha_nacimiento ? $citologia->paciente->fecha_nacimiento->age . ' años' : 'N/A' }}
                 </div>
 
                 <div class="bg-white p-4 rounded-lg shadow-md">
@@ -112,44 +101,87 @@
                         @endif
                     </p>
                 </div>
+
+                @if($citologia->paciente->correo)
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Correo</label>
+                    <p class="text-lg font-semibold text-blue-600 break-all">{{ $citologia->paciente->correo }}</p>
+                </div>
+                @endif
+
+                @if($citologia->paciente->celular)
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Teléfono</label>
+                    <p class="text-lg font-semibold text-gray-900">{{ substr($citologia->paciente->celular, 0, 4) . '-' . substr($citologia->paciente->celular, 4, 4) }}</p>
+                </div>
+                @endif
             </div>
+            @else
+            <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                <p class="text-gray-500">Sin paciente asignado</p>
+            </div>
+            @endif
         </div>
 
-        <!-- Información del Remitente -->
+        <!-- Información del Doctor/Remitente -->
         <div class="bg-gradient-to-r from-indigo-50 via-white to-indigo-50 rounded-2xl shadow-xl p-6 mb-6 border border-indigo-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
             <h2 class="text-xl font-bold text-indigo-700 mb-4 border-b-2 border-indigo-200 pb-2">
-                👨‍⚕️ Remitente Responsable
+                Información del Doctor/Remitente
             </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            @if($citologia->doctor)
+            <div class="grid grid-cols-2 md:grid-cols-2 gap-8">
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-">Nombre del Doctor</label>
+                    <p class="text-lg font-bold text-gray-900">
+                        Dr. {{ $citologia->doctor->nombre }} {{ $citologia->doctor->apellido }}
+                    </p>
+                </div>
+
+                @if($citologia->doctor->correo)
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Correo</label>
+                    <p class="text-lg font-semibold text-blue-600 break-all">{{ $citologia->doctor->correo }}</p>
+                </div>
+                @endif
+
+                @if($citologia->doctor->celular)
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Celular</label>
+                    <p class="text-lg font-semibold text-gray-900">{{ substr($citologia->doctor->celular, 0, 4) . '-' . substr($citologia->doctor->celular, 4, 4) }}</p>
+                </div>
+                @endif
+            </div>
+            @elseif($citologia->remitente_especial)
+            <div class="grid grid-cols-2 md:grid-cols-2 gap-8">
                 <div class="bg-white p-4 rounded-lg shadow-md">
                     <label class="block text-sm font-semibold text-gray-600 mb-1">Nombre del Remitente</label>
                     <p class="text-lg font-bold text-gray-900">
-                        @if ($citologia->remitente_especial)
-                        <span class="text-orange-600"> {{ $citologia->remitente_especial }}</span>
-                        @else
-                        Dr. {{ $citologia->doctor->nombre.' '.$citologia->doctor->apellido }}
-                        @endif
+                        {{ $citologia->remitente_especial }}
                     </p>
                 </div>
-
+                @if($citologia->celular_remitente_especial)
                 <div class="bg-white p-4 rounded-lg shadow-md">
-                    <label class="block text-sm font-semibold text-gray-600 mb-1">Celular</label>
+                    <label class="block text-sm font-semibold text-gray-600 mb-1">Celular del Remitente</label>
                     <p class="text-lg font-semibold text-gray-900">
-                        📱 @if ($citologia->remitente_especial)
-                        {{ $citologia->celular_remitente_especial }}
-                        @else
-                        {{ $citologia->doctor->celular }}
-                        @endif
+                        {{ substr($citologia->celular_remitente_especial, 0, 4) . '-' . substr($citologia->celular_remitente_especial, 4, 4) }}
                     </p>
                 </div>
+                @endif
             </div>
+            @else
+            <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                <p class="text-gray-500">Sin remitente asignado</p>
+            </div>
+            @endif
         </div>
+
+
 
         <!-- Descripción de la Muestra -->
         <div class="bg-gradient-to-r from-yellow-50 via-white to-yellow-50 rounded-2xl shadow-xl p-6 mb-6 border border-yellow-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
             <h2 class="text-xl font-bold text-yellow-700 mb-4 border-b-2 border-yellow-200 pb-2">
-                📝 Descripción de la Muestra
+                Descripción de la Muestra
             </h2>
             <div class="mb-4">
                 <label class="block text-sm font-semibold text-gray-600 mb-2">Diagnóstico Clínico</label>
@@ -169,8 +201,6 @@
 
 
 
-
-
             @if($citologia->diagnostico)
             <div>
                 <label class="block text-sm font-semibold text-gray-600 mb-2">Diagnóstico Final</label>
@@ -181,24 +211,10 @@
             @endif
         </div>
 
-        <!-- Información Adicional -->
-        @if($citologia->lista_citologia)
-        <div class="bg-gradient-to-r from-purple-50 via-white to-purple-50 rounded-2xl shadow-xl p-6 mb-6 border border-purple-200 transition-transform hover:-translate-y-1 hover:shadow-2xl">
-            <h2 class="text-xl font-bold text-purple-700 mb-4 border-b-2 border-purple-200 pb-2">
-                📋 Plantilla Utilizada
-            </h2>
 
-            <div class="bg-white p-4 rounded-lg shadow-md">
-                <p class="text-lg">
-                    <span class="font-semibold text-gray-700">Código:</span>
-                    <span class="text-purple-600 font-bold ml-2">{{ $citologia->lista_citologia->codigo }}</span>
-                </p>
-            </div>
-        </div>
-        @endif
 
         <!-- Metadatos -->
-        <div class="bg-gradient-to-r from-gray-50 via-white to-gray-50 rounded-2xl shadow-xl p-6 border border-gray-200">
+        <div class="bg-gradient-to-r from-gray-50 via-white to-gray-50 rounded-2xl shadow-xl p-6 mb-8 border border-gray-200">
             <h2 class="text-xl font-bold text-gray-700 mb-4 border-b-2 border-gray-200 pb-2">
                 Información del Sistema
             </h2>
@@ -218,6 +234,24 @@
                     </p>
                 </div>
             </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-end gap-3 shadow-lg rounded-lg mt-8">
+            <a href="{{ route('citologias.personas.index') }}"
+                class="px-6 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-semibold transition-transform hover:scale-105">
+                Volver
+            </a>
+            <a href="{{ route('citologias.personas.imprimir', $citologia->ncitologia) }}"
+                class="px-6 py-2 bg-orange-700 hover:bg-orange-800 text-white rounded-lg font-semibold transition-transform hover:scale-105" target="_blank">
+                Imprimir
+            </a>
+            @if (auth()->user()->role === 'admin')
+            <a href="{{ route('citologias.personas.edit', $citologia->ncitologia) }}"
+                class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105">
+                Editar Citología
+            </a>
+            @endif
         </div>
     </div>
 </x-app-layout>

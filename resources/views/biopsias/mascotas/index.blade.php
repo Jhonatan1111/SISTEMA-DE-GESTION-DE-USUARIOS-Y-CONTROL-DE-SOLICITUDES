@@ -234,137 +234,138 @@
 
         <!-- Tabla -->
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Número</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mascota</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doctor</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diagnóstico</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    @forelse($biopsias as $biopsia)
-                    <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="text-sm font-bold text-blue-600">{{ $biopsia->nbiopsia }}</span>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            @if($biopsia->tipo === 'normal')
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                <img src="/image/normal.png" alt="Normal" class="w-4 h-4 mr-1">
-                                Normal
-                            </span>
-                            @else
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                                <img src="/image/lavado.png" alt="Líquida" class="w-4 h-4 mr-1">
-                                Líquida
-                            </span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ \Carbon\Carbon::parse($biopsia->fecha_recibida)->format('d/m/Y') }}
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="text-sm">
-                                <div class="font-medium text-gray-900">
-                                    {{ $biopsia->mascota->nombre ?? 'N/A' }}
-                                </div>
-                                <div class="text-gray-500">
-                                    {{ $biopsia->mascota->especie ?? 'N/A' }} - {{ $biopsia->mascota->raza ?? 'N/A' }}
-                                </div>
-                                <div class="text-gray-400 text-xs">
-                                    Dueño: {{ $biopsia->mascota->propietario ?? 'N/A' }}
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            <div class="font-medium">Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}</div>
-                            <div class="text-gray-500">{{ $biopsia->doctor->jvpm ?? 'J.V.P.M N/A' }}</div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900">
-                            <div class="max-w-[150px] truncate" title="{{ $biopsia->diagnostico_clinico }}">
-                                {{ $biopsia->diagnostico_clinico ?? 'Sin dirección' }}
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            @if($biopsia->estado)
-                            <div class="flex items-center">
-                                <div class="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div>
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                                    Activa
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Número</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mascota</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doctor</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Diagnóstico</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($biopsias as $biopsia)
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-sm font-bold text-blue-600">{{ $biopsia->nbiopsia }}</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($biopsia->tipo === 'normal')
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    <img src="/image/normal.png" alt="Normal" class="w-4 h-4 mr-1">
+                                    Normal
                                 </span>
-                            </div>
-                            @else
-                            <div class="flex items-center">
-                                <div class="h-2.5 w-2.5 rounded-full bg-red-400 mr-2"></div>
-                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                                    Inactiva
+                                @else
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                    <img src="/image/lavado.png" alt="Líquida" class="w-4 h-4 mr-1">
+                                    Líquida
                                 </span>
-                            </div>
-                            @endif
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div class="flex items-center space-x-2">
-
-                                <a href="{{ route('biopsias.mascotas.show', $biopsia->nbiopsia) }}"
-                                    class="text-purple-600 hover:text-purple-900">
-                                    Ver
-                                </a>
-
-                                <!-- Toggle Estado -->
-                                @if (auth()->user()->role === 'admin')
-                                <form action="{{ route('biopsias.mascotas.toggle-estado', $biopsia->nbiopsia) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit"
-                                        onclick="return confirm('¿Estás seguro de cambiar el estado de esta biopsia?')"
-                                        class="font-semibold transition-colors {{ $biopsia->estado ? 'text-yellow-600 hover:text-yellow-700' : 'text-green-600 hover:text-green-700' }}">
-                                        {{ $biopsia->estado ? 'Desactivar' : 'Activar' }}
-                                    </button>
-                                </form>
                                 @endif
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="8" class="px-6 py-4 text-center text-gray-500">
-                            <div class="py-8">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H4a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z" />
-                                </svg>
-                                <h3 class="mt-2 text-sm font-medium text-gray-900">No hay biopsias de mascotas registradas</h3>
-                                <p class="mt-1 text-sm text-gray-500">Comienza creando tu primera biopsia para mascotas.</p>
-                                <div class="mt-6">
-                                    <a href="{{ route('biopsias.mascotas.create') }}"
-                                        class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                                        </svg>
-                                        Nueva Biopsia
-                                    </a>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ \Carbon\Carbon::parse($biopsia->fecha_recibida)->format('d/m/Y') }}
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm">
+                                    <div class="font-medium text-gray-900">
+                                        {{ $biopsia->mascota->nombre ?? 'N/A' }}
+                                    </div>
+                                    <div class="text-gray-500">
+                                        {{ $biopsia->mascota->especie ?? 'N/A' }} - {{ $biopsia->mascota->raza ?? 'N/A' }}
+                                    </div>
+                                    <div class="text-gray-400 text-xs">
+                                        Dueño: {{ $biopsia->mascota->propietario ?? 'N/A' }}
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                <div class="font-medium">Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}</div>
+                                <div class="text-gray-500">{{ $biopsia->doctor->jvpm ?? 'J.V.P.M N/A' }}</div>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-900">
+                                <div class="max-w-[150px] truncate" title="{{ $biopsia->diagnostico_clinico }}">
+                                    {{ $biopsia->diagnostico_clinico ?? 'Sin dirección' }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($biopsia->estado)
+                                <div class="flex items-center">
+                                    <div class="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div>
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                        Activa
+                                    </span>
+                                </div>
+                                @else
+                                <div class="flex items-center">
+                                    <div class="h-2.5 w-2.5 rounded-full bg-red-400 mr-2"></div>
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                        Inactiva
+                                    </span>
+                                </div>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex items-center space-x-2">
+
+                                    <a href="{{ route('biopsias.mascotas.show', $biopsia->nbiopsia) }}"
+                                        class="text-purple-600 hover:text-purple-900">
+                                        Ver
+                                    </a>
+
+                                    <!-- Toggle Estado -->
+                                    @if (auth()->user()->role === 'admin')
+                                    <form action="{{ route('biopsias.mascotas.toggle-estado', $biopsia->nbiopsia) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                            onclick="return confirm('¿Estás seguro de cambiar el estado de esta biopsia?')"
+                                            class="font-semibold transition-colors {{ $biopsia->estado ? 'text-yellow-600 hover:text-yellow-700' : 'text-green-600 hover:text-green-700' }}">
+                                            {{ $biopsia->estado ? 'Desactivar' : 'Activar' }}
+                                        </button>
+                                    </form>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="8" class="px-6 py-4 text-center text-gray-500">
+                                <div class="py-8">
+                                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H4a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z" />
+                                    </svg>
+                                    <h3 class="mt-2 text-sm font-medium text-gray-900">No hay biopsias de mascotas registradas</h3>
+                                    <p class="mt-1 text-sm text-gray-500">Comienza creando tu primera biopsia para mascotas.</p>
+                                    <div class="mt-6">
+                                        <a href="{{ route('biopsias.mascotas.create') }}"
+                                            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                            </svg>
+                                            Nueva Biopsia
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paginación -->
+            @if($biopsias->hasPages())
+            <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+                {{ $biopsias->links() }}
+            </div>
+            @endif
         </div>
 
-        <!-- Paginación -->
-        @if($biopsias->hasPages())
-        <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-            {{ $biopsias->links() }}
-        </div>
-        @endif
-    </div>
-  
 
 
 </x-app-layout>
