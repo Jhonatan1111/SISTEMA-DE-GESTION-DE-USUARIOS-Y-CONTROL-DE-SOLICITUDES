@@ -311,8 +311,10 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 @if ($citologia->remitente_especial)
                                 <div class="font-medium">{{ $citologia->remitente_especial }}</div>
-                                @else
+                                @elseif ($citologia->doctor)
                                 <div class="font-medium">Dr. {{ $citologia->doctor->nombre }} {{ $citologia->doctor->apellido }}</div>
+                                @else
+                                <div class="font-medium text-gray-500">Sin doctor asignado</div>
                                 @endif
                             </td>
 

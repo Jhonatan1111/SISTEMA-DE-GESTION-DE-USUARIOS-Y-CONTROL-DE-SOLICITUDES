@@ -293,11 +293,14 @@
                                 </div>
                                 <div class="text-gray-500 text-xs">DUI: {{ $citologia->paciente->dui ?? 'N/A' }}</div>
                             </td>
+                            <!-- Doctor -->
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 @if ($citologia->remitente_especial)
-                                {{ $citologia->remitente_especial }}
+                                <div class="font-medium">{{ $citologia->remitente_especial }}</div>
+                                @elseif ($citologia->doctor)
+                                <div class="font-medium">Dr. {{ $citologia->doctor->nombre }} {{ $citologia->doctor->apellido }}</div>
                                 @else
-                                Dr. {{ $citologia->doctor->nombre }} {{ $citologia->doctor->apellido }}
+                                <div class="font-medium text-gray-500">Sin doctor asignado</div>
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-900">
