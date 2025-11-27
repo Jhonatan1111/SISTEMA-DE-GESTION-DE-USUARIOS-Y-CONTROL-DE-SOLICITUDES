@@ -19,7 +19,7 @@
                             <img src="/image/normal.png" alt="Bnormal" class="mx-auto w-12 h-12">
                         </span>
                         <h3 class="text-lg font-bold text-blue-900 mb-1">Normal</h3>
-                        <p class="text-sm text-blue-600">BPN000X</p>
+                        <p id="preview_normal" class="text-sm text-blue-600">Cargando…</p>
                     </div>
                 </button>
 
@@ -32,7 +32,7 @@
                             <img src="/image/lavado.png" alt="Lavado" class="mx-auto w-12 h-12">
                         </span>
                         <h3 class="text-lg font-bold text-purple-900 mb-1">Lavado</h3>
-                        <p class="text-sm text-purple-600">BPL000X</p>
+                        <p id="preview_liquida" class="text-sm text-purple-600">Cargando…</p>
                     </div>
                 </button>
             </div>
@@ -331,6 +331,28 @@
 
     <!-- script modal plantilla -->
     <script>
+        // Función para obtener y mostrar el número correlativo
+        async function setPreview(id, tipo) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            try {
+                const res = await fetch(`/biopsias/personas/obtener-numero-correlativo?tipo=${tipo}`);
+                const data = await res.json();
+                if (data && data.success && data.numero) {
+                    el.textContent = data.numero;
+                } else {
+                    el.textContent = 'No disponible';
+                }
+            } catch (_) {
+                el.textContent = 'Error';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setPreview('preview_normal', 'normal');
+            setPreview('preview_liquida', 'liquida');
+            setPreview('preview_especial', 'especial');
+        });
         // Función para seleccionar tipo y obtener número
         async function seleccionarTipo(tipo) {
             try {

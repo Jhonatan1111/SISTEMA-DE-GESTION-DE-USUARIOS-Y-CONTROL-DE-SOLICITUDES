@@ -4,7 +4,6 @@
         <div class="bg-white rounded-lg shadow-2xl p-8 max-w-xl w-full mx-4">
             <h2 class="text-2xl font-bold text-gray-900 mb-4 text-center">¿Qué tipo de citología desea crear?</h2>
             <p class="text-gray-600 text-center mb-6">Seleccione el tipo para generar el número correlativo correspondiente</p>
-
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <!-- ciotologia normal -->
                 <button type="button" onclick="seleccionarTipo('normal')" class="p-6 bg-gradient-to-br from-blue-100 to-blue-50 hover:from-blue-200 hover:to-blue-100 border-2 border-blue-300 hover:border-blue-400 rounded-lg transition-all transform hover:scale-105">
@@ -13,7 +12,7 @@
                             <img src="/image/normal.png" alt="Bnormal" class="mx-auto w-12 h-12">
                         </span>
                         <h3 class="text-lg font-bold text-blue-900 mb-1">Normal</h3>
-                        <p class="text-sm text-blue-600">CN2025XXXXX</p>
+                        <p id="preview_normal" class="text-sm text-blue-600">Cargando…</p>
                     </div>
                 </button>
                 <!-- citologia liquida -->
@@ -23,7 +22,7 @@
                             <img src="/image/liquida.png" alt="Bliquida" class="mx-auto w-12 h-12">
                         </span>
                         <h3 class="text-lg font-bold text-purple-900 mb-1">Líquida</h3>
-                        <p class="text-sm text-purple-600">CL2025XXXXX</p>
+                        <p id="preview_liquida" class="text-sm text-purple-600">Cargando…</p>
                     </div>
                 </button>
                 <!-- citologia especial -->
@@ -33,7 +32,7 @@
                             <img src="/image/especial.png" alt="Bespecial" class="mx-auto w-12 h-12">
                         </span>
                         <h3 class="text-lg font-bold text-green-900 mb-1">Especial</h3>
-                        <p class="text-sm text-green-600">CE2025XXXXX</p>
+                        <p id="preview_especial" class="text-sm text-green-600">Cargando…</p>
                     </div>
                 </button>
             </div>
@@ -344,6 +343,27 @@
 
     <!-- script modal plantilla -->
     <script>
+        async function setPreview(id, tipo) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            try {
+                const res = await fetch(`/citologias/personas/obtener-numero-correlativo?tipo=${tipo}`);
+                const data = await res.json();
+                if (data && data.success && data.numero) {
+                    el.textContent = data.numero;
+                } else {
+                    el.textContent = 'No disponible';
+                }
+            } catch (_) {
+                el.textContent = 'Error';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setPreview('preview_normal', 'normal');
+            setPreview('preview_liquida', 'liquida');
+            setPreview('preview_especial', 'especial');
+        });
         // Función para seleccionar tipo y obtener número
         async function seleccionarTipo(tipo) {
             try {
