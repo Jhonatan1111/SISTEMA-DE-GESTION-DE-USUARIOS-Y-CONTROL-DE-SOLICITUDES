@@ -472,7 +472,8 @@
                                 nuevaDesc;
                         }
 
-                        if (document.getElementById('analisis-content').classList.contains('hidden')) {
+                        const analisis = document.getElementById('analisis-content');
+                        if (analisis && analisis.classList.contains('hidden')) {
                             toggleAnalisis();
                         }
                     } else {
