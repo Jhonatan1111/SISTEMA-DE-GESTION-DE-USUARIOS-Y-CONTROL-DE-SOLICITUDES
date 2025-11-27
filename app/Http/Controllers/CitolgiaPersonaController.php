@@ -251,13 +251,13 @@ class CitolgiaPersonaController extends Controller
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'paciente_id' => 'required|exists:pacientes,id',
-            'tipo' => 'required|in:normal,liquida'
+            'tipo' => 'required|in:normal,liquida,especial'
         ];
 
-        // Si es remitente especial, requiere remitente_especial en lugar de doctor_id
-        if ($request->doctor_id === 'especial') {
+        $usaRemitenteEspecial = $request->doctor_id === 'especial' || !empty($request->remitente_especial);
+        if ($usaRemitenteEspecial) {
             $rules['remitente_especial'] = 'required|string|max:255';
-            $rules['celular_remitente_especial'] = 'required|digits:8';
+            $rules['celular_remitente_especial'] = 'nullable|digits:8';
         } else {
             $rules['doctor_id'] = 'required|exists:doctores,id';
         }
@@ -286,7 +286,7 @@ class CitolgiaPersonaController extends Controller
         ];
 
         // Manejar doctor_id y remitente_especial según el caso
-        if ($request->doctor_id === 'especial') {
+        if ($usaRemitenteEspecial) {
             $updateData['doctor_id'] = null;
             $updateData['remitente_especial'] = $request->remitente_especial;
             $updateData['celular_remitente_especial'] = $request->celular_remitente_especial;

@@ -114,7 +114,7 @@
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Buscar por Código</label>
                             <div class="flex gap-2">
-                                <input type="text" id="buscar_codigo" placeholder="Ej: L001"
+                                <input type="text" id="buscar_codigo" placeholder="Ej: LB001"
                                     class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500 uppercase transition-all">
                                 <button type="button" id="btn_buscar_codigo"
                                     class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-semibold transition-transform hover:scale-105">
@@ -190,10 +190,7 @@
                     class="px-6 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-semibold transition-transform hover:scale-105">
                     Cancelar
                 </a>
-                <button type="reset"
-                    class="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold transition-transform hover:scale-105">
-                    Limpiar
-                </button>
+                
                 <button type="submit"
                     class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105 flex items-center gap-2">
                     Guardar Cambios
