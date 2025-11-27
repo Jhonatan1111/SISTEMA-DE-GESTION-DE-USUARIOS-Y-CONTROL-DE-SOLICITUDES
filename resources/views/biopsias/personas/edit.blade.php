@@ -114,7 +114,7 @@
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Buscar por Código</label>
                             <div class="flex gap-2">
-                                <input type="text" id="buscar_codigo" placeholder="Ej: L001"
+                                <input type="text" id="buscar_codigo" placeholder="Ej: LB001"
                                     class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500 uppercase transition-all">
                                 <button type="button" id="btn_buscar_codigo"
                                     class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-semibold transition-transform hover:scale-105">
@@ -190,10 +190,7 @@
                     class="px-6 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-semibold transition-transform hover:scale-105">
                     Cancelar
                 </a>
-                <button type="reset"
-                    class="px-6 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-semibold transition-transform hover:scale-105">
-                    Limpiar
-                </button>
+
                 <button type="submit"
                     class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105 flex items-center gap-2">
                     Guardar Cambios
@@ -285,6 +282,7 @@
         function toggleAnalisis() {
             const content = document.getElementById('analisis-content');
             const icon = document.getElementById('icon-analisis');
+            if (!content || !icon) return;
             content.classList.toggle('hidden');
             icon.classList.toggle('rotate-180');
         }
@@ -296,20 +294,51 @@
                 return;
             }
 
-            fetch(`/biopsias-personas/buscar-lista-codigo/${codigo}`)
-                .then(res => res.json())
+            fetch(`{{ url('/biopsias-personas/buscar-lista-codigo') }}/${encodeURIComponent(codigo)}`)
+                .then(async (response) => {
+                    if (!response.ok) {
+                        const text = await response.text();
+                        throw new Error(text || `HTTP ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(result => {
                     if (result.success) {
                         const data = result.data;
-                        document.getElementById('diagnostico').value = data.diagnostico || '';
-                        document.getElementById('descripcion').value = data.descripcion || '';
-                        document.getElementById('microscopico').value = data.microscopico || '';
-                        document.getElementById('macroscopico').value = data.macroscopico || '';
                         document.getElementById('lista_id').value = data.id;
-                        if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
+                        const selected = document.getElementById('selected_template');
+                        if (selected) selected.value = `${data.codigo} - ${data.descripcion}`;
+
+                        const diagEl = document.getElementById('diagnostico');
+                        const diagActual = (diagEl?.value || '').trim();
+                        const diagNuevo = (data.diagnostico || '').trim();
+                        if (diagEl && diagNuevo) {
+                            diagEl.value = diagActual ? `${diagActual} ${diagNuevo}` : diagNuevo;
+                        }
+
+                        const microEl = document.getElementById('microscopico');
+                        const microActual = (microEl?.value || '').trim();
+                        const microNuevo = (data.microscopico || '').trim();
+                        if (microEl && microNuevo) {
+                            microEl.value = microActual ? `${microActual} ${microNuevo}` : microNuevo;
+                        }
+
+                        const macroEl = document.getElementById('macroscopico');
+                        const macroActual = (macroEl?.value || '').trim();
+                        const macroNuevo = (data.macroscopico || '').trim();
+                        if (macroEl && macroNuevo) {
+                            macroEl.value = macroActual ? `${macroActual} ${macroNuevo}` : macroNuevo;
+                        }
+
+                        const analisis = document.getElementById('analisis-content');
+                        if (analisis && analisis.classList.contains('hidden')) toggleAnalisis();
                     } else {
-                        alert(`Código "${codigo}" no encontrado`);
+                        alert('Código no encontrado');
                     }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al buscar la plantilla');
                 });
         });
 
@@ -382,7 +411,8 @@
             }
 
             closeTemplateModal();
-            if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
+            const analisis = document.getElementById('analisis-content');
+            if (analisis && analisis.classList.contains('hidden')) toggleAnalisis();
         }
 
         // Función para limpiar la selección

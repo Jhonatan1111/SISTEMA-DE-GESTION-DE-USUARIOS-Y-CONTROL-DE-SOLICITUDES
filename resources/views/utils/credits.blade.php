@@ -82,7 +82,7 @@
                 <p class="text-gray-600 p-6">Manuales del sistema</p>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 p-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-8">
                 <a href="{{ url('/utils/manuales/usuario') }}" class="group" target="_blank">
                     <div class="bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 overflow-hidden h-full">
                         <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-8 py-10 flex justify-center">

@@ -17,9 +17,11 @@ class BiopsiaPacienteController extends Controller
     {
         $query = Biopsia::with(['paciente', 'doctor'])
             ->whereNotNull('paciente_id')
-            ->whereNull('mascota_id');
+            ->whereNull('mascota_id')
+            ->orderByDesc('updated_at')
+            ->orderByDesc('created_at');
 
-        // Filtro de búsqueda
+        // Filtro de búsqueda general
         if ($request->filled('buscar')) {
             $buscar = $request->buscar;
             $query->where(function ($q) use ($buscar) {

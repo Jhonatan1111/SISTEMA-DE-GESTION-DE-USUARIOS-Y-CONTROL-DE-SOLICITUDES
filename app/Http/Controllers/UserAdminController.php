@@ -14,7 +14,8 @@ class UserAdminController extends Controller
     {
         $q = trim($request->input('q', ''));
 
-        $query = User::query();
+        $query = User::orderByDesc('updated_at')->orderByDesc('created_at');
+
 
         if ($q !== '') {
             $term = "%{$q}%";

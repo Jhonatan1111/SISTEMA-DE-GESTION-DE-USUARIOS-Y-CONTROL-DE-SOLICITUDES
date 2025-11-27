@@ -113,7 +113,10 @@ Route::middleware('auth')->group(function () {
 
     // CITOLOGÍAS 
     Route::get('citologias', [CitolgiaController::class, 'index'])->name('citologias.index');
+    Route::get('citologias/exportar-pdf', [CitolgiaController::class, 'exportarPdf'])->name('citologias.exportar-pdf');
     Route::get('citologias/personas', [CitolgiaPersonaController::class, 'index'])->name('citologias.personas.index');
+    // Exportaciones deben declararse ANTES de las rutas con {ncitologia} para evitar colisiones
+    Route::get('citologias/personas/exportar-pdf', [CitolgiaPersonaController::class, 'exportarPdf'])->name('citologias.personas.exportar-pdf');
     Route::get('citologias/personas/create', [CitolgiaPersonaController::class, 'create'])->name('citologias.personas.create');
     Route::post('citologias/personas', [CitolgiaPersonaController::class, 'store'])->name('citologias.personas.store');
     Route::get('citologias/personas/obtener-numero-correlativo', [CitolgiaPersonaController::class, 'obtenerNumeroCorrelativo'])->name('citologias.personas.obtener-numero-correlativo');
@@ -128,13 +131,18 @@ Route::middleware('auth')->group(function () {
     Route::get('citologias/personas/obtener-paciente/{id}', [CitolgiaPersonaController::class, 'obtenerPaciente'])->name('citologias.personas.obtener-paciente');
     Route::get('citologias/personas/buscar-lista/{id}', [CitolgiaPersonaController::class, 'buscarLista'])->name('citologias.personas.buscar-lista');
     Route::get('citologias/personas/buscar-lista-codigo/{codigo}', [CitolgiaPersonaController::class, 'buscarListaPorCodigo'])->name('citologias.personas.buscar-lista-codigo');
-    Route::get('citologias/personas/exportar-csv', [CitolgiaPersonaController::class, 'exportarCsv'])->name('citologias.personas.exportar-csv');
     Route::get('citologias/personas/reporte-paciente/{pacienteId}', [CitolgiaPersonaController::class, 'reportePaciente'])->name('citologias.personas.reporte-paciente');
 
     // LISTAS DE BIOPSIAS
     Route::get('listas/biopsias', [ListaBiopsiaController::class, 'index'])->name('listas.biopsias.index');
     Route::get('listas/biopsias/create', [ListaBiopsiaController::class, 'create'])->name('listas.biopsias.create');
     Route::post('listas/biopsias', [ListaBiopsiaController::class, 'store'])->name('listas.biopsias.store');
+
+    // BUSCADOR DE LISTAS DE BIOPSIAS PARA PERSONAS (AJAX)
+    Route::get('/listas/biopsias/buscar-lista/{id}', [ListaBiopsiaController::class, 'buscarLista'])
+        ->name('listas.biopsias.personas.buscar-lista');
+    Route::get('/listas/biopsias/buscar-lista-codigo/{codigo}', [ListaBiopsiaController::class, 'buscarListaPorCodigo'])
+        ->name('listas.biopsias.personas.buscar-lista-codigo');
 
     // LISTAS DE CITOLOGÍAS
     Route::get('listas/citologias', [ListaCitologiaController::class, 'index'])->name('listas.citologias.index');
@@ -194,6 +202,12 @@ Route::middleware('auth')->group(function () {
     // Rutas de administración de usuarios - solo para administradores
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::resource('usuarios', UserAdminController::class);
+        Route::get('backups', [UtilController::class, 'backupsIndex'])->name('backups.index');
+        Route::post('backups', [UtilController::class, 'backupsStore'])->name('backups.store');
+        Route::post('backups/datos', [UtilController::class, 'backupsStoreDatos'])->name('backups.store.datos');
+        Route::post('backups/restaurar', [UtilController::class, 'backupsRestore'])->name('backups.restore');
+        Route::get('backups/descargar/{filename}', [UtilController::class, 'backupsDownload'])->where('filename', '.*')->name('backups.download');
+        Route::delete('backups/{filename}', [UtilController::class, 'backupsDestroy'])->where('filename', '.*')->name('backups.destroy');
     });
 });
 

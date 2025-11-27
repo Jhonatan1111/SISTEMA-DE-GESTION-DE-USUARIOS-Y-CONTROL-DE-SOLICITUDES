@@ -203,10 +203,13 @@
         }
 
         .seal-box {
-            border: 2px solid #3FA9F5;
-            padding: 10px 20px;
+            /* border: 2px solid #3FA9F5; */
+            padding: 10px 30px;
+            margin-top: -10px;
             text-align: center;
             display: inline-block;
+            page-break-inside: avoid;
+            break-inside: avoid;
         }
 
         .seal-name {
@@ -373,7 +376,8 @@
             <span class="fecha-value">{{ \Carbon\Carbon::parse($citologia->created_at)->format('d/m/Y') }}</span>
         </div>
         <div class="signature-area">
-            <div class="firma-manuscrita">M. E. Martínez</div>
+            <img src="{{ asset('image/firma-doctora.png') }}" alt="Firma de la doctora" style="height: 60px; width: auto; margin-bottom: 5px;">
+
             <div class="signature-line"></div>
             <div class="firma-nombre">Dra. Marta Evelyn Echeverría Martínez</div>
             <div class="firma-subtitle">DOCTORA EN MEDICINA</div>
@@ -385,9 +389,7 @@
     <!-- Sello de la doctora -->
     <div class="footer-seal">
         <div class="seal-box">
-            <div class="seal-name">Dra. Marta Evelyn Echeverría Martínez</div>
-            <div class="seal-info">DOCTORA EN MEDICINA</div>
-            <div class="seal-id">J.V.P.M. No. 4448</div>
+            <img src="{{ asset('image/sello-doctora.png') }}" alt="Sello Dra. Marta Evelyn Echeverría Martínez" style="max-width: 200px; height: 100px; width: auto;">
         </div>
     </div>
 

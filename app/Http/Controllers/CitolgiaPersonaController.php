@@ -6,6 +6,7 @@ use App\Models\Citolgia;
 use App\Models\Paciente;
 use App\Models\Doctor;
 use App\Models\ListaCitologia;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 use Illuminate\Http\Request;
 
@@ -14,19 +15,23 @@ class CitolgiaPersonaController extends Controller
     // MOSTRAR CITOLOGÍAS DE PERSONAS
     public function index(Request $request)
     {
-        $query = Citolgia::with(['paciente', 'doctor', 'lista_citologia']);
+        $query = Citolgia::with(['paciente', 'doctor', 'lista_citologia'])
+            ->orderByDesc('updated_at')
+            ->orderByDesc('created_at');
 
-        //Filtro por búsqueda (nombre paciente o doctor)
+        //Filtro por búsqueda (número, diagnóstico, paciente o doctor)
         if ($request->filled('buscar')) {
             $search = $request->buscar;
             $query->where(function ($q) use ($search) {
-                $q->whereHas('paciente', function ($p) use ($search) {
-                    $p->where('nombre', 'like', "%{$search}%")
-                    ->orWhere('apellido', 'like', "%{$search}%");
-                })->orWhereHas('doctor', function ($d) use ($search) {
-                    $d->where('nombre', 'like', "%{$search}%")
-                    ->orWhere('apellido', 'like', "%{$search}%");
-                });
+                $q->where('ncitologia', 'like', "%{$search}%")
+                    ->orWhere('diagnostico_clinico', 'like', "%{$search}%")
+                    ->orWhereHas('paciente', function ($p) use ($search) {
+                        $p->where('nombre', 'like', "%{$search}%")
+                            ->orWhere('apellido', 'like', "%{$search}%");
+                    })->orWhereHas('doctor', function ($d) use ($search) {
+                        $d->where('nombre', 'like', "%{$search}%")
+                            ->orWhere('apellido', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -40,12 +45,85 @@ class CitolgiaPersonaController extends Controller
             $query->where('estado', $request->estado);
         }
 
+        // Filtro por tipo
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
+        }
+
+        // Filtros por rango de fechas
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate('fecha_recibida', '>=', $request->fecha_desde);
+        }
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate('fecha_recibida', '<=', $request->fecha_hasta);
+        }
+
         // Orden y paginación
-        $citologias = $query->orderBy('fecha_recibida', 'desc')
+        $citologias = $query->orderBy('created_at', 'desc')
             ->paginate(10)
             ->withQueryString();
 
-        return view('citologias.personas.index', compact('citologias'));
+        $estadisticas = [
+            'total' => Citolgia::personas()->count(),
+            'activas' => Citolgia::personas()->activas()->count(),
+            'inactivas' => Citolgia::personas()->where('estado', 0)->count(),
+            'este_mes' => Citolgia::personas()->whereDate('fecha_recibida', '>=', now()->startOfMonth())->count(),
+        ];
+
+        return view('citologias.personas.index', compact('citologias', 'estadisticas'));
+    }
+
+    public function exportarPdf(Request $request)
+    {
+        $query = Citolgia::with(['paciente', 'doctor'])->personas();
+
+        if ($request->filled('buscar')) {
+            $search = $request->buscar;
+            $query->where(function ($q) use ($search) {
+                $q->where('ncitologia', 'like', "%{$search}%")
+                    ->orWhere('diagnostico_clinico', 'like', "%{$search}%")
+                    ->orWhereHas('paciente', function ($p) use ($search) {
+                        $p->where('nombre', 'like', "%{$search}%")
+                            ->orWhere('apellido', 'like', "%{$search}%");
+                    })
+                    ->orWhereHas('doctor', function ($d) use ($search) {
+                        $d->where('nombre', 'like', "%{$search}%")
+                            ->orWhere('apellido', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if ($request->filled('doctor')) {
+            $query->where('doctor_id', $request->doctor);
+        }
+
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        if ($request->filled('tipo')) {
+            $query->where('tipo', $request->tipo);
+        }
+
+        if ($request->filled('fecha_desde')) {
+            $query->whereDate('fecha_recibida', '>=', $request->fecha_desde);
+        }
+        if ($request->filled('fecha_hasta')) {
+            $query->whereDate('fecha_recibida', '<=', $request->fecha_hasta);
+        }
+
+        $citologias = $query->orderBy('fecha_recibida', 'desc')->get();
+
+        $data = [
+            'citologias' => $citologias,
+            'fecha' => now()->format('d/m/Y'),
+            'total' => $citologias->count(),
+            'tipo' => 'Personas'
+        ];
+
+        $pdf = Pdf::loadView('citologias.personas.pdf.reporte', $data);
+
+        return $pdf->download('reporte_citologias_personas_' . now()->format('Y-m-d') . '.pdf');
     }
 
     // Mostrar formulario para crear citología de paciente humano
@@ -74,7 +152,7 @@ class CitolgiaPersonaController extends Controller
         // Si es especial, requiere remitente_especial en lugar de doctor_id
         if ($request->tipo === 'especial') {
             $rules['remitente_especial'] = 'required|string|max:255';
-            $rules['celular_remitente_especial'] = 'required|digits:8';
+            $rules['celular_remitente_especial'] = 'nullable|digits:8';
         } else {
             $rules['doctor_id'] = 'required|exists:doctores,id';
         }
@@ -86,7 +164,6 @@ class CitolgiaPersonaController extends Controller
             'paciente_id.required' => 'Debe seleccionar un paciente',
             'tipo.required' => 'Debe seleccionar el tipo de citología',
             'remitente_especial.required' => 'Debe ingresar el remitente especial',
-            'celular_remitente_especial.required' => 'Debe ingresar el celular del remitente especial',
             'celular_remitente_especial.digits' => 'El celular debe tener exactamente 8 dígitos'
         ]);
 
@@ -176,13 +253,13 @@ class CitolgiaPersonaController extends Controller
             'diagnostico_clinico' => 'required|string',
             'fecha_recibida' => 'required|date|before_or_equal:today',
             'paciente_id' => 'required|exists:pacientes,id',
-            'tipo' => 'required|in:normal,liquida'
+            'tipo' => 'required|in:normal,liquida,especial'
         ];
 
-        // Si es remitente especial, requiere remitente_especial en lugar de doctor_id
-        if ($request->doctor_id === 'especial') {
+        $usaRemitenteEspecial = $request->doctor_id === 'especial' || !empty($request->remitente_especial);
+        if ($usaRemitenteEspecial) {
             $rules['remitente_especial'] = 'required|string|max:255';
-            $rules['celular_remitente_especial'] = 'required|digits:8';
+            $rules['celular_remitente_especial'] = 'nullable|digits:8';
         } else {
             $rules['doctor_id'] = 'required|exists:doctores,id';
         }
@@ -211,7 +288,7 @@ class CitolgiaPersonaController extends Controller
         ];
 
         // Manejar doctor_id y remitente_especial según el caso
-        if ($request->doctor_id === 'especial') {
+        if ($usaRemitenteEspecial) {
             $updateData['doctor_id'] = null;
             $updateData['remitente_especial'] = $request->remitente_especial;
             $updateData['celular_remitente_especial'] = $request->celular_remitente_especial;
@@ -386,68 +463,6 @@ class CitolgiaPersonaController extends Controller
         return view('citologias.pacientes.reporte-pdf', compact('paciente', 'citologias'));
     }
 
-    // Exportar lista de citologías de pacientes a CSV
-    public function exportarCsv(Request $request)
-    {
-        $query = Citolgia::with(['paciente', 'doctor'])->personas();
-
-        // Aplicar filtros si vienen en la request
-        if ($request->fecha_desde) {
-            $query->where('fecha_recibida', '>=', $request->fecha_desde);
-        }
-        if ($request->fecha_hasta) {
-            $query->where('fecha_recibida', '<=', $request->fecha_hasta);
-        }
-        if ($request->doctor_id) {
-            $query->where('doctor_id', $request->doctor_id);
-        }
-
-        $citologias = $query->orderBy('fecha_recibida', 'desc')->get();
-
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="citologias_pacientes_' . now()->format('Y-m-d') . '.csv"',
-        ];
-
-        $callback = function () use ($citologias) {
-            $file = fopen('php://output', 'w');
-
-            // Encabezados CSV
-            fputcsv($file, [
-                'Número Citología',
-                'Fecha Recibida',
-                'Paciente',
-                'DUI',
-                'Edad',
-                'Sexo',
-                'Doctor',
-                'Diagnóstico Clínico',
-                'Estado',
-                'Fecha Registro'
-            ]);
-
-            // Datos
-            foreach ($citologias as $citologia) {
-                fputcsv($file, [
-                    $citologia->ncitologia,
-                    $citologia->fecha_recibida->format('d/m/Y'),
-                    $citologia->paciente->nombre . ' ' . $citologia->paciente->apellido,
-                    $citologia->paciente->DUI,
-                    $citologia->paciente->edad,
-                    $citologia->paciente->sexo === 'M' ? 'Masculino' : 'Femenino',
-                    $citologia->doctor->nombre . ' ' . $citologia->doctor->apellido,
-                    substr($citologia->diagnostico_clinico, 0, 100) . '...',
-                    $citologia->estado ? 'Activa' : 'Archivada',
-                    $citologia->created_at->format('d/m/Y H:i')
-                ]);
-            }
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
-    }
-
     public function toggleEstado(Request $request, $ncitologia)
     {
         $citologia = Citolgia::where('ncitologia', $ncitologia)->firstOrFail();
@@ -494,12 +509,18 @@ class CitolgiaPersonaController extends Controller
     // Método AJAX para buscar por código
     public function buscarListaPorCodigo($codigo)
     {
-        $lista = ListaCitologia::where('codigo', $codigo)->first();
+        $codigoNormalizado = strtolower(trim($codigo));
+        $lista = ListaCitologia::whereRaw('LOWER(codigo) = ?', [$codigoNormalizado])->first();
 
         if ($lista) {
             return response()->json([
                 'success' => true,
-                'data' => $lista
+                'data' => [
+                    'id' => $lista->id,
+                    'codigo' => $lista->codigo,
+                    'descripcion' => $lista->descripcion,
+                    'diagnostico' => $lista->diagnostico,
+                ]
             ]);
         }
 

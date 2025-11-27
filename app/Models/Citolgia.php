@@ -99,29 +99,59 @@ class Citolgia extends Model
     // Generar número de citología según tipo
     public static function generarNumeroCitologia($tipo = 'normal')
     {
-        $año = now()->year;
+        return DB::transaction(function () use ($tipo) {
+            $prefijo = match ($tipo) {
+                'liquida' => 'CL',
+                'especial' => 'CE',
+                default => 'CN',
+            };
 
-        // Prefijo según tipo: C para normal, L para líquida, E para especial
-        $prefijo = match ($tipo) {
-            'liquida' => 'CL',
-            'especial' => 'CE',
-            default => 'CN',
-        };
+            $ultimo = static::where('ncitologia', 'like', "{$prefijo}%")
+                ->whereRaw('LENGTH(ncitologia) = ?', [strlen($prefijo) + 4])
+                ->lockForUpdate()
+                ->orderBy('ncitologia', 'desc')
+                ->first();
 
-        $ultimaCitologia = self::where('ncitologia', 'like', "{$prefijo}{$año}%")
-            ->lockForUpdate()
-            ->orderBy('ncitologia', 'desc')
-            ->first();
+            if ($ultimo) {
+                $ultimoNumero = (int) substr($ultimo->ncitologia, strlen($prefijo));
+                $nuevoNumero = $ultimoNumero + 1;
+            } else {
+                $nuevoNumero = 1;
+            }
 
-        if ($ultimaCitologia) {
-            $longitudPrefijo = 6; // CN2025 o CL2025 o CE2025
-            $ultimoCorrelativo = intval(substr($ultimaCitologia->ncitologia, $longitudPrefijo));
-            $nuevoNumero = $ultimoCorrelativo + 1;
-        } else {
-            $nuevoNumero = 1;
-        }
+            return sprintf("%s%04d", $prefijo, $nuevoNumero);
+        });
+    }
+    public static function generarNumeroBiopsia($tipoBiopsia)
+    {
+        return DB::transaction(function () use ($tipoBiopsia) {
+            // Determinar prefijo según el tipo
+            $prefijo = match ($tipoBiopsia) {
+                'persona-normal' => 'BPN',
+                'persona-liquida' => 'BPL',
+                'mascota-normal' => 'BMN',
+                'mascota-liquida' => 'BML',
+                default => 'BP' // Fallback
+            };
 
-        return sprintf("%s%s%05d", $prefijo, $año, $nuevoNumero);
+            // Bloquear para evitar duplicados
+            $ultimo = static::where('nbiopsia', 'like', "{$prefijo}%")
+                ->lockForUpdate()
+                ->orderBy('nbiopsia', 'desc')
+                ->first();
+
+            if ($ultimo) {
+                // Extraer el número completo después del prefijo
+                $ultimoNumero = (int)substr($ultimo->nbiopsia, strlen($prefijo));
+                $nuevoNumero = $ultimoNumero + 1;
+            } else {
+                // Primera biopsia del tipo
+                $nuevoNumero = 1;
+            }
+
+            // Formato: BPN0001 (4 dígitos con ceros a la izquierda)
+            return sprintf("%s%04d", $prefijo, $nuevoNumero);
+        });
     }
     public function scopeActivas($query)
     {
