@@ -138,6 +138,12 @@ Route::middleware('auth')->group(function () {
     Route::get('listas/biopsias/create', [ListaBiopsiaController::class, 'create'])->name('listas.biopsias.create');
     Route::post('listas/biopsias', [ListaBiopsiaController::class, 'store'])->name('listas.biopsias.store');
 
+    // BUSCADOR DE LISTAS DE BIOPSIAS PARA PERSONAS (AJAX)
+    Route::get('/listas/biopsias/buscar-lista/{id}', [ListaBiopsiaController::class, 'buscarLista'])
+        ->name('listas.biopsias.personas.buscar-lista');
+    Route::get('/listas/biopsias/buscar-lista-codigo/{codigo}', [ListaBiopsiaController::class, 'buscarListaPorCodigo'])
+        ->name('listas.biopsias.personas.buscar-lista-codigo');
+
     // LISTAS DE CITOLOGÍAS
     Route::get('listas/citologias', [ListaCitologiaController::class, 'index'])->name('listas.citologias.index');
     Route::get('listas/citologias/create', [ListaCitologiaController::class, 'create'])->name('listas.citologias.create');

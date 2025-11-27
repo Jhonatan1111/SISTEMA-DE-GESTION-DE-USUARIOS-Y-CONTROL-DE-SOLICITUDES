@@ -8,12 +8,23 @@ use Illuminate\Http\Request;
 class ListaCitologiaController extends Controller
 {
     // Listar citologías
-    public function index()
+    public function index(Request $request)
     {
-        // Obtener todas las citologías ordenadas por código
-        $listaCitologia = ListaCitologia::orderBy('codigo')
-            ->paginate(10);
-        // Pasar la lista de citologías a la vista
+        $q = trim($request->input('q', ''));
+
+        $query = ListaCitologia::query();
+
+        if ($q !== '') {
+            $term = "%{$q}%";
+            $query->where(function ($builder) use ($term) {
+                $builder->where('codigo', 'like', $term)
+                    ->orWhere('descripcion', 'like', $term)
+                    ->orWhere('diagnostico', 'like', $term);
+            });
+        }
+
+        $listaCitologia = $query->orderBy('codigo')->paginate(10)->withQueryString();
+
         return view('listas.citologias.index', compact('listaCitologia'));
     }
 

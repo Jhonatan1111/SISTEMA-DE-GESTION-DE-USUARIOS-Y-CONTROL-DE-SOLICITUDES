@@ -8,12 +8,23 @@ use Illuminate\Http\Request;
 class ListaBiopsiaController extends Controller
 {
     // Listar biopsias
-    public function index()
+    public function index(Request $request)
     {
-        // Obtener todas las biopsias ordenadas por código
-        $listaBiopsia = ListaBiopsia::orderBy('codigo')
-            ->paginate(10);
-        // Pasar la lista de biopsias a la vista
+        $q = trim($request->input('q', ''));
+
+        $query = ListaBiopsia::query();
+
+        if ($q !== '') {
+            $term = "%{$q}%";
+            $query->where(function ($builder) use ($term) {
+                $builder->where('codigo', 'like', $term)
+                    ->orWhere('descripcion', 'like', $term)
+                    ->orWhere('macroscopico', 'like', $term);
+            });
+        }
+
+        $listaBiopsia = $query->orderBy('codigo')->paginate(10)->withQueryString();
+
         return view('listas.biopsias.index', compact('listaBiopsia'));
     }
 
@@ -106,5 +117,30 @@ class ListaBiopsiaController extends Controller
         catch (\Exception $e) {
             return back()->with('error', 'Error al eliminar la lista: ' . $e->getMessage());
         }
+    }
+    public function buscarPacientes(Request $request)
+    {
+        $term = $request->get('q') ?? $request->get('term');
+
+        $pacientes = ListaBiopsia::where('nombre', 'like', "%{$term}%")
+            ->orWhere('apellido', 'like', "%{$term}%")
+            ->orWhere('dui', 'like', "%{$term}%")
+            ->select('id', 'nombre', 'apellido', 'dui', 'edad', 'sexo')
+            ->limit(10)
+            ->get()
+            ->map(function ($p) {
+                return [
+                    'id' => $p->id,
+                    'text' => $p->nombre . ' ' . $p->apellido . ' - ' . $p->dui . ' (' . $p->edad . ' años)',
+                    'nombre_completo' => $p->nombre . ' ' . $p->apellido,
+                    'dui' => $p->dui,
+                    'edad' => $p->edad,
+                    'sexo' => $p->sexo === 'M' ? 'Masculino' : 'Femenino'
+                ];
+            });
+
+        return response()->json([
+            'results' => $pacientes
+        ]);
     }
 }
