@@ -13,7 +13,8 @@ class MascotaController extends Controller
     {
         $q = trim($request->input('q', ''));
 
-        $query = Mascota::query();
+        $query = Mascota::orderByDesc('updated_at')->orderByDesc('created_at');
+
 
         if ($q !== '') {
             $term = "%{$q}%";

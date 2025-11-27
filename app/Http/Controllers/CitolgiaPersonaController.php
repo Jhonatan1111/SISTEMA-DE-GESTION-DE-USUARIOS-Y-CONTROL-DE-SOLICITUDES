@@ -15,7 +15,9 @@ class CitolgiaPersonaController extends Controller
     // MOSTRAR CITOLOGÍAS DE PERSONAS
     public function index(Request $request)
     {
-        $query = Citolgia::with(['paciente', 'doctor', 'lista_citologia']);
+        $query = Citolgia::with(['paciente', 'doctor', 'lista_citologia'])
+            ->orderByDesc('updated_at')
+            ->orderByDesc('created_at');
 
         //Filtro por búsqueda (número, diagnóstico, paciente o doctor)
         if ($request->filled('buscar')) {

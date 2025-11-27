@@ -232,6 +232,16 @@
             </div>
         </div>
 
+        <script>
+            function toggleFiltros() {
+                const content = document.getElementById('filtros-content');
+                const icon = document.getElementById('icon-filtros');
+                if (!content || !icon) return;
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            }
+        </script>
+
         <!-- Tabla -->
         <div class="bg-white shadow-md rounded-lg overflow-hidden">
             <div class="overflow-x-auto">

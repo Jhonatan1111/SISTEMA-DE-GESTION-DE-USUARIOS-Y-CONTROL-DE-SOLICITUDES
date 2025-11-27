@@ -12,7 +12,8 @@ class ListaBiopsiaController extends Controller
     {
         $q = trim($request->input('q', ''));
 
-        $query = ListaBiopsia::query();
+        $query = ListaBiopsia::orderByDesc('updated_at')->orderByDesc('created_at');
+
 
         if ($q !== '') {
             $term = "%{$q}%";

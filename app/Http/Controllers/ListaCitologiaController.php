@@ -12,7 +12,8 @@ class ListaCitologiaController extends Controller
     {
         $q = trim($request->input('q', ''));
 
-        $query = ListaCitologia::query();
+        $query = ListaCitologia::orderByDesc('updated_at')->orderByDesc('created_at');
+
 
         if ($q !== '') {
             $term = "%{$q}%";

@@ -14,7 +14,9 @@ class DoctorController extends Controller
     {
         $q = trim($request->input('q', ''));
 
-        $query = Doctor::query();
+        $query = Doctor::orderByDesc('updated_at')->orderByDesc('created_at');
+
+
 
         if ($q !== '') {
             $term = "%{$q}%";

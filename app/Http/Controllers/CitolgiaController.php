@@ -12,7 +12,8 @@ class CitolgiaController extends Controller
     public function index(Request $request)
     {
         $query = Citolgia::with(['paciente', 'mascota', 'doctor'])
-            ->orderBy('fecha_recibida', 'desc');
+            ->orderByDesc('updated_at')
+            ->orderByDesc('created_at');;
 
         if ($request->filled('buscar')) {
             $buscar = $request->buscar;
