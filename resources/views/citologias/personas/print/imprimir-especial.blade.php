@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Citología - Reporte</title>
+    <title>Citología - Immpresion</title>
     <style>
         * {
             margin: 0;
@@ -326,8 +326,6 @@
         <span class="info-value">
             @if($citologia->remitente_especial)
             {{ strtoupper($citologia->remitente_especial) }}
-            @else
-            {{ strtoupper('DR. ' . $citologia->doctor->nombre . ' ' . $citologia->doctor->apellido) }}
             @endif
         </span>
         <span style="margin-left: 60px;"></span>

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Citología - Reporte</title>
+    <title>Citología - Impresion</title>
     <style>
         * {
             margin: 0;
