@@ -1,67 +1,4 @@
 <x-app-layout>
-    <!-- Modal de Cambio de Tipo -->
-    <div id="modal-cambio-tipo" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-2xl p-8 max-w-2xl w-full mx-4">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4 text-center">
-                ¿Cambiar tipo de citología?
-            </h2>
-            <p class="text-gray-600 mb-2 text-center">
-                Al cambiar el tipo se generará un nuevo número correlativo
-            </p>
-            <p class="text-sm text-orange-600 mb-6 text-center font-semibold">
-                ⚠️ El número actual <span id="numero-actual"></span> será reemplazado
-            </p>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Opción Normal -->
-                <button type="button"
-                    onclick="cambiarTipoConfirmado('normal')"
-                    class="p-6 bg-gradient-to-br from-blue-100 to-blue-50 hover:from-blue-200 hover:to-blue-100 border-2 border-blue-300 hover:border-blue-400 rounded-lg transition-all transform hover:scale-105">
-                    <div class="text-center">
-                        <span class="text-5xl mb-3 block">
-                            <img src="/image/normal.png" alt="Normal" class="mx-auto w-12 h-12">
-                        </span>
-                        <h3 class="text-lg font-bold text-blue-900 mb-1">Normal</h3>
-                        <p class="text-sm text-blue-600">CN2025XXXXX</p>
-                    </div>
-                </button>
-
-                <!-- Opción Líquida -->
-                <button type="button"
-                    onclick="cambiarTipoConfirmado('liquida')"
-                    class="p-6 bg-gradient-to-br from-purple-100 to-purple-50 hover:from-purple-200 hover:to-purple-100 border-2 border-purple-300 hover:border-purple-400 rounded-lg transition-all transform hover:scale-105">
-                    <div class="text-center">
-                        <span class="text-5xl mb-3 block">
-                            <img src="/image/liquida.png" alt="Líquida" class="mx-auto w-12 h-12">
-                        </span>
-                        <h3 class="text-lg font-bold text-purple-900 mb-1">Líquida</h3>
-                        <p class="text-sm text-purple-600">CL2025XXXXX</p>
-                    </div>
-                </button>
-
-                <!-- Opción Especial -->
-                <button type="button"
-                    onclick="cambiarTipoConfirmado('especial')"
-                    class="p-6 bg-gradient-to-br from-green-100 to-green-50 hover:from-green-200 hover:to-green-100 border-2 border-green-300 hover:border-green-400 rounded-lg transition-all transform hover:scale-105">
-                    <div class="text-center">
-                        <span class="text-5xl mb-3 block">
-                            <img src="/image/especial.png" alt="Especial" class="mx-auto w-12 h-12">
-                        </span>
-                        <h3 class="text-lg font-bold text-green-900 mb-1">Especial</h3>
-                        <p class="text-sm text-green-600">CE2025XXXXX</p>
-                    </div>
-                </button>
-            </div>
-
-            <div class="mt-6 text-center">
-                <button type="button"
-                        onclick="cerrarModalCambioTipo()"
-                        class="text-1xl text-blue-700 hover:text-blue-800 font-semibold">
-                    ← Cancelar y volver
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Modal de Búsqueda de Plantillas -->
     <div id="modal-plantillas" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
@@ -86,8 +23,8 @@
                     <div class="flex items-center mb-2">
                         <h4 class="font-semibold text-blue-800 text-sm">Buscador</h4>
                     </div>
-                    <input type="text" 
-                        id="buscar_plantilla_modal" 
+                    <input type="text"
+                        id="buscar_plantilla_modal"
                         placeholder="Buscar por código o diagnóstico..."
                         class="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 text-base shadow-sm transition-all"
                         oninput="filtrarPlantillas()">
@@ -122,7 +59,6 @@
         <div class="flex justify-between items-center mb-6">
             <div>
                 <h1 class="text-3xl font-extrabold text-blue-700">Editar Citología - Persona</h1>
-                <p class="text-sm text-gray-500 mt-1">Número: <span class="font-semibold text-green-600" id="numero_display_header">{{ $citologia->ncitologia }}</span></p>
             </div>
             <a href="{{ route('citologias.personas.index') }}" class="text-gray-600 hover:text-gray-900">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,14 +102,10 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- Tipo de Citología -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo de Citología</label>
-                        <div id="tipo_badge" class="w-full px-4 py-1 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all">
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Número de Citología</label>
+                        <div class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg bg-blue-50 flex items-center">
+                            <span class="font-semibold text-green-600" id="numero_display_header">{{ $citologia->ncitologia }}</span>
                         </div>
-                        <button type="button"
-                                onclick="abrirModalCambioTipo()"
-                                class="mt-2 text-sm text-blue-600 hover:underline">
-                            Cambiar tipo
-                        </button>
                     </div>
 
                     <div>
@@ -203,9 +135,13 @@
                         <label for="doctor_id" class="block text-sm font-semibold text-gray-700 mb-1">Doctor <span class="text-red-500">*</span></label>
                         <select id="doctor_id" name="doctor_id" class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all">
                             <option value="">Seleccionar...</option>
+                            <option value="especial" {{ old('doctor_id', $citologia->remitente_especial ? 'especial' : '') === 'especial' ? 'selected' : '' }}>Remitente Especial</option>
                             @foreach($doctores as $doctor)
                             <option value="{{ $doctor->id }}" {{ old('doctor_id', $citologia->doctor_id) == $doctor->id ? 'selected' : '' }}>Dr. {{ $doctor->nombre }} {{ $doctor->apellido }}</option>
                             @endforeach
+                            @if($citologia->doctor && !($citologia->doctor->estado_servicio ?? true))
+                            <option value="{{ $citologia->doctor_id }}" {{ old('doctor_id', $citologia->doctor_id) == $citologia->doctor_id ? 'selected' : '' }}>[Inactivo] Dr. {{ $citologia->doctor->nombre }} {{ $citologia->doctor->apellido }}</option>
+                            @endif
                         </select>
                         @error('doctor_id')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -223,13 +159,21 @@
                             </div>
 
                             <div>
-                                <label for="celular_remitente_especial" class="block text-sm font-semibold text-gray-700 mb-1">Celular del Remitente <span class="text-red-500">*</span></label>
+                                <label for="celular_remitente_especial" class="block text-sm font-semibold text-gray-700 mb-1">Celular del Remitente </label>
                                 <input type="text" id="celular_remitente_especial" name="celular_remitente_especial" value="{{ old('celular_remitente_especial', $citologia->celular_remitente_especial) }}" placeholder="12345678" pattern="[0-9]{8}" maxlength="8" class="w-full px-4 py-2 border-2 border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-orange-500 transition-all">
                                 @error('celular_remitente_especial')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
+                    </div>
+                    <!-- diagnostico clinicos -->
+                    <div class="md:col-span-2">
+                        <label for="diagnostico_clinico" class="block text-sm font-semibold text-gray-700 mb-1">Diagnóstico Clinico <span class="text-red-500">*</span></label>
+                        <textarea id="diagnostico_clinico" name="diagnostico_clinico" rows="4" class="w-full px-4 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 transition-all" required>{{ old('diagnostico_clinico', $citologia->diagnostico_clinico) }}</textarea>
+                        @error('diagnostico_clinico')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
             </div>
@@ -249,55 +193,35 @@
                     </svg>
                 </button>
 
-                <div id="plantilla-content" class="hidden px-6 pb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Buscar por Código -->
+                <div id="plantilla-content" class="hidden px-6 pb-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                         <div>
-                            <label for="codigo_plantilla" class="block text-sm font-semibold text-gray-700 mb-2">
-                                Buscar por Código
-                            </label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Buscar por Código</label>
                             <div class="flex gap-2">
-                                <input type="text" 
-                                       id="codigo_plantilla" 
-                                       placeholder="EJ: L001"
-                                       class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500 transition-all">
-                                <button type="button" 
-                                        onclick="buscarPorCodigo()"
-                                        class="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-semibold transition-all hover:scale-105">
+                                <input type="text" id="buscar_codigo" placeholder="Ej: LC001"
+                                    class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500 uppercase transition-all">
+                                <button type="button" id="btn_buscar_codigo"
+                                    class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-semibold transition-transform hover:scale-105">
                                     Buscar
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Selector de Plantilla con botones -->
                         <div>
-                            <label for="lista_id" class="block text-sm font-semibold text-gray-700 mb-2">
-                                O selecciona plantilla
-                            </label>
+                            <label for="lista_id" class="block text-sm font-semibold text-gray-700 mb-1">O selecciona plantilla</label>
+                            <input type="hidden" id="lista_id" name="lista_id" value="{{ old('lista_id') }}">
                             <div class="flex gap-2">
-                                <select id="lista_id" name="lista_id_select"
-                                        class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500 transition-all">
-                                    <option value="">-- Sin plantilla seleccionada --</option>
-                                    @foreach($listas as $lista)
-                                        <option value="{{ $lista->id }}" 
-                                                data-codigo="{{ $lista->codigo }}"
-                                                {{ old('lista_id', $citologia->lista_id) == $lista->id ? 'selected' : '' }}>
-                                            {{ $lista->codigo }} - {{ $lista->diagnostico }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <button type="button" 
-                                        onclick="abrirModalPlantillas()"
-                                        class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-all hover:scale-105"
-                                        title="Buscar plantilla">
+                                <input type="text" id="selected_template" readonly
+                                    class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg bg-gray-50 text-gray-700"
+                                    placeholder="-- Sin plantilla seleccionada --">
+                                <button type="button" onclick="openTemplateModal()"
+                                    class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                                     </svg>
                                 </button>
-                                <button type="button" 
-                                        onclick="limpiarPlantillaSeleccionada()"
-                                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-all hover:scale-105"
-                                        title="Limpiar selección">
+                                <button type="button" onclick="clearTemplate()"
+                                    class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                     </svg>
@@ -323,9 +247,9 @@
 
                     <!-- Diagnóstico -->
                     <div>
-                        <label for="diagnostico_clinico" class="block text-sm font-semibold text-gray-700 mb-1">Diagnóstico <span class="text-red-500">*</span></label>
-                        <textarea id="diagnostico_clinico" name="diagnostico_clinico" rows="4" class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all" placeholder="Diagnóstico de la muestra..." required>{{ old('diagnostico_clinico', $citologia->diagnostico_clinico) }}</textarea>
-                        @error('diagnostico_clinico')
+                        <label for="diagnostico" class="block text-sm font-semibold text-gray-700 mb-1">Diagnóstico <span class="text-red-500">*</span></label>
+                        <textarea id="diagnostico" name="diagnostico" rows="4" class="w-full px-4 py-2 border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-400 focus:border-green-500 transition-all" placeholder="Diagnóstico de la muestra..." required>{{ old('diagnostico', $citologia->diagnostico) }}</textarea>
+                        @error('diagnostico')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -333,63 +257,131 @@
             </div>
 
             <!-- Botones -->
-            <div class="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-end gap-3 shadow-lg">
-                <a href="{{ route('citologias.personas.index') }}" class="px-6 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-semibold transition-transform hover:scale-105">Cancelar</a>
-                <button type="submit" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105">Actualizar Citología</button>
+            <div class="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex justify-end gap-3 shadow-lg rounded-lg">
+                <a href="{{ route('citologias.personas.index') }}"
+                    class="px-6 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-lg font-semibold transition-transform hover:scale-105">
+                    Cancelar
+                </a>
+
+                <button type="submit"
+                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-transform hover:scale-105 flex items-center gap-2">
+                    Guardar Cambios
+                </button>
             </div>
         </form>
     </div>
 
+    <!-- Modal de búsqueda de plantillas -->
+    <div id="template-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 h-[70vh] overflow-hidden flex flex-col">
+            <!-- Header del Modal -->
+            <div class="flex justify-between items-center p-4 border-b bg-gradient-to-r from-yellow-50 to-orange-50">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900">Buscar y Seleccionar Plantilla</h3>
+                    <p class="text-xs text-gray-600 mt-1">Usa el buscador o navega por las plantillas disponibles</p>
+                </div>
+                <button type="button" onclick="closeTemplateModal()" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="p-4 flex-1 overflow-y-auto">
+                <!-- Buscador -->
+                <div class="mb-4 bg-gradient-to-r from-blue-50 to-indigo-50 p-3 rounded-lg border border-blue-200">
+                    <div class="flex items-center mb-2">
+                        <h4 class="font-semibold text-blue-800 text-sm">Buscador</h4>
+                    </div>
+                    <input type="text" id="template-search" placeholder="Buscar por código, descripción o diagnóstico..."
+                        class="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 text-base shadow-sm"
+                        oninput="filterTemplates()">
+
+                </div>
+
+                <!-- Separador -->
+                <div class="flex items-center mb-3">
+                    <div class="flex-1 border-t border-gray-300"></div>
+                    <span class="px-3 text-xs text-gray-500 bg-white">Plantillas Disponibles</span>
+                    <div class="flex-1 border-t border-gray-300"></div>
+                </div>
+
+                <!-- Lista de Plantillas -->
+                <div id="template-list" class="space-y-2 max-h-96 overflow-y-auto border border-gray-200 rounded-lg bg-gray-50 p-2" style="min-height: 350;">
+                    <!-- Mensaje cuando no hay resultados -->
+                    <div id="no-results-message" class="text-center py-8 text-gray-500" style="display: none;">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.009-5.824-2.562M15 6.75A3.75 3.75 0 0011.25 3a3.75 3.75 0 00-3.75 3.75 0 003.75 3.75A3.75 3.75 0 0015 6.75z"></path>
+                        </svg>
+                        <p class="text-lg font-medium">No se encontraron plantillas</p>
+                        <p class="text-sm">Intenta con otras palabras como 'anatomía', 'huesos', 'carne'</p>
+                    </div>
+
+                    @foreach($listas as $lista)
+                    <div class="template-item bg-white border border-gray-200 rounded-lg p-2 mb-2 hover:bg-yellow-50 hover:border-yellow-300 hover:shadow-md cursor-pointer transition-all duration-200"
+                        data-codigo="{{ $lista->codigo }}"
+                        data-descripcion="{{ $lista->descripcion }}"
+                        data-diagnostico="{{ $lista->diagnostico }}"
+                        onclick="selectTemplate('{{ $lista->id }}', '{{ $lista->codigo }}', '{{ addslashes($lista->descripcion) }}', '{{ addslashes($lista->diagnostico) }}')">
+
+                        <h4 class="font-semibold text-gray-900 mb-1 text-xs">{{ $lista->descripcion }}</h4>
+
+                        <div class="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
+                            <strong class="text-gray-700 flex items-center">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Descripción Diagnostico:
+                            </strong>
+                            <p class="mt-1 leading-relaxed">{{ Str::limit($lista->diagnostico, 100) }}</p>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- script modal plantilla -->
     <script>
-        const listas = @json($listas);
-        let plantillasFiltradas = [...listas];
-        const numeroActualCitologia = '{{ $citologia->ncitologia }}';
-        const tipoActualCitologia = '{{ $citologia->tipo }}';
-
-        // ============ FUNCIONES DE CAMBIO DE TIPO ============
-        function abrirModalCambioTipo() {
-            document.getElementById('numero-actual').textContent = numeroActualCitologia;
-            document.getElementById('modal-cambio-tipo').classList.remove('hidden');
-        }
-
-        function cerrarModalCambioTipo() {
-            document.getElementById('modal-cambio-tipo').classList.add('hidden');
-        }
-
-        async function cambiarTipoConfirmado(nuevoTipo) {
-            if (nuevoTipo === tipoActualCitologia) {
-                alert('Ya está usando este tipo de citología');
-                cerrarModalCambioTipo();
-                return;
-            }
-
+        // Función para obtener y mostrar el número correlativo
+        async function setPreview(id, tipo) {
+            const el = document.getElementById(id);
+            if (!el) return;
             try {
-                const response = await fetch(`/citologias/personas/obtener-numero-correlativo?tipo=${nuevoTipo}`);
+                const res = await fetch(`/citologias/personas/obtener-numero-correlativo?tipo=${tipo}`);
+                const data = await res.json();
+                if (data && data.success && data.numero) {
+                    el.textContent = data.numero;
+                } else {
+                    el.textContent = 'No disponible';
+                }
+            } catch (_) {
+                el.textContent = 'Error';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setPreview('preview_normal', 'normal');
+            setPreview('preview_liquida', 'liquida');
+            setPreview('preview_especial', 'especial');
+        });
+        // Función para seleccionar tipo y obtener número
+        async function seleccionarTipo(tipo) {
+            try {
+                const response = await fetch(`/citologias/personas/obtener-numero-correlativo?tipo=${tipo}`);
                 const data = await response.json();
 
                 if (data.success) {
-                    // Actualizar tipo seleccionado
-                    document.getElementById('tipo_seleccionado').value = nuevoTipo;
-                    document.getElementById('ncitologia_nuevo').value = data.numero;
-                    
-                    // Actualizar número en header
+                    // Guardar tipo
+                    document.getElementById('tipo_seleccionado').value = tipo;
+
+                    // Mostrar número en Datos Básicos
                     document.getElementById('numero_display_header').textContent = data.numero;
 
-                    // Actualizar badge del tipo
-                    const tipoBadge = document.getElementById('tipo_badge');
-                    if (nuevoTipo === 'liquida') {
-                        tipoBadge.innerHTML = '<span class="inline-flex text-gray-700 px-4 py-2 text-sm">Citología Líquida</span>';
-                        mostrarCampoDoctor();
-                    } else if (nuevoTipo === 'especial') {
-                        tipoBadge.innerHTML = '<span class="inline-flex text-gray-700 px-4 py-2 text-sm">Citología Especial</span>';
-                        mostrarCampoRemitente();
-                    } else {
-                        tipoBadge.innerHTML = '<span class="inline-flex text-gray-700 px-4 py-2 text-sm">Citología Normal</span>';
-                        mostrarCampoDoctor();
-                    }
-
-                    cerrarModalCambioTipo();
-                    mostrarNotificacion('✓ Tipo cambiado. Nuevo número: ' + data.numero, 'success');
+                    // Ocultar modal y mostrar formulario
+                    document.getElementById('modal-tipo').style.display = 'none';
+                    document.getElementById('formulario-container').style.display = 'block';
                 } else {
                     alert('Error al generar número: ' + (data.message || 'Error desconocido'));
                 }
@@ -399,23 +391,7 @@
             }
         }
 
-        // Funciones de mostrar/ocultar Doctor y Remitente
-        function mostrarCampoDoctor() {
-            document.getElementById('campo-doctor').style.display = 'block';
-            document.getElementById('campo-remitente').style.display = 'none';
-            document.getElementById('doctor_id').required = true;
-            document.getElementById('remitente_especial').required = false;
-            document.getElementById('celular_remitente_especial').required = false;
-        }
-
-        function mostrarCampoRemitente() {
-            document.getElementById('campo-doctor').style.display = 'none';
-            document.getElementById('campo-remitente').style.display = 'block';
-            document.getElementById('doctor_id').required = false;
-            document.getElementById('remitente_especial').required = true;
-            document.getElementById('celular_remitente_especial').required = true;
-        }
-
+        // Funciones de toggle (igual que edit)
         function togglePlantilla() {
             const content = document.getElementById('plantilla-content');
             const icon = document.getElementById('icon-plantilla');
@@ -423,230 +399,322 @@
             icon.classList.toggle('rotate-180');
         }
 
-        // ============ FUNCIONES DEL MODAL DE PLANTILLAS ============
-        function abrirModalPlantillas() {
-            document.getElementById('modal-plantillas').classList.remove('hidden');
-            document.getElementById('buscar_plantilla_modal').value = '';
-            plantillasFiltradas = [...listas];
-            renderizarPlantillas();
+        function toggleAnalisis() {
+            const content = document.getElementById('analisis-content');
+            const icon = document.getElementById('icon-analisis');
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
         }
 
-        function cerrarModalPlantillas() {
-            document.getElementById('modal-plantillas').classList.add('hidden');
+        function aplicarModoRemitente() {
+            const campoDoctor = document.getElementById('campo-doctor');
+            const campoRemitente = document.getElementById('campo-remitente');
+            const doctorSelect = document.getElementById('doctor_id');
+            const remitenteInput = document.getElementById('remitente_especial');
+            const celularInput = document.getElementById('celular_remitente_especial');
+
+            const usarEspecial = doctorSelect && doctorSelect.value === 'especial';
+
+            if (usarEspecial) {
+                if (campoDoctor) campoDoctor.style.display = 'none';
+                if (campoRemitente) campoRemitente.style.display = '';
+                remitenteInput?.setAttribute('required', 'required');
+                celularInput?.removeAttribute('required');
+            } else {
+                if (campoDoctor) campoDoctor.style.display = '';
+                if (campoRemitente) campoRemitente.style.display = 'none';
+                remitenteInput?.removeAttribute('required');
+                celularInput?.removeAttribute('required');
+            }
         }
 
-        function buscarPorCodigo() {
-            const codigo = document.getElementById('codigo_plantilla').value.trim().toUpperCase();
-            
+        document.getElementById('doctor_id')?.addEventListener('change', aplicarModoRemitente);
+        document.addEventListener('DOMContentLoaded', aplicarModoRemitente);
+
+        // Buscar por codigo
+        document.getElementById('btn_buscar_codigo')?.addEventListener('click', function() {
+            const codigo = document.getElementById('buscar_codigo').value.trim().toUpperCase();
             if (!codigo) {
                 alert('Por favor ingrese un código');
                 return;
             }
-            
-            const plantilla = listas.find(p => p.codigo.toUpperCase() === codigo);
-            
-            if (plantilla) {
-                document.getElementById('lista_id').value = plantilla.id;
-                document.getElementById('lista_id').dispatchEvent(new Event('change'));
+
+            fetch(`{{ url('/citologias/personas/buscar-lista-codigo') }}/${encodeURIComponent(codigo)}`)
+                .then(async (response) => {
+                    if (!response.ok) {
+                        const text = await response.text();
+                        throw new Error(text || `HTTP ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('lista_id').value = data.data.id;
+                        document.getElementById('selected_template').value = data.data.codigo + ' - ' + data.data.descripcion;
+
+                        const diagnosticoTextarea = document.getElementById('diagnostico');
+                        const contenidoActual = diagnosticoTextarea.value.trim();
+                        const nuevoContenido = (data.data.diagnostico || '').trim();
+
+                        if (nuevoContenido) {
+                            diagnosticoTextarea.value = contenidoActual ?
+                                `${contenidoActual} ${nuevoContenido}` :
+                                nuevoContenido;
+                        }
+
+                        const descripcionTextarea = document.getElementById('descripcion');
+                        const contenidoDesc = descripcionTextarea.value.trim();
+                        const nuevaDesc = (data.data.descripcion || '').trim();
+
+                        if (nuevaDesc) {
+                            descripcionTextarea.value = contenidoDesc ?
+                                `${contenidoDesc} ${nuevaDesc}` :
+                                nuevaDesc;
+                        }
+
+                        const analisis = document.getElementById('analisis-content');
+                        if (analisis && analisis.classList.contains('hidden')) {
+                            toggleAnalisis();
+                        }
+                    } else {
+                        alert('Código no encontrado');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al buscar la plantilla');
+                });
+        });
+
+        // Modal de plantillas
+        function openTemplateModal() {
+            document.getElementById('template-modal').style.display = 'flex';
+        }
+
+        function closeTemplateModal() {
+            document.getElementById('template-modal').style.display = 'none';
+        }
+
+        function selectTemplate(id, codigo, descripcion, diagnostico) {
+            document.getElementById('lista_id').value = id;
+            document.getElementById('selected_template').value = codigo + ' - ' + descripcion;
+
+            const diagnosticoTextarea = document.getElementById('diagnostico');
+            const contenidoActual = diagnosticoTextarea.value.trim();
+
+            if (contenidoActual === '') {
+                diagnosticoTextarea.value = diagnostico || '';
             } else {
-                alert('No se encontró plantilla con código: ' + codigo);
-            }
-        }
-
-        function renderizarPlantillas() {
-            const container = document.getElementById('lista-plantillas-modal');
-            const noResultados = document.getElementById('no-resultados');
-            
-            if (plantillasFiltradas.length === 0) {
-                container.innerHTML = '';
-                noResultados.classList.remove('hidden');
-                return;
+                diagnosticoTextarea.value = contenidoActual + ' ' + (diagnostico || '');
             }
 
-            noResultados.classList.add('hidden');
-            container.innerHTML = plantillasFiltradas.map(plantilla => `
-                <div class="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-400 hover:bg-blue-50 cursor-pointer transition-all"
-                     onclick="seleccionarPlantilla(${plantilla.id}); cerrarModalPlantillas();">
-                    <div class="flex items-start justify-between">
-                        <div class="flex-1">
-                            <p class="font-semibold text-gray-800 mb-1">${plantilla.codigo}</p>
-                            <p class="text-sm text-gray-600"><strong>Descripción:</strong> ${plantilla.descripcion || 'N/A'}</p>
-                            <p class="text-sm text-gray-600 mt-1"><strong>Diagnóstico:</strong> ${plantilla.diagnostico || 'N/A'}</p>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function filtrarPlantillas() {
-            const termino = document.getElementById('buscar_plantilla_modal').value.toLowerCase();
-            
-            plantillasFiltradas = listas.filter(plantilla => {
-                return plantilla.codigo.toLowerCase().includes(termino) ||
-                       (plantilla.diagnostico && plantilla.diagnostico.toLowerCase().includes(termino)) ||
-                       (plantilla.descripcion && plantilla.descripcion.toLowerCase().includes(termino));
-            });
-            
-            renderizarPlantillas();
-        }
-
-        function seleccionarPlantilla(id) {
-            const plantilla = listas.find(p => p.id == id);
-            
-            if (plantilla) {
-                // Seleccionar en el dropdown
-                document.getElementById('lista_id').value = plantilla.id;
-                
-                // Guardar ID en campo oculto
-                document.getElementById('lista_id_hidden').value = plantilla.id;
-                
-                // Llenar campos del formulario
-                document.getElementById('descripcion').value = plantilla.descripcion || '';
-                document.getElementById('diagnostico_clinico').value = plantilla.diagnostico || '';
-                
-                // Actualizar campo de código
-                document.getElementById('codigo_plantilla').value = plantilla.codigo;
-                
-                // Mostrar plantilla seleccionada
-                document.getElementById('plantilla-codigo-sel').textContent = plantilla.codigo;
-                document.getElementById('plantilla-diag-sel').textContent = plantilla.diagnostico || 'N/A';
-                document.getElementById('plantilla-seleccionada').classList.remove('hidden');
-                
-                // Cerrar modal
-                cerrarModalPlantillas();
-                
-                // Notificación
-                mostrarNotificacion('✓ Plantilla aplicada: ' + plantilla.codigo, 'success');
+            const descripcionTextarea = document.getElementById('descripcion');
+            const contenidoDesc = descripcionTextarea.value.trim();
+            if (contenidoDesc === '') {
+                descripcionTextarea.value = descripcion || '';
+            } else {
+                descripcionTextarea.value = contenidoDesc + ' ' + (descripcion || '');
             }
+
+            closeTemplateModal();
+            if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
         }
 
-        function limpiarPlantillaSeleccionada() {
+        function clearTemplate() {
             document.getElementById('lista_id').value = '';
-            document.getElementById('lista_id_hidden').value = '';
-            document.getElementById('codigo_plantilla').value = '';
-            document.getElementById('plantilla-seleccionada').classList.add('hidden');
-            
-            // Opcional: limpiar los campos si deseas
-            if (confirm('¿Desea también limpiar los campos de descripción?')) {
-                document.getElementById('descripcion').value = '';
-                document.getElementById('diagnostico_clinico').value = '';
-            }
-            
-            mostrarNotificacion('Plantilla removida', 'info');
+            document.getElementById('selected_template').value = '';
         }
 
-        // Función para mostrar notificaciones
-        function mostrarNotificacion(mensaje, tipo = 'info') {
-            const colores = {
-                success: 'bg-green-500',
-                error: 'bg-red-500',
-                info: 'bg-blue-500'
-            };
+        function filterTemplates() {
+            const searchTerm = document.getElementById('template-search').value.toLowerCase();
+            const items = document.querySelectorAll('.template-item');
+            let visibleCount = 0;
 
-            const notif = document.createElement('div');
-            notif.className = `fixed top-4 right-4 ${colores[tipo]} text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in`;
-            notif.textContent = mensaje;
-            document.body.appendChild(notif);
+            items.forEach(item => {
+                const codigo = item.getAttribute('data-codigo').toLowerCase();
+                const diagnostico = item.getAttribute('data-diagnostico').toLowerCase();
+                const descripcion = item.getAttribute('data-descripcion').toLowerCase();
 
-            setTimeout(() => {
-                notif.remove();
-            }, 3000);
+                if (codigo.includes(searchTerm) || diagnostico.includes(searchTerm) || descripcion.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            const noResultsMsg = document.getElementById('no-results-message');
+            if (visibleCount === 0 && searchTerm !== '') {
+                noResultsMsg.style.display = 'block';
+            } else {
+                noResultsMsg.style.display = 'none';
+            }
         }
 
-        // Cerrar modal al hacer clic fuera
-        document.getElementById('modal-plantillas').addEventListener('click', function(e) {
-            if (e.target === this) {
-                cerrarModalPlantillas();
-            }
-        });
+        function filterTemplates() {
+            const searchTerm = document.getElementById('template-search').value.toLowerCase().trim();
+            const templateItems = document.querySelectorAll('.template-item');
+            let visibleCount = 0;
 
-        document.getElementById('modal-cambio-tipo').addEventListener('click', function(e) {
-            if (e.target === this) {
-                cerrarModalCambioTipo();
+            templateItems.forEach(item => {
+                const codigo = item.dataset.codigo.toLowerCase();
+                const descripcion = item.dataset.diagnostico.toLowerCase(); // Nota: el data-attribute se llama diagnostico pero contiene descripcion
+                const diagnostico = item.dataset.diagnostico.toLowerCase();
+
+                // Solo mostrar resultados si hay texto de búsqueda
+                let matches = false;
+
+                if (searchTerm !== '') {
+                    // Búsqueda más intuitiva - busca palabras individuales
+                    const searchWords = searchTerm.split(' ').filter(word => word.length > 0);
+
+                    // Buscar cada palabra en cualquier campo
+                    matches = searchWords.every(word =>
+                        codigo.includes(word) ||
+                        descripcion.includes(word) ||
+                        diagnostico.includes(word)
+                    );
+                }
+
+                if (matches) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Mostrar mensaje apropiado
+            const noResultsMsg = document.getElementById('no-results-message');
+            if (searchTerm === '') {
+                // Si no hay búsqueda, mostrar mensaje de instrucción
+                noResultsMsg.innerHTML = `
+                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    <p class="text-lg font-medium">Escribe para buscar plantillas</p>
+                    <p class="text-sm">Usa el buscador arriba para encontrar plantillas por código, diagnóstico o descripción</p>
+                `;
+                noResultsMsg.style.display = 'block';
+            } else if (visibleCount === 0) {
+                // Si hay búsqueda pero no resultados
+                noResultsMsg.innerHTML = `
+                    <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.009-5.824-2.562M15 6.75A3.75 3.75 0 0011.25 3a3.75 3.75 0 00-3.75 3.75 0 003.75 3.75A3.75 3.75 0 0015 6.75z"></path>
+                    </svg>
+                    <p class="text-lg font-medium">No se encontraron plantillas</p>
+                    <p class="text-sm">Intenta con otras palabras como 'anatomía', 'huesos', 'carne'</p>
+                `;
+                noResultsMsg.style.display = 'block';
+            } else {
+                noResultsMsg.style.display = 'none';
             }
-        });
+        }
+        // Validación de fecha
+        function validarFecha(input) {
+            if (!input.value) return true;
+
+            const fechaSeleccionada = new Date(input.value + 'T00:00:00');
+            const fechaHoy = new Date();
+            fechaHoy.setHours(0, 0, 0, 0);
+
+            if (fechaSeleccionada > fechaHoy) {
+                alert('⚠️ La fecha de recepción no puede ser futura.\n\nPor favor selecciona una fecha válida (hoy o anterior).');
+                input.style.borderColor = '#ef4444';
+                input.focus();
+                input.select();
+                return false;
+            }
+
+            input.style.borderColor = '';
+            return true;
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Mostrar tipo actual
-            const tipoActual = tipoActualCitologia;
-            const tipoBadge = document.getElementById('tipo_badge');
-            
-            if (tipoActual === 'liquida') {
-                tipoBadge.innerHTML = '<span class="inline-flex text-gray-700 px-4 py-2 text-sm">Citología Líquida</span>';
-                mostrarCampoDoctor();
-            } else if (tipoActual === 'especial') {
-                tipoBadge.innerHTML = '<span class="inline-flex text-gray-700 px-4 py-2 text-sm">Citología Especial</span>';
-                mostrarCampoRemitente();
-            } else {
-                tipoBadge.innerHTML = '<span class="inline-flex text-gray-700 px-4 py-2 text-sm">Citología Normal</span>';
-                mostrarCampoDoctor();
-            }
+            const form = document.querySelector('form');
+            const fechaInput = document.getElementById('fecha_recibida');
 
-            // Al cambiar el select, aplicar plantilla
-            document.getElementById('lista_id').addEventListener('change', function() {
-                const selectedId = this.value;
-                
-                if (selectedId) {
-                    const plantilla = listas.find(p => p.id == selectedId);
-                    if (plantilla) {
-                        // Guardar ID
-                        document.getElementById('lista_id_hidden').value = plantilla.id;
-                        
-                        // Llenar campos
-                        document.getElementById('descripcion').value = plantilla.descripcion || '';
-                        document.getElementById('diagnostico_clinico').value = plantilla.diagnostico || '';
-                        
-                        // Actualizar código
-                        document.getElementById('codigo_plantilla').value = plantilla.codigo;
-                        
-                        // Mostrar banner
-                        document.getElementById('plantilla-codigo-sel').textContent = plantilla.codigo;
-                        document.getElementById('plantilla-diag-sel').textContent = plantilla.diagnostico || 'N/A';
-                        document.getElementById('plantilla-seleccionada').classList.remove('hidden');
-                        
-                        mostrarNotificacion('✓ Plantilla aplicada', 'success');
+            if (form && fechaInput) {
+                form.addEventListener('submit', function(e) {
+                    if (!validarFecha(fechaInput)) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
                     }
-                } else {
-                    document.getElementById('plantilla-seleccionada').classList.add('hidden');
-                }
-            });
+                });
 
-            // Buscar por código al presionar Enter
-            document.getElementById('codigo_plantilla').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    buscarPorCodigo();
-                }
-            });
-
-            // Si hay plantilla seleccionada al cargar, mostrar el banner
-            const plantillaActual = document.getElementById('lista_id').value;
-            if (plantillaActual) {
-                const plantilla = listas.find(p => p.id == plantillaActual);
-                if (plantilla) {
-                    document.getElementById('codigo_plantilla').value = plantilla.codigo;
-                    document.getElementById('plantilla-codigo-sel').textContent = plantilla.codigo;
-                    document.getElementById('plantilla-diag-sel').textContent = plantilla.diagnostico || 'N/A';
-                    document.getElementById('plantilla-seleccionada').classList.remove('hidden');
-                }
+                fechaInput.addEventListener('change', function() {
+                    validarFecha(this);
+                });
             }
         });
     </script>
+    <!-- Modal de búsqueda de plantillas -->
+    <div id="template-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" style="display: none;">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 h-[70vh] overflow-hidden flex flex-col">
+            <div class="flex justify-between items-center p-4 border-b bg-gradient-to-r from-yellow-50 to-orange-50">
+                <div>
+                    <h3 class="text-lg font-bold text-gray-900">Buscar y Seleccionar Plantilla</h3>
+                    <p class="text-xs text-gray-600 mt-1">Usa el buscador o navega por las plantillas disponibles</p>
+                </div>
+                <button type="button" onclick="closeTemplateModal()" class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
 
-    <style>
-        @keyframes fade-in {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
+            <div class="p-4 flex-1 overflow-y-auto">
+                <div class="mb-4 bg-gradient-to-r from-blue-50 to-indigo-50 p-3 rounded-lg border border-blue-200">
+                    <div class="flex items-center mb-2">
+                        <h4 class="font-semibold text-blue-800 text-sm">Buscador</h4>
+                    </div>
+                    <input type="text" id="template-search" placeholder="Buscar por código, descripción o diagnóstico..."
+                        class="w-full px-3 py-2 border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-blue-500 text-base shadow-sm"
+                        oninput="filterTemplates()">
+                </div>
+
+                <div class="flex items-center mb-3">
+                    <div class="flex-1 border-t border-gray-300"></div>
+                    <span class="px-3 text-xs text-gray-500 bg-white">Plantillas Disponibles</span>
+                    <div class="flex-1 border-t border-gray-300"></div>
+                </div>
+
+                <div id="template-list" class="space-y-2 max-h-96 overflow-y-auto border border-gray-200 rounded-lg bg-gray-50 p-2">
+                    <div id="no-results-message" class="text-center py-8 text-gray-500" style="display: none;">
+                        <p class="text-lg font-medium">No se encontraron plantillas</p>
+                    </div>
+
+                    @foreach($listas as $lista)
+                    <div class="template-item bg-white border border-gray-200 rounded-lg p-2 mb-2 hover:bg-yellow-50 hover:border-yellow-300 hover:shadow-md cursor-pointer transition-all duration-200"
+                        data-codigo="{{ $lista->codigo }}"
+                        data-diagnostico="{{ $lista->diagnostico }}"
+                        data-descripcion="{{ $lista->descripcion }}"
+                        onclick="selectTemplate('{{ $lista->id }}', '{{ $lista->codigo }}', '{{ addslashes($lista->descripcion) }}', '{{ addslashes($lista->diagnostico) }}')">
+
+                        <h4 class="font-semibold text-gray-900 mb-1 text-xs">{{ $lista->descripcion }}</h4>
+
+                        <div class="text-xs text-gray-600 bg-gray-50 p-2 rounded-lg">
+                            <strong class="text-gray-700 flex items-center">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Descripción Diagnóstico:
+                            </strong>
+                            <p class="mt-1 leading-relaxed">{{ Str::limit($lista->diagnostico, 100) }}</p>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Cerrar modal con Escape -->
+    <script>
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeTemplateModal();
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .animate-fade-in {
-            animation: fade-in 0.3s ease-out;
-        }
-    </style>
+        });
+    </script>
 </x-app-layout>

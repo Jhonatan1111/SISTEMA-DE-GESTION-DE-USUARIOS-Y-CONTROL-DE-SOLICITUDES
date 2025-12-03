@@ -13,7 +13,7 @@ class PacienteController extends Controller
     {
         $q = trim($request->input('q', ''));
 
-        $query = Paciente::query();
+        $query = Paciente::orderByDesc('updated_at')->orderByDesc('created_at');
 
         if ($q !== '') {
             $term = "%{$q}%";

@@ -26,9 +26,6 @@ cp .env.example .env
 ```
 
 ```bash
-# Instalar dependencias composer
-composer upgrade 
-
 # Instalar dependencias de composer
 composer install --no-interaction --prefer-dist
 

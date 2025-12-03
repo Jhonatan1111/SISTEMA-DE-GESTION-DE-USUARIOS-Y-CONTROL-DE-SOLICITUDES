@@ -13,7 +13,8 @@ class BiopsiaController extends Controller
     public function index(Request $request)
     {
         $query = Biopsia::with(['paciente', 'mascota', 'doctor'])
-            ->orderBy('fecha_recibida', 'desc');
+            ->orderByDesc('updated_at')
+            ->orderByDesc('created_at');;
 
         // Búsqueda general
         if ($request->filled('buscar')) {

@@ -103,10 +103,10 @@ class Biopsia extends Model
         return DB::transaction(function () use ($tipoBiopsia) {
             // Determinar prefijo según el tipo
             $prefijo = match ($tipoBiopsia) {
-                'persona-normal' => 'BPN',
-                'persona-liquida' => 'BPL',
-                'mascota-normal' => 'BMN',
-                'mascota-liquida' => 'BML',
+                'persona-normal' => 'BEN',
+                'persona-liquida' => 'BEL',
+                'mascota-normal' => 'BEN',
+                'mascota-liquida' => 'BEL',
                 default => 'BP' // Fallback
             };
 

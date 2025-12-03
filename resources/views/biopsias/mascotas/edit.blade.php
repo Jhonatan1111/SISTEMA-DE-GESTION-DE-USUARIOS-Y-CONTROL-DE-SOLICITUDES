@@ -114,7 +114,7 @@
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Buscar por Código</label>
                             <div class="flex gap-2">
-                                <input type="text" id="buscar_codigo" placeholder="Ej: L001"
+                                <input type="text" id="buscar_codigo" placeholder="Ej: LB001"
                                     class="flex-1 px-4 py-2 border-2 border-yellow-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-yellow-500 uppercase transition-all">
                                 <button type="button" id="btn_buscar_codigo"
                                     class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg font-semibold transition-transform hover:scale-105">
@@ -212,6 +212,7 @@
         function toggleAnalisis() {
             const content = document.getElementById('analisis-content');
             const icon = document.getElementById('icon-analisis');
+            if (!content || !icon) return;
             content.classList.toggle('hidden');
             icon.classList.toggle('rotate-180');
         }
@@ -224,15 +225,43 @@
                 return;
             }
 
-            fetch(`{{ url('/biopsias-mascotas/buscar-lista-codigo') }}/${codigo}`)
-                .then(response => response.json())
+            fetch(`{{ url('/biopsias-mascotas/buscar-lista-codigo') }}/${encodeURIComponent(codigo)}`)
+                .then(async (response) => {
+                    if (!response.ok) {
+                        const text = await response.text();
+                        throw new Error(text || `HTTP ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
                         document.getElementById('lista_id').value = data.data.id;
-                        document.getElementById('selected_template').value = data.data.codigo + ' - ' + data.data.descripcion;
-                        document.getElementById('macroscopico').value = data.data.macroscopico || '';
+                        const selected = document.getElementById('selected_template');
+                        if (selected) selected.value = data.data.codigo + ' - ' + data.data.descripcion;
 
-                        if (document.getElementById('analisis-content').classList.contains('hidden')) {
+                        const diagEl = document.getElementById('diagnostico');
+                        const diagActual = (diagEl?.value || '').trim();
+                        const diagNuevo = (data.data.diagnostico || '').trim();
+                        if (diagEl && diagNuevo) {
+                            diagEl.value = diagActual ? `${diagActual} ${diagNuevo}` : diagNuevo;
+                        }
+
+                        const microEl = document.getElementById('microscopico');
+                        const microActual = (microEl?.value || '').trim();
+                        const microNuevo = (data.data.microscopico || '').trim();
+                        if (microEl && microNuevo) {
+                            microEl.value = microActual ? `${microActual} ${microNuevo}` : microNuevo;
+                        }
+
+                        const macroEl = document.getElementById('macroscopico');
+                        const macroActual = (macroEl?.value || '').trim();
+                        const macroNuevo = (data.data.macroscopico || '').trim();
+                        if (macroEl && macroNuevo) {
+                            macroEl.value = macroActual ? `${macroActual} ${macroNuevo}` : macroNuevo;
+                        }
+
+                        const analisis = document.getElementById('analisis-content');
+                        if (analisis && analisis.classList.contains('hidden')) {
                             toggleAnalisis();
                         }
                     } else {
@@ -268,7 +297,8 @@
             }
 
             closeTemplateModal();
-            if (document.getElementById('analisis-content').classList.contains('hidden')) toggleAnalisis();
+            const analisis = document.getElementById('analisis-content');
+            if (analisis && analisis.classList.contains('hidden')) toggleAnalisis();
         }
 
         function clearTemplate() {

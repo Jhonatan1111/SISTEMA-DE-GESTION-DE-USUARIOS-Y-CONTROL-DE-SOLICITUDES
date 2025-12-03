@@ -99,30 +99,30 @@ class Citolgia extends Model
     // Generar número de citología según tipo
     public static function generarNumeroCitologia($tipo = 'normal')
     {
-        $año = now()->year;
+        return DB::transaction(function () use ($tipo) {
+            $prefijo = match ($tipo) {
+                'liquida' => 'CEL',
+                'especial' => 'CEE',
+                default => 'CEN',
+            };
 
-        // Prefijo según tipo: C para normal, L para líquida, E para especial
-        $prefijo = match ($tipo) {
-            'liquida' => 'CL',
-            'especial' => 'CE',
-            default => 'CN',
-        };
+            $ultimo = static::where('ncitologia', 'like', "{$prefijo}%")
+                ->whereRaw('LENGTH(ncitologia) = ?', [strlen($prefijo) + 4])
+                ->lockForUpdate()
+                ->orderBy('ncitologia', 'desc')
+                ->first();
 
-        $ultimaCitologia = self::where('ncitologia', 'like', "{$prefijo}{$año}%")
-            ->lockForUpdate()
-            ->orderBy('ncitologia', 'desc')
-            ->first();
+            if ($ultimo) {
+                $ultimoNumero = (int) substr($ultimo->ncitologia, strlen($prefijo));
+                $nuevoNumero = $ultimoNumero + 1;
+            } else {
+                $nuevoNumero = 1;
+            }
 
-        if ($ultimaCitologia) {
-            $longitudPrefijo = 6; // CN2025 o CL2025 o CE2025
-            $ultimoCorrelativo = intval(substr($ultimaCitologia->ncitologia, $longitudPrefijo));
-            $nuevoNumero = $ultimoCorrelativo + 1;
-        } else {
-            $nuevoNumero = 1;
-        }
-
-        return sprintf("%s%s%05d", $prefijo, $año, $nuevoNumero);
+            return sprintf("%s%04d", $prefijo, $nuevoNumero);
+        });
     }
+
     public function scopeActivas($query)
     {
         return $query->where('estado', true);
