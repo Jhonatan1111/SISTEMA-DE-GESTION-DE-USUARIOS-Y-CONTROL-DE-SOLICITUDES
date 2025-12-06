@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte de Biopsias</title>
+    <title>Reporte de Citologías</title>
     <style>
         * {
             margin: 0;
@@ -140,11 +140,13 @@
             padding: 8px;
             margin-bottom: 10px;
         }
+
         .detalle-grid {
             display: table;
             width: 100%;
             margin-top: 6px;
         }
+
         .detalle-item {
             display: table-cell;
             width: 33.33%;
@@ -158,7 +160,7 @@
     <!-- Header -->
     <div class="header">
         <h1>Laboratorio de Anatomía Patológico Echeverría</h1>
-        <p>Reporte de Biopsias</p>
+        <p>Reporte de Citologías</p>
     </div>
 
     <!-- Info -->
@@ -175,15 +177,15 @@
 
     <!-- Detalle de filtros aplicados -->
     @php
-        $categoriaTexto = isset($filtros['categoria'])
-            ? ($filtros['categoria'] === 'persona' ? 'Personas' : ($filtros['categoria'] === 'mascota' ? 'Mascotas' : 'Todas'))
-            : 'Todas';
-        $tipoTexto = $filtros['tipo'] ?? 'Todos';
-        $estadoTexto = isset($filtros['estado'])
-            ? ($filtros['estado'] == '1' ? 'Activas' : ($filtros['estado'] == '0' ? 'Inactivas' : 'Todos'))
-            : 'Todos';
-        $doctorTexto = $doctorNombre ?? 'Todos';
-        $buscarTexto = $filtros['buscar'] ?? '—';
+    $categoriaTexto = isset($filtros['categoria'])
+    ? ($filtros['categoria'] === 'persona' ? 'Personas' : ($filtros['categoria'] === 'mascota' ? 'Mascotas' : 'Todas'))
+    : 'Todas';
+    $tipoTexto = $filtros['tipo'] ?? 'Todos';
+    $estadoTexto = isset($filtros['estado'])
+    ? ($filtros['estado'] == '1' ? 'Activas' : ($filtros['estado'] == '0' ? 'Inactivas' : 'Todos'))
+    : 'Todos';
+    $doctorTexto = $doctorNombre ?? 'Todos';
+    $buscarTexto = $filtros['buscar'] ?? '—';
     @endphp
 
     <div class="detalle-box">
@@ -203,7 +205,7 @@
         </div>
     </div>
 
-    <!-- Tabla de biopsias -->
+    <!-- Tabla de citologías -->
     <table>
         <thead>
             <tr>
@@ -218,46 +220,54 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($biopsias as $biopsia)
+            @forelse($citologias as $citologia)
             <tr>
-                <td><strong>{{ $biopsia->nbiopsia }}</strong></td>
+                <td><strong>{{ $citologia->ncitologia }}</strong></td>
                 <td>
-                    <span class="badge badge-{{ $biopsia->tipo }}">
-                        {{ ucfirst($biopsia->tipo) }}
+                    <span class="badge badge-{{ $citologia->tipo }}">
+                        {{ ucfirst($citologia->tipo) }}
                     </span>
                 </td>
                 <td>
-                    @if($biopsia->paciente_id)
+                    @if($citologia->paciente_id)
                     <span class="badge badge-persona">Persona</span>
                     @else
                     <span class="badge badge-mascota">Mascota</span>
                     @endif
                 </td>
-                <td>{{ $biopsia->fecha_recibida->format('d/m/Y') }}</td>
+                <td>{{ $citologia->fecha_recibida->format('d/m/Y') }}</td>
                 <td>
-                    @if($biopsia->paciente)
-                    <strong>{{ $biopsia->paciente->nombre }} {{ $biopsia->paciente->apellido }}</strong><br>
-                    <small>DUI: {{ $biopsia->paciente->dui }}</small>
+                    @if($citologia->paciente)
+                    <strong>{{ $citologia->paciente->nombre }} {{ $citologia->paciente->apellido }}</strong><br>
+                    <small>DUI: {{ $citologia->paciente->dui }}</small>
+                    @elseif($citologia->mascota)
+                    <strong>{{ $citologia->mascota->nombre }}</strong><br>
+                    <small>{{ $citologia->mascota->especie }} - {{ $citologia->mascota->dueno ?? $citologia->mascota->propietario }}</small>
                     @else
-                    <strong>{{ $biopsia->mascota->nombre }}</strong><br>
-                    <small>{{ $biopsia->mascota->especie }} - {{ $biopsia->mascota->dueno }}</small>
+                    —
                     @endif
                 </td>
                 <td>
-                    Dr. {{ $biopsia->doctor->nombre }} {{ $biopsia->doctor->apellido }}
+                    @if(!empty($citologia->remitente_especial))
+                    {{ strtoupper($citologia->remitente_especial) }}
+                    @elseif($citologia->doctor)
+                    Dr. {{ $citologia->doctor->nombre }} {{ $citologia->doctor->apellido }}
+                    @else
+                    N/A
+                    @endif
                 </td>
-                <td>{{ Str::limit($biopsia->diagnostico_clinico, 60) }}</td>
+                <td>{{ Str::limit($citologia->diagnostico_clinico, 60) }}</td>
                 <td>
-                    <span class="badge badge-{{ $biopsia->estado ? 'activa' : 'inactiva' }}">
-                        {{ $biopsia->estado ? 'Activa' : 'Inactiva' }}
+                    <span class="badge badge-{{ $citologia->estado ? 'activa' : 'inactiva' }}">
+                        {{ $citologia->estado ? 'Activa' : 'Inactiva' }}
                     </span>
                 </td>
             </tr>
-            
+
             @empty
             <tr>
                 <td colspan="8" class="no-data">
-                    No se encontraron biopsias con los filtros aplicados
+                    No se encontraron citologías con los filtros aplicados
                 </td>
             </tr>
             @endforelse

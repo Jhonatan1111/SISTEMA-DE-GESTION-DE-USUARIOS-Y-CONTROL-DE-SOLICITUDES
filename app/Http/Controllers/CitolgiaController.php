@@ -174,7 +174,7 @@ class CitolgiaController extends Controller
             'doctorNombre' => $doctorNombre,
         ];
 
-        $pdf = Pdf::loadView('citologias.pdf', $data);
+        $pdf = Pdf::loadView('citologias.pdf.reporte', $data);
 
         return $pdf->download('reporte_citologias_' . now()->format('Y-m-d') . '.pdf');
     }
