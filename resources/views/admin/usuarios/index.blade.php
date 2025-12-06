@@ -77,7 +77,7 @@
                     </div>
                     <div class="flex-shrink-0 mt-6 flex items-center gap-2">
                         <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">Buscar</button>
-                        <a href="{{ route('pacientes.index') }}" class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">Limpiar</a>
+                        <a href="{{ route('admin.usuarios.index') }}" class="px-4 py-2 text-sm font-medium text-white bg-red-600 border border-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">Limpiar</a>
                     </div>
                 </form>
             </div>
@@ -174,7 +174,7 @@
         // Auto-enviar el formulario con debounce para búsqueda server-side
         const searchInput = document.getElementById('search');
         const searchForm = document.getElementById('search-form');
-        const pacientesIndexUrl = "{{ route('pacientes.index') }}";
+        const usuariosIndexUrl = "{{ route('admin.usuarios.index') }}";
 
         // Enviar sólo con Enter; limpiar con Escape
         searchInput.addEventListener('keydown', function(e) {
@@ -182,13 +182,13 @@
                 e.preventDefault();
                 searchForm.submit();
             } else if (e.key === 'Escape') {
-                window.location = pacientesIndexUrl;
+                window.location = usuariosIndexUrl;
             }
         });
 
         searchInput.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
-                window.location = pacientesIndexUrl;
+                window.location = usuariosIndexUrl;
             }
         });
     </script>
