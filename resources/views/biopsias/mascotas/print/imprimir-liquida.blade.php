@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Biopsia Mascota Lavado - Reporte</title>
+    <title>Biopsia Mascota Lavado - Impresion</title>
     <style>
         * {
             margin: 0;
